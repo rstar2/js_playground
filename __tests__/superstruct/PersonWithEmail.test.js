@@ -1,4 +1,4 @@
-const PersonWithEmail = require('../../../src/superstruct/PersonWithEmail');
+const PersonWithEmail = require('../../src/superstruct/PersonWithEmail');
 
 describe("PersonWithEmail suite", () => {
     const data = {

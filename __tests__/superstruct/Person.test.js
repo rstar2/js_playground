@@ -1,4 +1,4 @@
-const Person = require('../../../src/superstruct/Person');
+const Person = require('../../src/superstruct/Person');
 
 describe("Person suite", () => {
     test('should fail - invalid age', () => {
