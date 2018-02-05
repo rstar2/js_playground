@@ -2,7 +2,7 @@ const superstruct = require('superstruct').superstruct;
 
 const structCustom = superstruct({
     types: {
-        email: (value) => value.indexOf('@@') !== -1
+        email: (value) => value.indexOf('@') !== -1
     }
 });
 
