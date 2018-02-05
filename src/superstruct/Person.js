@@ -4,7 +4,7 @@ const struct = require('superstruct').struct;
 const Person = struct({
     name: 'string',
     age: 'number',
-    married: 'boolean?', // optional
+    married: 'boolean', // optional
 });
 
 module.exports = Person;
