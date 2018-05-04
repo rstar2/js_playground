@@ -32,8 +32,4 @@ describe("Person suite", () => {
         const rumen = Person(data);
         expect(rumen).toBeTruthy();
     });
-
-
-    // // this should validate and pass
-    // 
 });

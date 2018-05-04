@@ -6,16 +6,19 @@ class Block {
 
     /**
      * 
-     * @param {Date} timestamp 
+     * @param {String|Number} timestamp 
      * @param {Transaction[]} transactions 
      * @param {String} previousHash 
      */
     constructor(timestamp, transactions, previousHash = '') {
-        this.timestamp = timestamp;
+        this.timestamp = "" + timestamp;
         this.transactions = transactions;
         this.previousHash = previousHash;
 
         this.nonce = 0; // random number - just to create new hashes
+
+        // note this hash is still tno validated by the proof-of-work mechanism
+        // so if such block is added to the chain it will be rejected
         this.hash = this.calculateHash();
     }
 
@@ -24,11 +27,12 @@ class Block {
             JSON.stringify(this.transactions) + this.nonce).toString();
     }
 
-    mineBlock(difficulty) {
-        const difficultyStart = Array(difficulty + 1).join("0");
-        // so for difficulty=4 => difficultyStart="0000";
-
-        while (this.hash.substring(0, difficulty) !== difficultyStart) {
+    /**
+     * 
+     * @param {(Block) => Boolean } proofOfWorkPredicate 
+     */
+    mineBlock(proofOfWorkPredicate) {
+        while (!proofOfWorkPredicate(this)) {
             // we cannot change anything else but the 'nonce' value ( that's why it's added :) ) 
             this.nonce++;
             this.hash = this.calculateHash();
