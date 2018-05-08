@@ -2,7 +2,7 @@
 
 # Create AWS IAM user with permissions and access key/secret
 1. This is in AWS portal
-2. Next configure the serveless cli
+2. Next configure the serverless cli
 ```
 $ sls config credentials --provider aws --key XXXX --secret YYYY
 ```
