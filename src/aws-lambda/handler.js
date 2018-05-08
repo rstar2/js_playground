@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports.hello = (event, context, callback) => {
+module.exports.check = (event, context, callback) => {
 
   let name = 'Anonymous';
 
@@ -24,7 +24,7 @@ module.exports.hello = (event, context, callback) => {
   const response = {
     statusCode: 200,
     body: JSON.stringify({
-      message: `Hello ${name}`,
+      message: `Hello ${name} new`,
       //event,
     }),
   };
