@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports.check = (event, context, callback) => {
+module.exports.main = (event, context, callback) => {
 
   let name = 'Anonymous';
 
@@ -21,17 +21,20 @@ module.exports.check = (event, context, callback) => {
     }
   }
 
+    // access the environment variables
+    const variable1 = process.env.variable1;
+    const variable2 = process.env.variable2;
+
   const response = {
     statusCode: 200,
     body: JSON.stringify({
-      message: `Hello ${name} new`,
-      //event,
+      message: `Hello ${name}`,
+      env: [variable1, variable2],
+      event,
     }),
   };
 
-  // access the environment variables
-  const GOOGLE_MAPS_API_KEY = process.env.GOOGLE_MAPS_API_KEY;
-  const OTHER_API_KEY = process.env.OTHER_API_KEY;
+
 
   callback(null, response);
 

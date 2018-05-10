@@ -27,6 +27,7 @@ jobs:
           - v1-dependencies-
 
       - run: npm install
+      - run: cd src/aws-lambda-expirations-check && npm install
 
       - save_cache:
           paths:
