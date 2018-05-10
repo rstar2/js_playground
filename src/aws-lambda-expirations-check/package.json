@@ -1,0 +1,19 @@
+{
+  "name": "aws-lambda-exprirations-check",
+  "version": "1.0.0",
+  "main": "handler.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "author": "Rumen Neshev",
+  "email": "neshec.rumen@gmail.com",
+  "license": "MIT",
+  "dependencies": {
+    "moment": "^2.22.1",
+    "uuid": "^3.2.1"
+  },
+  "devDependencies": {
+    "aws-sdk": "^2.236.1",
+    "jest": "^22.4.3"
+  }
+}

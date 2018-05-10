@@ -1,0 +1,70 @@
+# Welcome to Serverless!
+#
+# See https://github.com/AnomalyInnovations/serverless-stack-demo-api
+
+service: my-expirations-check
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+
+# you can overwrite defaults here
+  stage: dev
+  region: eu-central-1
+
+# you can add statements to the Lambda function's IAM Role here
+#  iamRoleStatements:
+#    - Effect: "Allow"
+#      Action:
+#        - "s3:ListBucket"
+#      Resource: { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "ServerlessDeploymentBucket" } ] ]  }
+#    - Effect: "Allow"
+#      Action:
+#        - "s3:PutObject"
+#      Resource:
+#        Fn::Join:
+#          - ""
+#          - - "arn:aws:s3:::"
+#            - "Ref" : "ServerlessDeploymentBucket"
+#            - "/*"
+
+  # Load environment variables externally from 'env.yml' depending on the stage
+  environment: ${file(env.yml):${self:provider.stage}}
+
+functions:
+  check:
+    handler: handler.check
+    events:
+      - schedule: rate(10 minutes)
+
+  api:
+    handler: handler.api
+    events:
+      - http:
+          path: list
+          method: GET
+      - http:
+          path: add
+          method: POST
+      - http:
+          path: delete
+          method: POST    
+      
+# you can add CloudFormation resource templates here
+# resources:
+#   Resources:
+#     expirationsTable:
+#       Type: AWS::DynamoDB::Table
+#       Properties:
+#         TableName: ${self:service}-${self:provider.stage}-expirations
+#         AttributeDefinitions:
+#           - AttributeName: type
+#             AttributeType: S
+#           - AttributeName: type
+#             AttributeType: S  
+#         KeySchema:
+#           - AttributeName: type
+#             KeyType: HASH
+#         ProvisionedThroughput:
+#           ReadCapacityUnits: 1
+#           WriteCapacityUnits: 1
