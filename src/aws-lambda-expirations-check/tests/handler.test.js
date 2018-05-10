@@ -20,6 +20,7 @@ describe("Handler suite", () => {
         
         const callback = (error, response) => {
           expect(error).toBeTruthy();
+          expect(response).toBeUndefined();
         };
       
         await handler.api(event, context, callback);
