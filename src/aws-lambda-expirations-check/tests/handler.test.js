@@ -1,7 +1,7 @@
 const handler = require('../handler');
 
 
-xdescribe("Handler suite", () => {
+describe("Handler suite", () => {
     test('check should pass', async () => {
         const event = 'event';
         const context = 'context';
