@@ -21,19 +21,26 @@ $ sls create --template aws-nodejs
 $ sls deploy
 ```
 
-# Test/invoke the function locally
-Assuming the/a function is called "hello" in serverless.yml. Note more than 1 function can be configured for a stack/project
+# Test
+Assuming a function is called "my-demo-simple" in serverless.yml. Note more than 1 function can be configured for a stack/project
+
+1. This will invoke a deployed function
 ```
-$ sls invoke --function hello
+$ sls invoke --function my-demo-simple
 ```
+2. This will invoke the function locally
+```
+$ sls invoke local --function my-demo-simple
+```
+
 # Integrate it with API Gateway (e.g attach HTTP endpoint to it)
 
 1. Update serverless.yml(attach HTTP event to the function-handler events):
     ```
     ...
     functions:
-        hello:
-            handler: handler.hello
+        my-demo-simple:
+            handler: handler.handle
             events:
                 - http:
                     path: execute
@@ -45,7 +52,7 @@ $ sls invoke --function hello
     $ sls deploy
     ```
 
-    As result AWS Lambda (through serverless-cli) will generate a real HTTP endpoint for triggering the function, for example : _https://jm2f52kt06.execute-api.eu-central-1.amazonaws.com/dev/execute_
+    As result AWS Lambda (through serverless-cli) will generate a real HTTP endpoint for triggering the function, for example : _https://wc3kc8ltne.execute-api.eu-central-1.amazonaws.com/dev/execute_
     Note it has also the stage inside (in ths case 'dev')
 
 # Integrate with other AWS services
@@ -67,7 +74,7 @@ provider:
 1. Function local environment variables:
 ```
 functions:
-  hello:
+  my-demo-simple:
     handler: ...
     events:
       ...
