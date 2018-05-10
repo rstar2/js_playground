@@ -35,6 +35,9 @@ functions:
   check:
     handler: handler.check
     events:
+      - http:
+          path: check
+          method: GET
       - schedule: rate(10 minutes)
 
   api:
