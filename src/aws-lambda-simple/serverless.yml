@@ -55,7 +55,7 @@ provider:
 #    - exclude-me-dir/**
 
 functions:
-  my-demo-simple:
+  main:
     handler: handler.main
 
 #    The following are a few example events you can configure
@@ -92,7 +92,7 @@ functions:
     environment:
       variable2: value2
 
-  my-demo-simple-async:
+  main-async:
     handler: handler-async.main
     events:
       - http:
@@ -100,12 +100,12 @@ functions:
           method: GET    
 
 # you can add CloudFormation resource templates here
-resources:
-  Resources:
-    myDemoSimpleBucket:
-      Type: AWS::S3::Bucket
-      Properties:
-        BucketName: ${self:service}-${self:provider.stage}-data
+# resources:
+#   Resources:
+#     myDemoSimpleBucket:
+#       Type: AWS::S3::Bucket
+#       Properties:
+#         BucketName: ${self:service}-${self:provider.stage}-data
 #  Outputs:
 #     NewOutput:
 #       Description: "Description for the output"

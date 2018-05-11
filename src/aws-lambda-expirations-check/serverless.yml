@@ -4,6 +4,10 @@
 
 service: my-expirations-check
 
+custom:
+  # define the name of the DynamoDB Table here as it's ARN will be used in the IAM roles also
+  expirationsTable: ${self:service}-${self:provider.stage}-expirations
+
 provider:
   name: aws
   runtime: nodejs8.10
@@ -23,57 +27,48 @@ provider:
         - dynamodb:PutItem
         - dynamodb:UpdateItem
         - dynamodb:DeleteItem
-      # allow access to all DynamoDB tables in the same region - TODO: this should be fixed and allow only to specific table
-      Resource: "arn:aws:dynamodb:${self:provider.region}:*:*"
+      # allow access to ONLY the needed DynamoDB Table - better design
+      # Resource: "arn:aws:dynamodb:${self:provider.region}:*:table/${self:custom.expirationsTable}"
+      Resource:
+        - "Fn::GetAtt": [ ExpirationsTable, Arn ]
+      # allow access to ALL DynamoDB Tables
+      # Resource: "arn:aws:dynamodb:${self:provider.region}:*:*"
   
-  # Load environment variables externally from 'env.yml' depending on the stage
-  environment: ${file(env.yml):${self:provider.stage}}
+  # Load environment variables externally from 'env.yml' depending on the stage,
+  # Fallback to default if it is not in specified stage.
+  environment: ${file(env.yml):${self:provider.stage}, file(env.yml):default}
 
 functions:
-  check:
-    handler: handler.check
-    events:
-      - http:
-          path: check
-          method: GET
-          cors: true
-          authorizer: aws_iam
-      - schedule: rate(10 minutes)
+  - check:
+      handler: handler.check
+      events:
+        - http:
+            path: check
+            method: GET
+            cors: true
+            # authorizer: aws_iam
+        - schedule: rate(10 minutes)
 
-  api:
-    handler: handler.api
-    events:
-      - http:
-          path: list
-          method: GET
-          cors: true
-          authorizer: aws_iam
-      - http:
-          path: add
-          method: POST
-          cors: true
-          authorizer: aws_iam
-      - http:
-          path: delete
-          method: POST
-          cors: true
-          authorizer: aws_iam    
+  - api:
+      handler: handler.api
+      events:
+        - http:
+            path: list
+            method: GET
+            cors: true
+            # authorizer: aws_iam
+        - http:
+            path: add
+            method: POST
+            cors: true
+            # authorizer: aws_iam
+        - http:
+            path: delete
+            method: POST
+            cors: true
+            # authorizer: aws_iam    
       
 # you can add CloudFormation resource templates here
-# resources:
-#   Resources:
-#     expirationsTable:
-#       Type: AWS::DynamoDB::Table
-#       Properties:
-#         TableName: ${self:service}-${self:provider.stage}-expirations
-#         AttributeDefinitions:
-#           - AttributeName: type
-#             AttributeType: S
-#           - AttributeName: type
-#             AttributeType: S  
-#         KeySchema:
-#           - AttributeName: type
-#             KeyType: HASH
-#         ProvisionedThroughput:
-#           ReadCapacityUnits: 1
-#           WriteCapacityUnits: 1
+resources:
+  # DynamoDB
+  - ${file(dynamodb-table.yml)}

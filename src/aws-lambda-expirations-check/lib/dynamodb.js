@@ -1,10 +1,12 @@
 const AWS = require("aws-sdk");
 
-// TODO: Make this dynamic - pass from the function context - create HOF (higher-order function)
-AWS.config.update({ region: "eu-central-1", });
-
-exports.call = (action, params) => {
+module.exports = (region) => {
+	AWS.config.update({ region, });
 	const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
-	return dynamoDb[action](params).promise();
+	return {
+		exec(action, params) {
+			return dynamoDb[action](params).promise();
+		},
+	};
 };
