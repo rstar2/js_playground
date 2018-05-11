@@ -1,5 +1,7 @@
-const handler = require('../handler');
+// set a dummy AWS region
+process.env.AWS_REGION = "eu-central-1";
 
+const handler = require('../handler');
 
 describe("Handler suite", () => {
     test('check should pass', async () => {

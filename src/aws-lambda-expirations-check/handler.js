@@ -4,26 +4,27 @@ const moment = require('moment');
 const uuid = require('uuid');
 
 // initialize a DynamoDB client for the specific region
-const dynamodb = require('./lib/dynamodb')(process.env.AWS_REGION);
+const dynamodbUtils = require('./lib/dynamodb-utils')(process.env.AWS_REGION);
 const dynamodb_TableName = "my-expirations-check-dev-expirations";
 
+const dateUtils = require('./lib/date-utils');
+
 // initialize a Twilio client to send SMS
-const twilio = require('./lib/twilio');
+const twilioUtils = require('./lib/twilio-utils');
 
 module.exports.check = async (event, context, callback) => {
 	console.time("Invoking function check took");
-
-	const now = Date.now();
 
 	const data = await dbList();
 	// data of the type { "Items":[...], "Count": 1, "ScannedCount":1 }
 	const list = data.Items;
 
 	if (list) {
-		// TODO: check if it expires 3 days before 'now/today'
-		const expired = list.filter(item => item.expiresAt > now);
+		const expireAfter3days = list
+			.map(item => item.expiresAt)
+			.filter(date => dateUtils.isExpiredDay(date, -3));
 
-		await twilio.sendSMS(expired);
+		await twilioUtils.sendSMS(expireAfter3days);
 	}
 
 	const response = {
@@ -66,7 +67,7 @@ module.exports.api = async (event, context, callback) => {
 						responseBody = await dbAdd(data);
 						break;
 					case '/delete':
-						responseBody = await dbRemove(data);
+						responseBody = await dbDelete(data);
 						break;
 					default:
 						return callback(`Unsupported API gateway with HTTP POST path ${event.path}`);
@@ -96,7 +97,7 @@ const dbList = async () => {
 		TableName: dynamodb_TableName,
 		Limit: 1000,
 	};
-	return dynamodb.exec("scan", params);
+	return dynamodbUtils.exec("scan", params);
 };
 
 const dbAdd = async (data) => {
@@ -110,10 +111,10 @@ const dbAdd = async (data) => {
 			createdAt: Date.now(),
 		},
 	};
-	return dynamodb.exec("put", params);
+	return dynamodbUtils.exec("put", params);
 };
 
-const dbRemove = async (data) => {
+const dbDelete = async (data) => {
 	const params = {
 		TableName: dynamodb_TableName,
 		Key: {
@@ -121,5 +122,5 @@ const dbRemove = async (data) => {
 			id: data.id,
 		},
 	};
-	return dynamodb.exec("delete", params);
+	return dynamodbUtils.exec("delete", params);
 };
