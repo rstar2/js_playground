@@ -1,9 +1,6 @@
-// access the environment variables
-const twilio = require('twilio');
+// create a mock object for the twilio-utils
 
 module.exports = (accountSid, authToken, fromSender) => {
-
-	const client = new twilio(accountSid, authToken);
 
 	return {
 		/**
@@ -13,11 +10,8 @@ module.exports = (accountSid, authToken, fromSender) => {
 		 * @returns {Promise<MessageResource>}
 		 */
 		sendSMS(to, message) {
-			return client.messages.create({
-				body: message,
-				from: fromSender, // From a valid Twilio number,
-				to,
-			});
+			console.log(`Send SMS to ${to} : ${message}`);
+			return Promise.resolve();
 		},
 	};
 };

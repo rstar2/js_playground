@@ -10,7 +10,8 @@ const dynamodb_TableName = "my-expirations-check-dev-expirations";
 const dateUtils = require('./lib/date-utils');
 
 // initialize a Twilio client to send SMS
-const twilioUtils = require('./lib/twilio-utils');
+const twilioUtils = require('./lib/twilio-utils')(process.env.TWILIO_ACCOUNT_SID,
+	process.env.TWILIO_AUTH_TOKEN, process.env.TWILIO_SENDER);
 
 module.exports.check = async (event, context, callback) => {
 	console.time("Invoking function check took");
@@ -20,11 +21,19 @@ module.exports.check = async (event, context, callback) => {
 	const list = data.Items;
 
 	if (list) {
-		const expireAfter3days = list
-			.map(item => item.expiresAt)
-			.filter(date => dateUtils.isExpiredDay(date, -3));
+		const message = list
+			// filter those expiring the next 7 days
+			.filter(item => dateUtils.isExpiredDay(item.expiresAt, -7))
+			.reduce((acc, item) => {
+				return acc + '\n' + item.name + ' expires/d on ' + moment(item.expiresAt).format("MMM Do YY");
+			}, '');
 
-		await twilioUtils.sendSMS(expireAfter3days);
+		if (message) {
+			// console.log("Expiring soon in list ", list, message);
+			await twilioUtils.sendSMS(process.env.TWILIO_RECEIVER, message);
+		} else {
+			// console.log(" No expirations soon from ", list);
+		}
 	}
 
 	const response = {
@@ -104,7 +113,6 @@ const dbAdd = async (data) => {
 	const params = {
 		TableName: dynamodb_TableName,
 		Item: {
-			// userId: event.requestContext.identity.cognitoIdentityId,
 			id: uuid.v1(),
 			name: data.name,
 			expiresAt: data.expiresAt,
@@ -118,7 +126,6 @@ const dbDelete = async (data) => {
 	const params = {
 		TableName: dynamodb_TableName,
 		Key: {
-			// userId: event.requestContext.identity.cognitoIdentityId,
 			id: data.id,
 		},
 	};

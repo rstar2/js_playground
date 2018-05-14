@@ -47,7 +47,8 @@ functions:
             method: GET
             cors: true
             # authorizer: aws_iam
-        - schedule: rate(10 minutes)
+        # - schedule: rate(10 minutes) # Run every 10 minutes
+        - schedule: cron(15 10 * * ? *) # Run at 10:15 am (UTC) every day
 
   - api:
       handler: handler.api

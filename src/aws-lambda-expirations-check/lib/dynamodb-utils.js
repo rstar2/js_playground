@@ -5,6 +5,12 @@ module.exports = (region) => {
 	const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
 	return {
+		/**
+		 * 
+		 * @param {String} action
+		 * @param {Object} params
+		 * @returns {Promise}
+		 */
 		exec(action, params) {
 			return dynamoDb[action](params).promise();
 		},

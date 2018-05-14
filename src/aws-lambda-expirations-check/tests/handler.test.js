@@ -1,5 +1,6 @@
 // set a dummy AWS region
-process.env.AWS_REGION = "eu-central-1";
+jest.mock('../lib/dynamodb-utils');
+jest.mock('../lib/twilio-utils');
 
 const handler = require('../handler');
 
