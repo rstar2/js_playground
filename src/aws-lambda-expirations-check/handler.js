@@ -1,24 +1,48 @@
 'use strict';
 
 const moment = require('moment');
+const uuid = require('uuid');
 
-// access the environment variables
-const TWILIO_ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID;
-const TWILIO_AUTH_TOKEN = process.env.TWILIO_AUTH_TOKEN;
-const TWILIO_SENDER = process.env.TWILIO_SENDER;
+// initialize a DynamoDB client for the specific region
+const dynamodbUtils = require('./lib/dynamodb-utils')(process.env.AWS_REGION);
+const dynamodb_TableName = "my-expirations-check-dev-expirations";
+
+const dateUtils = require('./lib/date-utils');
+
+// initialize a Twilio client to send SMS
+const twilioUtils = require('./lib/twilio-utils')(process.env.TWILIO_ACCOUNT_SID,
+	process.env.TWILIO_AUTH_TOKEN, process.env.TWILIO_SENDER);
 
 module.exports.check = async (event, context, callback) => {
 	console.time("Invoking function check took");
 
-	const now = moment(Date.now()).format("MMM Do YY");
+	const data = await dbList();
+	// data of the type { "Items":[...], "Count": 1, "ScannedCount":1 }
+	const list = data.Items;
 
-	await dbCheck();
+	if (list) {
+		const message = list
+			// filter those expiring the next 7 days
+			.filter(item => dateUtils.isExpiredDay(item.expiresAt, -7))
+			.reduce((acc, item) => {
+				return acc + '\n' + item.name + ' expires/d on ' + moment(item.expiresAt).format("MMM Do YY");
+			}, '');
+
+		if (message) {
+			// console.log("Expiring soon in list ", list, message);
+			await twilioUtils.sendSMS(process.env.TWILIO_RECEIVER, message);
+		} else {
+			// console.log(" No expirations soon from ", list);
+		}
+	}
 
 	const response = {
 		statusCode: 200,
 		body: JSON.stringify({
-			message: `Checked on ${now}`,
+			message: `Checked on ${moment().format("MMM Do YY")}`,
 			event,
+			context,
+			env: process.env,
 		}),
 	};
 
@@ -30,62 +54,80 @@ module.exports.check = async (event, context, callback) => {
 module.exports.api = async (event, context, callback) => {
 	console.time("Invoking function api took");
 
-	let responseBody;
-	switch (event.httpMethod) {
-		case 'GET':
-			switch (event.path) {
-				case '/list':
-					responseBody = await dbList();
-					break;
-				default:
-					return callback(`Unsupported API gateway with HTTP GET path ${event.path}`);
-			}
-			break;
+	try {
+		let responseBody;
+		switch (event.httpMethod) {
+			case 'GET':
+				switch (event.path) {
+					case '/list':
+						responseBody = await dbList();
+						break;
+					default:
+						return callback(`Unsupported API gateway with HTTP GET path ${event.path}`);
+				}
+				break;
 
-		// eslint-disable-next-line no-case-declarations
-		case 'POST':
-			// assume it's JSON ("application/json")
-			const json = JSON.parse(event.body);
-			switch (event.path) {
-				case '/add':
-					responseBody = await dbAdd(json);
-					break;
-				case '/delete':
-					responseBody = await dbRemove(json);
-					break;
-				default:
-					return callback(`Unsupported API gateway with HTTP POST path ${event.path}`);
-			}
-			break;
-		default:
-			return callback(`Unsupported API gateway with HTTP method ${event.httpMethod}`);
+			// eslint-disable-next-line no-case-declarations
+			case 'POST':
+				// assume it's JSON ("application/json")
+				const data = JSON.parse(event.body);
+				switch (event.path) {
+					case '/add':
+						responseBody = await dbAdd(data);
+						break;
+					case '/delete':
+						responseBody = await dbDelete(data);
+						break;
+					default:
+						return callback(`Unsupported API gateway with HTTP POST path ${event.path}`);
+				}
+				break;
+			default:
+				return callback(`Unsupported API gateway with HTTP method ${event.httpMethod}`);
+		}
+
+		console.timeEnd("Invoking function api took");
+		callback(null, createResponse(200, responseBody));
+	} catch (error) {
+		console.timeEnd("Invoking function api took", "- failed");
+		callback(null, createResponse(500, { status: false, error, }));
 	}
-
-	const response = {
-		statusCode: 200,
-		body: JSON.stringify(responseBody),
-	};
-
-	console.time("Invoking function api took");
-	callback(null, response);
 };
 
-const dbCheck = async () => {
-
+const createResponse = (status, body) => {
+	return {
+		statusCode: 200,
+		body: JSON.stringify(body),
+	};
 };
 
 const dbList = async () => {
-	return new Promise((resolve, reject) =>
-		setTimeout(() => {
-			resolve({id1: "1111", id2: "2222",});
-		}, 1000)
-	);
+	const params = {
+		TableName: dynamodb_TableName,
+		Limit: 1000,
+	};
+	return dynamodbUtils.exec("scan", params);
 };
 
-const dbAdd = async (json) => {
-
+const dbAdd = async (data) => {
+	const params = {
+		TableName: dynamodb_TableName,
+		Item: {
+			id: uuid.v1(),
+			name: data.name,
+			expiresAt: data.expiresAt,
+			createdAt: Date.now(),
+		},
+	};
+	return dynamodbUtils.exec("put", params);
 };
 
-const dbRemove = async (json) => {
-
+const dbDelete = async (data) => {
+	const params = {
+		TableName: dynamodb_TableName,
+		Key: {
+			id: data.id,
+		},
+	};
+	return dynamodbUtils.exec("delete", params);
 };
