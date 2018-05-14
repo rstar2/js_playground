@@ -9,7 +9,9 @@
   "email": "neshec.rumen@gmail.com",
   "license": "MIT",
   "dependencies": {
+    "minimist": "^1.2.0",
     "moment": "^2.22.1",
+    "request": "^2.85.0",
     "twilio": "^3.17.0",
     "uuid": "^3.2.1"
   },
