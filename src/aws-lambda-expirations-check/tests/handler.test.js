@@ -6,7 +6,9 @@ const handler = require('../handler');
 
 describe("Handler suite", () => {
     test('check should pass', async () => {
-        const event = 'event';
+        const event = {
+			httpMethod: 'GET',
+		};
         const context = 'context';
         
         const callback = (error, response) => {
