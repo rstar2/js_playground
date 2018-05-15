@@ -34,15 +34,14 @@ module.exports.check = async (event, context, callback) => {
 	} else if (event.httpMethod) {
 		// if this is HTTP request
 		response = createResponse(200, {
-				checked: `Checked on ${moment().format("MMM Do YY")}`,
-				expired,
+			checked: `Checked on ${moment().format("MMM Do YY")}`,
+			expired,
 
-				// just to see what AWS sends
-				// event,
-				// context,
-				// env: process.env,
-			}),
-		};
+			// just to see what AWS sends
+			// event,
+			// context,
+			// env: process.env,
+		});
 	}
 	console.timeEnd("Invoking function check took");
 	console.log(`Checked on ${Date.now()} : ${moment().format("MMM Do YY")} - expired: ${expired.length}`);
