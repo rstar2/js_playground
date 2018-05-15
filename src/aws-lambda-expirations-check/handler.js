@@ -14,39 +14,38 @@ const twilioUtils = require('./lib/twilio-utils')(process.env.TWILIO_ACCOUNT_SID
 	process.env.TWILIO_AUTH_TOKEN, process.env.TWILIO_SENDER);
 
 module.exports.check = async (event, context, callback) => {
+	let response;
 	console.time("Invoking function check took");
 
 	const data = await dbList();
 	// data of the type { "Items":[...], "Count": 1, "ScannedCount":1 }
 	const list = data.Items;
 
-	if (list) {
-		const message = list
-			// filter those expiring the next 7 days
-			.filter(item => dateUtils.isExpiredDay(item.expiresAt, -7))
-			.reduce((acc, item) => {
-				return acc + '\n' + item.name + ' expires/d on ' + moment(item.expiresAt).format("MMM Do YY");
-			}, '');
+	// filter those expiring the next 7 days
+	let expired = (list && list.filter(item => dateUtils.isExpiredDay(item.expiresAt, -7))) || [];
 
-		if (message) {
-			// console.log("Expiring soon in list ", list, message);
+	if (event['detail-type'] === 'Scheduled Event') {
+		// if this is Scheduled event - send real SMS
+		const message = expired.reduce((acc, item) => {
+			return acc + '\n' + item.name + ' expires/d on ' + moment(item.expiresAt).format("MMM Do YY");
+		}, '');
+		if (message)
 			await twilioUtils.sendSMS(process.env.TWILIO_RECEIVER, message);
-		} else {
-			// console.log(" No expirations soon from ", list);
-		}
+	} else if (event.httpMethod) {
+		// if this is HTTP request
+		response = createResponse(200, {
+				checked: `Checked on ${moment().format("MMM Do YY")}`,
+				expired,
+
+				// just to see what AWS sends
+				// event,
+				// context,
+				// env: process.env,
+			}),
+		};
 	}
-
-	const response = {
-		statusCode: 200,
-		body: JSON.stringify({
-			message: `Checked on ${moment().format("MMM Do YY")}`,
-			event,
-			context,
-			env: process.env,
-		}),
-	};
-
 	console.timeEnd("Invoking function check took");
+	console.log(`Checked on ${Date.now()} : ${moment().format("MMM Do YY")} - expired: ${expired.length}`);
 	callback(null, response);
 };
 

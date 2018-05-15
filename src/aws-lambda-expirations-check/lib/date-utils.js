@@ -1,7 +1,7 @@
 exports.isExpired = (date, anchorDate = Date.now(), offsetDate = 0) => {
 	anchorDate = anchorDate + offsetDate;
 
-	return date >= anchorDate;
+	return date <= anchorDate;
 };
 
 exports.isExpiredDay = (date, offsetDays = 0) => {
