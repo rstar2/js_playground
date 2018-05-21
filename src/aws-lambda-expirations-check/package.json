@@ -1,5 +1,5 @@
 {
-  "name": "aws-lambda-exprirations-check",
+  "name": "r-js-aws-lambda-exprirations-check",
   "version": "1.0.0",
   "main": "handler.js",
   "scripts": {
@@ -17,7 +17,6 @@
     "uuid": "^3.2.1"
   },
   "devDependencies": {
-    "aws-sdk": "^2.236.1",
-    "jest": "^22.4.3"
+    "aws-sdk": "^2.236.1"
   }
 }
