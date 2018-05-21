@@ -15,6 +15,6 @@ describe("Block suite", () => {
         block.mineBlock(blockchain.getProofOfWorkPredicate());
         const period = Date.now() - start;
 
-        expect(period).toBeGreaterThan(1000);
+        expect(period).toBeGreaterThan(400);
     });
 });
