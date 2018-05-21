@@ -9,6 +9,9 @@
   "author": "Rumen Neshev",
   "license": "MIT",
   "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.3",
+    "express-static": "^1.2.5",
     "web-push": "^3.3.1"
   }
 }
