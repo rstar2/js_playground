@@ -16,6 +16,8 @@ class Blockchain {
     }
 
     getProofOfWorkPredicate() {
+        // it should start with at least 'this.difficulty' zeros
+        // e.g if this.difficulty === 1 => '0asdasdasdadasdasdasd...'
         const difficultyStart = Array(this.difficulty + 1).join("0");
         
         return (block) => {
