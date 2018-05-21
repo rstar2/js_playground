@@ -1,12 +1,8 @@
-const { promisify, } = require('util');
-
 const AWS = require('aws-sdk');
 
 module.exports = (fromSender = process.env.AWS_SES_SENDER) => {
 
 	const SES = new AWS.SES();
-
-	const sendEmail = promisify(SES.sendEmail);
 
 	return {
 		/**
