@@ -1,9 +1,11 @@
+const path = require('path');
 const express = require('express');
 const webpush = require('web-push');
 
 const app = express();
 
 app.use(require('body-parser').json());
+app.use(require('express-static')(path.resolve(__dirname + '/public')));
 
 app.post('/subscribe', (req, res) => {
   const subscription = req.body;
@@ -16,3 +18,5 @@ app.post('/subscribe', (req, res) => {
     console.error(error.stack);
   });
 });
+
+app.listen(3000);
