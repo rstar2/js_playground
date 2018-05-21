@@ -28,6 +28,10 @@ jobs:
 
       - run: npm install
       - run: cd src/aws-lambda-expirations-check && npm install
+      - run: cd src/blockchain && npm install
+      - run: cd src/mongo && npm install
+      - run: cd src/superstruct && npm install
+      - run: cd src/web-push && npm install
 
       - save_cache:
           paths:
