@@ -13,6 +13,8 @@ const dateUtils = require('./lib/date-utils');
 const twilioUtils = require('./lib/twilio-utils')(process.env.TWILIO_ACCOUNT_SID,
 	process.env.TWILIO_AUTH_TOKEN, process.env.TWILIO_SENDER);
 
+const awsSesUtils = require('./lib/aws-ses-utils')(process.env.AWS_SES_SENDER);
+
 module.exports.check = async (event, context, callback) => {
 	let response;
 	console.time("Invoking function check took");
@@ -23,14 +25,17 @@ module.exports.check = async (event, context, callback) => {
 
 	// filter those expiring the next 7 days
 	let expired = (list && list.filter(item => dateUtils.isExpiredDay(item.expiresAt, -7))) || [];
-
+	
 	if (event['detail-type'] === 'Scheduled Event') {
 		// if this is Scheduled event - send real SMS
 		const message = expired.reduce((acc, item) => {
 			return acc + '\n' + item.name + ' expires/d on ' + moment(item.expiresAt).format("MMM Do YY");
 		}, '');
-		if (message)
+		
+		if (message) {
 			await twilioUtils.sendSMS(process.env.TWILIO_RECEIVER, message);
+			await awsSesUtils.sendSMS(process.env.AWS_SES_RECEIVER, message);
+		}
 	} else if (event.httpMethod) {
 		// if this is HTTP request
 		response = createResponse(200, {

@@ -13,7 +13,7 @@ provider:
   runtime: nodejs8.10
 
   stage: dev
-  region: eu-central-1
+  region: eu-west-1
 
   # 'iamRoleStatement' defines the permission policy for the Lambda function.
   # In this case Lambda functions are granted with permissions to access DynamoDB.
@@ -33,6 +33,11 @@ provider:
         - "Fn::GetAtt": [ ExpirationsTable, Arn ]
       # allow access to ALL DynamoDB Tables
       # Resource: "arn:aws:dynamodb:${self:provider.region}:*:*"
+
+    - Effect: "Allow"
+      Action:
+        - "ses:SendEmail"
+      Resource: ["*"]
   
   # Load environment variables externally from 'env.yml' depending on the stage,
   # Fallback to default if it is not in specified stage.
@@ -48,7 +53,7 @@ functions:
             cors: true
             # authorizer: aws_iam
         # - schedule: rate(10 minutes) # Run every 10 minutes
-        - schedule: cron(15 8cd src * * ? *) # Run at 10:15 am (UTC) every day
+        - schedule: cron(15 8 * * ? *) # Run at 10:15 am (UTC) every day
 
   - api:
       handler: handler.api

@@ -1,18 +1,14 @@
+const path = require('path');
 const express = require('express');
-const webpush = require('web-push');
+
+process.chdir(__dirname);
+require('dotenv').config()
 
 const app = express();
 
 app.use(require('body-parser').json());
+app.use(express.static(path.resolve('public')));
 
-app.post('/subscribe', (req, res) => {
-  const subscription = req.body;
-  res.status(201).json({});
-  const payload = JSON.stringify({ title: 'test' });
+app.use('/push', require('./push-route'));
 
-  console.log(subscription);
-
-  webpush.sendNotification(subscription, payload).catch(error => {
-    console.error(error.stack);
-  });
-});
+app.listen(3000);
