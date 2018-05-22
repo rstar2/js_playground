@@ -63,7 +63,7 @@ pushRouter.post('/send', function (req, res) {
     // TODO: get from DB
     const subscriptionEndpoint = req.body.endpoint;
     const payloadText = req.body.payload;
-    self.registration.pushManager.getSubscription()
+    
     const subscription = subscriptions[subscriptionEndpoint];
     if (subscription) {
         const payload = JSON.stringify({ title: 'Single PUSH', text: payloadText });

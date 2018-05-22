@@ -62,8 +62,8 @@ self.addEventListener('push', function (event) {
             // this is if the payload is send as JSON
             const payload = event.data ? event.data.json() : {};
 
-            // send a message to the client/page that a push notifications is received
-            self.clients.forEach((client) => {
+            // send a message to all client/page that a push notifications is received
+            clientList.forEach((client) => {
                 client.postMessage({
                     message: 'Received a push message.',
                     time: new Date().toString()
