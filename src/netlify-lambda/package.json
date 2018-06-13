@@ -1,0 +1,17 @@
+{
+  "name": "netlify-lambda",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "rimraf dist && rimraf functions && cpx src/functions/**/* functions && mkdir dist",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "cpx": "^1.5.0",
+    "rimraf": "^2.6.2"
+  }
+}
