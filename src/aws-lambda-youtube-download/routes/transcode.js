@@ -9,8 +9,8 @@ module.exports = (app) => {
             .then(data => require('../aws/invoke')(data).then(() => data))
 
             // Send a response
-            .then(({ logKey, mp3Key }) => {
-                res.status(200).send(JSON.stringify({ logKey, mp3Key }));
+            .then(data => {
+                res.status(200).send(JSON.stringify(data));
             })
             // Handle errors
             .catch((error) => {
@@ -31,8 +31,8 @@ module.exports = (app) => {
             })
 
             // Send a response
-            .then(({ mp3Key }) => {
-                res.status(200).send(JSON.stringify({ mp3Key }));
+            .then(data => {
+                res.status(200).send(JSON.stringify(data));
             })
             // Handle errors
             .catch((error) => {
@@ -50,7 +50,7 @@ module.exports = (app) => {
                 const mp3Filename = filename + '.mp3';
                 const stream = require('../lib/download')(url);
 
-                return {stream, mp3Filename};
+                return { stream, mp3Filename };
             })
 
             // Send a response

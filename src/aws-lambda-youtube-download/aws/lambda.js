@@ -14,9 +14,9 @@ exports.handler = (event, context, callback) => {
     callback();
 
     // Extract the event parameters.
-    const { mp3Key, url } = event;
-    const filename = event.filename || path.basename(mp3Key);
-    const logKey = event.logKey || `${mp3Key}.log`;
+    const { key, filename, url } = event;
+    const mp3Key = `mp3/${key}.mp3`;
+    const logKey = `log/${key}.log`;
     const s3Bucket = event.s3Bucket || 'youtube-mp3-downloader';
 
     // Create temporary input/output filenames that we can clean up afterwards.
@@ -32,7 +32,7 @@ exports.handler = (event, context, callback) => {
     })
         // Perform the actual transcoding.
         .then(() => transcode(inputFilename, mp3Filename))
-        
+
         // Upload the generated MP3 to S3.
         .then(logContent => {
             return s3.putObject({

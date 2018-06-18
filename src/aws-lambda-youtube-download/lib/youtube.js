@@ -21,8 +21,7 @@ module.exports = (videoId) => {
 
             return {
                 filename: `${title}.${format.audioEncoding}`,
-                logKey: `log/${timestamp} - ${title}.log`,
-                mp3Key: `mp3/${timestamp} - ${title}.mp3`,
+                key: `${timestamp} - ${title}`,
                 url: format.url,
             };
         });
