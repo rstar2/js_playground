@@ -6,7 +6,7 @@ module.exports = (app) => {
         // Get information on the available video file formats.
         youtube(videoId)
             // transcode by invoking the AWS Lambda - e.g in the cloud
-            .then(data => require('../aws/transcode')(data).then(() => data))
+            .then(data => require('../aws/invoke')(data).then(() => data))
 
             // Send a response
             .then(({ logKey, mp3Key }) => {
