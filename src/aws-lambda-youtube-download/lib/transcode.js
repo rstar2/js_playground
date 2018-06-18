@@ -3,12 +3,15 @@ const path = require('path');
 
 /**
  * 
- * @param {Object} data 
+ * @param {String} inputFilename 
+ * @param {String} mp3Filename 
  * @return {String}
  */
 module.exports = (inputFilename, mp3Filename) => {
     // Use the Exodus ffmpeg bundled executable.
-    const ffmpeg = path.resolve(__dirname, 'exodus', 'bin', 'ffmpeg');
+    // const ffmpeg = path.resolve(__dirname, 'exodus', 'bin', 'ffmpeg');
+    const ffmpeg = process.env.FFMPEG_PATH ||
+        process.env.FFMPEG_ROOT ? path.resolve(process.env.FFMPEG_ROOT, 'ffmpeg') : 'ffmpeg';
 
     // Convert the FLV file to an MP3 file using ffmpeg.
     const ffmpegArgs = [
@@ -19,6 +22,6 @@ module.exports = (inputFilename, mp3Filename) => {
         '-q:a', '6', // Set the quality to be roughly 128 kb/s.
         mp3Filename,
     ];
-    const process = child_process.spawnSync(ffmpeg, ffmpegArgs);
-    return process.stdout.toString() + process.stderr.toString();
+    const child = child_process.spawnSync(ffmpeg, ffmpegArgs);
+    return child.stdout.toString() + process.stderr.toString();
 };
