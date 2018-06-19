@@ -1,25 +1,4 @@
-## 1. Install Exodus 
-See https://github.com/intoli/exodus
-```
-$ pip install --user exodus_bundler
-```
-
-For Linux add in '~/.bashrc':
-```
-export PATH="~/.local/bin/:${PATH}"
-```
-
-For Windows
-```
-PATH=%PATH%;C:\Users\rumen\AppData\Roaming\Python\Python36\Scripts
-```
-
-## 2. Install FFMPEG
-
-## 3. Bundle FFMPEG with Exodus
-In order to be able to access FFMPEG from the AWS Lambda container we have to upload the binary somehow
-
-## 4. Init Serverless inside
+## 1. Init Serverless package
 ```
 $ sls create -t aws-nodejs
 ```
@@ -45,7 +24,55 @@ $ sls deploy
 }
 ```
 
+## 2. Install FFMPEG
+
+## 3. Install Exodus 
+See https://github.com/intoli/exodus
+```
+$ pip install --user exodus_bundler
+```
+
+For Linux add in '~/.bashrc':
+```
+export PATH="~/.local/bin/:${PATH}"
+```
+
+For Windows
+```
+PATH=%PATH%;C:\Users\rumen\AppData\Roaming\Python\Python36\Scripts
+```
+
+## 4. Bundle FFMPEG with Exodus TODO:
+In order to be able to access FFMPEG from the AWS Lambda container we have to upload the binary somehow
 
 
 
-## Create a Bookmarklet
+## 5. Lambdifying the Express App (e.g run on Lambda with API Gateway)
+1. Install aws-serverless-express
+```
+$ npm install aws-serverless-express
+```
+
+2. Crete new Lambda handler (lambda-express.js)
+```
+const awsServerlessExpress = require('aws-serverless-express');
+const app = require('../app');
+const server = awsServerlessExpress.createServer(app);
+
+exports.handler = (event, context) => (
+    awsServerlessExpress.proxy(server, event, context)
+);
+```
+
+3. Add a lambda handler
+```
+functions:
+  app-express:
+    handler: aws/lambda-express.handler
+    timeout: 30
+    events:
+      - http: ANY /
+      - http: 'ANY {proxy+}'
+```
+
+## Finally Create a Bookmarklet

@@ -39,13 +39,20 @@ provider:
 #    - exclude-me-dir/**
 
 functions:
-  transcode:
-    handler: aws/lambda.transcode
-    timeout: 300 # use all the AWS Maximum execution duration per request limit
+#   transcode:
+#     handler: aws/lambda-transcode.handler
+#     timeout: 300 # use all the AWS Maximum execution duration per request limit
+#     events:
+#       - http:
+#           path: transcode
+#           method: GET
+
+  app-express:
+    handler: aws/lambda-express.handler
+    timeout: 30
     events:
-      - http:
-          path: transcode
-          method: GET
+      - http: ANY /
+      - http: 'ANY {proxy+}'
 
 resources:
   Resources:

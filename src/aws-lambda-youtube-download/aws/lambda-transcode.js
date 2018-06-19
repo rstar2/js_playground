@@ -12,7 +12,7 @@ const { AWS_REGION, AWS_S3_BUCKET } = require('./config');
 
 const s3 = new AWS.S3(AWS_REGION);
 
-exports.transcode = (event, context, callback) => {
+exports.handler = (event, context, callback) => {
     // We're going to do the transcoding asynchronously, so we callback immediately.
     callback();
 

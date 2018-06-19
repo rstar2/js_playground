@@ -32,4 +32,4 @@ const viewRouter = express.Router();
 app.use(`/${appVersion}/view`, viewRouter);
 require('./routes/view')(viewRouter);
 
-app.listen(3000);
+module.exports = app;
