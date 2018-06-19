@@ -1,25 +1,38 @@
 const AWS = require('aws-sdk');
 
-const s3 = new AWS.S3();
+const { AWS_REGION, AWS_S3_BUCKET } = require('./config');
 
+const s3 = new AWS.S3(AWS_REGION);
+
+/**
+ * 
+ * @param {String} logKey 
+ * @param {String} mp3Key
+ * @return {Promise} 
+ */
 module.exports = (logKey, mp3Key) => {
-    s3.headObject({
-        Bucket: s3Bucket,
-        Key: logKey,
-    }, (error) => {
-        if (error) {
-            if (error.code === 'NotFound')
-                return { url: null };
-            else
-                throw Error();
-        } else {
+    return new Promise((resolve, reject) => {
+        s3.headObject({
+            Bucket: AWS_S3_BUCKET,
+            Key: logKey,
+        }, (error) => {
+            if (error) {
+                if (error.code === 'NotFound') {
+                    return resolve({ url: null });
+                }
+                return reject(error);
+            }
+
             s3.getSignedUrl('getObject', {
-                Bucket: s3Bucket,
+                Bucket: AWS_S3_BUCKET,
                 Expires: 3600,
                 Key: mp3Key,
             }, (error, url) => {
-                res.status(200).send(JSON.stringify({ url }));
+                if (error) {
+                    return reject(error);
+                }
+                resolve({ url });
             });
-        }
+        });
     });
 };

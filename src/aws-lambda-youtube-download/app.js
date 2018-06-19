@@ -24,12 +24,12 @@ app.set('view engine', 'hbs');
 const appVersion = 'v1';
 
 // configure routes
-const router = express.Router();
-app.use(`/${appVersion}`, router);
+const apiRouter = express.Router();
+app.use(`/${appVersion}/api`, apiRouter);
+require('./routes/api')(apiRouter);
 
-router.get('/', (req, res) => {
-    res.render('home');
-});
-require('./routes/transcode')(router);
+const viewRouter = express.Router();
+app.use(`/${appVersion}/view`, viewRouter);
+require('./routes/view')(viewRouter);
 
 app.listen(3000);
