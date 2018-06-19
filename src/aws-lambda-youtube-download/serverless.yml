@@ -9,10 +9,9 @@ provider:
   runtime: nodejs8.10
   # timeout: 10 # global timeout - optional, in seconds, default is 6
 
-  stage: dev
+  stage: ${opt:stage, 'dev'}
   region: eu-central-1
 
-# you can add statements to the Lambda function's IAM Role here
   iamRoleStatements:
     - Effect: "Allow"
       Action:
@@ -25,9 +24,9 @@ provider:
         - "s3:GetObject"
       Resource: { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "TranscodedBucket" }, '/*' ] ]  }
     
-# you can define service wide environment variables here
-#  environment:
-#    variable1: value1
+ environment:
+   stage: ${self:provider.stage}
+#    s3Bucket: ${self:provider.stage} TODO:
 
 # you can add packaging information here
 #package:
@@ -39,13 +38,15 @@ provider:
 #    - exclude-me-dir/**
 
 functions:
-#   transcode:
-#     handler: aws/lambda-transcode.handler
-#     timeout: 300 # use all the AWS Maximum execution duration per request limit
-#     events:
-#       - http:
-#           path: transcode
-#           method: GET
+  transcode:
+    handler: aws/lambda-transcode.handler
+    timeout: 300 # use all the AWS Maximum execution duration per request limit
+
+    # If no trigger-events are specified that means that the function will be able to be called only from the AWS SKD
+    # events:
+    #   - http:
+    #       path: transcode
+    #       method: GET
 
   app-express:
     handler: aws/lambda-express.handler
