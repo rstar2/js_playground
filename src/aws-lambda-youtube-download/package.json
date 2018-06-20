@@ -18,5 +18,8 @@
     "request": "^2.87.0",
     "tempy": "^0.2.1",
     "ytdl-core": "^0.20.4"
+  },
+  "devDependencies": {
+    "serverless-iam-roles-per-function": "^1.0.1"
   }
 }

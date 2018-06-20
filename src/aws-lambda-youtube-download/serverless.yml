@@ -1,8 +1,7 @@
 service: my-youtube-download
 
-custom:
-  # define the name of the DynamoDB Table here as it's ARN will be used in the IAM roles also
-  s3Bucket: ${self:service}-${self:provider.stage}
+plugins:
+  - serverless-iam-roles-per-function
 
 provider:
   name: aws
@@ -13,17 +12,17 @@ provider:
   region: eu-central-1
 
   iamRoleStatements:
+    # all the Lambda Function(s) to access the specific S3 Bucket
     - Effect: "Allow"
       Action:
         - "s3:ListBucket"
       Resource: { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "TranscodedBucket" } ] ]  }
-
     - Effect: "Allow"
       Action:
         - "s3:PutObject"
         - "s3:GetObject"
       Resource: { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "TranscodedBucket" }, '/*' ] ]  }
-    
+
   environment:
     # service: ${self:service}
     # stage: ${self:provider.stage}
@@ -59,9 +58,17 @@ functions:
       - http: ANY /
       - http: 'ANY {proxy+}'
 
+    iamRoleStatementsInherit: true
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - lambda:InvokeFunction
+          - lambda:InvokeAsync
+        Resource: "*"  
+
 resources:
   Resources:
     TranscodedBucket:
       Type: AWS::S3::Bucket
       Properties:
-        BucketName: ${self:custom.s3Bucket}
+        BucketName: ${self:service}-${self:provider.stage}

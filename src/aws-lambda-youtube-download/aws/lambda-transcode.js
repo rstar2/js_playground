@@ -15,7 +15,9 @@ const s3 = new AWS.S3({ params: { Bucket: AWS_S3_BUCKET } });
 
 const sanitizeFilename = (name) => {
     return encodeURIComponent(name.replace('"', '\''));
-}
+};
+
+const createKey = (key, type) => `${type}/${key}.${type}`;
 
 exports.handler = (event, context, callback) => {
     // We're going to do the transcoding asynchronously, so we callback immediately.
@@ -24,8 +26,8 @@ exports.handler = (event, context, callback) => {
     // Extract the event parameters.
     // NOTE - the function can be invoked only programmatically
     const { key, filename, url, transcodeMP3 } = event;
-    const fileKey = `mp3/${key}${transcodeMP3 ? '.mp3' : ''}`;
-    const logKey = `log/${key}.log`;
+    const fileKey = createKey(key, transcodeMP3 ? 'mp3' : 'mp4');
+    const logKey = createKey(key, 'log');
 
     // Create temporary input/output filenames that we can clean up afterwards.
     const inputFilename = tempy.file();
