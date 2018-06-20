@@ -2,7 +2,8 @@ const youtube = require('../../lib/youtube');
 
 const store = require('../../lib/store');
 const download = require('../../lib/download');
-const transcode = require('../../lib/mp3');
+const transcode = require('../../lib/mp3-process');
+const transcodeStream = require('../../lib/mp3-stream');
 
 module.exports = (app) => {
     app.get('/store/:videoId', (req, res) => {
@@ -42,8 +43,13 @@ module.exports = (app) => {
             .then(data => {
                 const { filename, url } = data;
                 const outFilename = filename + (transcodeMP3 ? '.mp3' : '');
-                const stream = download(url, transcodeMP3);
+                
+                // create a downloadable stream
+                let stream = download(url, transcodeMP3);
 
+                // transcode it while streaming
+                stream = transcodeStream(stream);
+                
                 return { stream, outFilename };
             })
 

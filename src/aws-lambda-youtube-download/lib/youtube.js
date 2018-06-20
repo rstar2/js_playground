@@ -12,12 +12,10 @@ module.exports = (videoId, transcodeMP3 = false) => {
     return ytdl.getInfo(videoId)
         // Choose the best format and construct the Lambda event.
         .then(({ formats, title }) => {
-            // TODO: check for transcodeMP3
-
-            // We'll just pick the largest audio source file size for simplicity here,
-            // you could prioritize things based on bitrate, file format, etc. if you wanted to.
             let format;
             if (transcodeMP3) {
+                // We'll just pick the largest audio source file size for simplicity here,
+                // you could prioritize things based on bitrate, file format, etc. if you wanted to.
                 format = formats
                     .filter(format => format.audioEncoding !== null)
                     .filter(format => format.clen !== null)
