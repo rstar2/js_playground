@@ -1,18 +1,18 @@
 const AWS = require('aws-sdk');
 
-const { AWS_REGION, AWS_LAMBDA_TRANSCODE } = require('./config');
+const { AWS_LAMBDA_TRANSCODE } = require('./config');
 
-// AWS SDK objects for interacting with Lambda and S3.
-const lambda = new AWS.Lambda({ region: AWS_REGION });
+// AWS Lambda service
+const lambda = new AWS.Lambda();
 
 /**
  * Transcode using a AWS Lambda function, e.g trigger the AWS Lambda function.
  * @param {Object} data 
  * @return {Promise}
  */
-module.exports = (data) => {
+module.exports = (data, func = AWS_LAMBDA_TRANSCODE) => {
     return lambda.invoke({
-        FunctionName: AWS_LAMBDA_TRANSCODE,
+        FunctionName: func,
         InvocationType: 'Event',
         Payload: JSON.stringify(data),
     }).promise();

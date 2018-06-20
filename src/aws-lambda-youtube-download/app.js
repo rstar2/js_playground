@@ -14,6 +14,7 @@ const hbs = handlebars.create({
 
 /**
  * Factory method
+ * @return {Promise<{app:Express, apiRouter:Router, viewRouter: Router}>}
  */
 module.exports = (prefix = '') => {
     const app = express();
@@ -32,11 +33,15 @@ module.exports = (prefix = '') => {
     const apiRouter = express.Router();
 
     app.use(`${prefix}/api`, apiRouter);
-    require('./routes/api')(apiRouter);
+    require('./routes/api/common')(apiRouter);
 
     const viewRouter = express.Router();
     app.use(`${prefix}/view`, viewRouter);
-    require('./routes/view')(viewRouter);
+    require('./routes/view/common')(viewRouter);
 
-    return app;
+    return Promise.resolve({
+        app,
+        apiRouter,
+        viewRouter,
+    });
 };

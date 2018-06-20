@@ -24,9 +24,13 @@ provider:
         - "s3:GetObject"
       Resource: { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "TranscodedBucket" }, '/*' ] ]  }
     
- environment:
-   stage: ${self:provider.stage}
-#    s3Bucket: ${self:provider.stage} TODO:
+  environment:
+    # service: ${self:service}
+    # stage: ${self:provider.stage}
+    
+    # TODO: get somehow from the Function's and Bucket's ARN
+    functionTranscode: ${self:service}-${self:provider.stage}-transcode
+    s3Bucket: ${self:service}-${self:provider.stage}
 
 # you can add packaging information here
 #package:
@@ -50,7 +54,7 @@ functions:
 
   app-express:
     handler: aws/lambda-express.handler
-    timeout: 30
+    timeout: 300
     events:
       - http: ANY /
       - http: 'ANY {proxy+}'

@@ -7,35 +7,29 @@ const tempy = require('tempy');
 
 require('../utils/promise');
 
-const transcode = require('../lib/transcode');
-const { AWS_REGION, AWS_S3_BUCKET } = require('./config');
+const transcode = require('../lib/mp3');
+const { AWS_S3_BUCKET } = require('./config');
 
-const s3 = new AWS.S3(AWS_REGION);
+// AWS S3 service (by default use the AWS_S3_BUCKET bucket)
+const s3 = new AWS.S3({ params: { Bucket: AWS_S3_BUCKET } });
+
+const sanitizeFilename = (name) => {
+    return encodeURIComponent(name.replace('"', '\''));
+}
 
 exports.handler = (event, context, callback) => {
     // We're going to do the transcoding asynchronously, so we callback immediately.
     callback();
 
-
-    let params;
-    if (event.httpMethod === 'GET') {
-        // extracting query parameters from HTTP GET/POST request
-        // if the function is triggered by HTTP event
-        // e.g. https://jm2f52kt06.execute-api.eu-central-1.amazonaws.com/dev/execute?name=RUMEN
-        params = event.queryStringParameters;
-    } else {
-        // assume that the whole event is the params placeholder
-        params = event;
-    }
-
     // Extract the event parameters.
-    const { key, filename, url } = params;
-    const mp3Key = `mp3/${key}.mp3`;
+    // NOTE - the function can be invoked only programmatically
+    const { key, filename, url, transcodeMP3 } = event;
+    const fileKey = `mp3/${key}${transcodeMP3 ? '.mp3' : ''}`;
     const logKey = `log/${key}.log`;
 
     // Create temporary input/output filenames that we can clean up afterwards.
     const inputFilename = tempy.file();
-    const mp3Filename = tempy.file({ extension: 'mp3' });
+    const outputFilename = transcodeMP3 ? tempy.file({ extension: 'mp3' }) : inputFilename;
 
     // Download the source file.
     new Promise((resolve, revoke) => {
@@ -45,32 +39,30 @@ exports.handler = (event, context, callback) => {
         request(url).pipe(writeStream);
     })
         // Perform the actual transcoding.
-        .then(() => transcode(inputFilename, mp3Filename))
+        .then(() => transcodeMP3 ? transcode(inputFilename, outputFilename) : 'No MP3 transcoding')
 
         // Upload the generated MP3 to S3.
         .then(logContent => {
             return s3.putObject({
-                Bucket: AWS_S3_BUCKET,
-                Key: mp3Key,
-                Body: fs.createReadStream(mp3Filename),
-                ContentDisposition: `attachment; filename="${filename.replace('"', '\'')}"`,
+                Key: fileKey,
+                Body: fs.createReadStream(outputFilename),
                 ContentType: 'audio/mpeg',
+                ContentDisposition: `attachment; filename="${sanitizeFilename(filename)}"`,
             }).promise()
                 .then(() => {
                     const logFilename = path.basename(logKey);
                     return s3.putObject({
-                        Bucket: AWS_S3_BUCKET,
                         Key: logKey,
                         Body: logContent,
                         ContentType: 'text/plain',
-                        ContentDisposition: `inline; filename="${logFilename.replace('"', '\'')}"`,
+                        ContentDisposition: `inline; filename="${sanitizeFilename(logFilename)}"`,
                     }).promise();
                 });
         })
 
         // Always delete the temporary files.
         .always(() => {
-            [inputFilename, mp3Filename].forEach((filename) => {
+            [inputFilename, outputFilename].forEach((filename) => {
                 if (fs.existsSync(filename)) {
                     fs.unlinkSync(filename);
                 }

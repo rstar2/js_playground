@@ -1,7 +1,6 @@
-// TODO: get from somewhere - environment
-const service = 'my-youtube-download';
-const stage = 'dev';
+// this is default AWS environment variable available when the function is executed
+// exports.AWS_REGION = process.env.AWS_REGION;
 
-exports.AWS_REGION = 'eu-central-1';
-exports.AWS_S3_BUCKET = `${service}-${stage}`;
-exports.AWS_LAMBDA_TRANSCODE = `${service}-${stage}-transcode`;
+// get from the custom defined environment variables (in serverless.yml)
+exports.AWS_S3_BUCKET = process.env.s3Bucket;
+exports.AWS_LAMBDA_TRANSCODE = process.env.functionTranscode;

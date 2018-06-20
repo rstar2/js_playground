@@ -1,6 +1,13 @@
-// Run the Express serer locally on port 3000
-
 const stage = process.env.NODE_ENV || 'dev';
-const app = require('./app')(stage);
 
-app.listen(3000);
+// 'await' requires to be used only inside an 'async' function
+const main = async () => {
+    const { app, apiRouter } = await require('./app')(stage);
+    // load the local router
+    require('./routes/api/local')(apiRouter);
+
+    // run the Express server locally on port 3000
+    app.listen(3000);
+};
+
+main();
