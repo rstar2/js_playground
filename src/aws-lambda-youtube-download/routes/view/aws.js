@@ -1,28 +1,13 @@
+const aws_list = require('../../aws/list');
+
 module.exports = (app) => {
 
-    app.get('/list', (req, res) => {
-        // Handle extracting the path from the original URL.
-        // const originalUrl = module.parent ? req.originalUrl.slice(1) :
-        //     req.originalUrl.slice(`/${apiStage}/`.length);
-        // const path = decodeURIComponent(originalUrl);
-    
-        // // Handle full youtube URLs or just the video ID.
-        // const urlPrefixes = ['https://', 'http://', 'www.youtube.com', 'youtube.com'];
-        // let videoId, videoUrl;
-        // if (urlPrefixes.some(prefix => path.startsWith(prefix))) {
-        //     videoUrl = path;
-        //     videoId = videoUrl.match(/v=([^&]*)/)[1];
-        // } else {
-        //     videoId = path;
-        //     videoUrl = `https://www.youtube.com/watch?v=${videoId}`;
-        // }
-        // 
-        // Render the download page template.
-        // res.render('list', { apiStage, videoId, videoUrl });
-    
-    
-        res.render('list');
+    app.get('/list/:folder', (req, res) => {
+        const folder = decodeURIComponent(req.params.folder);
+        aws_list(folder)
+            .then(list => res.render('list', { list }))
+            .catch(error => res.status(500).send(`Something went wrong: ${error.message}`));
     });
-    
+
 };
 

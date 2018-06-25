@@ -31,14 +31,9 @@ provider:
     functionTranscode: ${self:service}-${self:provider.stage}-transcode
     s3Bucket: ${self:service}-${self:provider.stage}
 
-# you can add packaging information here
-#package:
-#  include:
-#    - include-me.js
-#    - include-me-dir/**
-#  exclude:
-#    - exclude-me.js
-#    - exclude-me-dir/**
+package:
+  exclude:
+    - exodus/**
 
 functions:
   transcode:
@@ -55,8 +50,11 @@ functions:
     handler: aws/lambda-express.handler
     timeout: 300
     events:
+      # all routes get proxied to the Express router
       - http: ANY /
+        cors: true
       - http: 'ANY {proxy+}'
+        cors: true
 
     iamRoleStatementsInherit: true
     iamRoleStatements:

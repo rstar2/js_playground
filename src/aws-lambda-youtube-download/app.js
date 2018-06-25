@@ -8,9 +8,10 @@ const hbs = handlebars.create({
     layoutsDir: path.join(__dirname, 'views/layouts'),
     partialsDir: path.join(__dirname, 'views/partials'),
     defaultLayout: 'main',
-    // helpers: require('./views/helpers')(),
+    helpers: require('./views/helpers'),
     extname: '.hbs',
 });
+require('express-handlebars-sections')(hbs);
 
 /**
  * Factory method
@@ -24,6 +25,9 @@ module.exports = (prefix = '') => {
     app.engine('hbs', hbs.engine);
     // use the Handlebars engine
     app.set('view engine', 'hbs');
+
+    app.use('/public', express.static('public'));
+
 
     if (prefix && !prefix.startsWith('/')) {
         prefix = `/${prefix}`;

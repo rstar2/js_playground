@@ -7,7 +7,13 @@ const tempy = require('tempy');
 
 require('../utils/promise');
 
-const transcode = require('../lib/mp3');
+// TODO: Add the ./exodus/bin/ffmpeg to the PATH
+const ffmpeg = path.resolve(__dirname, '..', 'exodus', 'bin', 'ffmpeg');
+console.log(ffmpeg);
+process.env.PATH = process.env.PATH + ':' + ffmpeg;
+console.log(process.env.PATH);
+
+const transcode = require('../lib/mp3-process');
 const { AWS_S3_BUCKET } = require('./config');
 
 // AWS S3 service (by default use the AWS_S3_BUCKET bucket)
