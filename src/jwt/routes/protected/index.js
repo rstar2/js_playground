@@ -12,7 +12,8 @@ router.get('/me', jwtVerify, (req, res) => {
 
     // req.userId - comes from the jwtVerify middleware
     User.findById(req.userId,
-        { password: 0 }, // projection, will not return the password
+        { _id: 0, name: 1, email: 1 }, // projection, will return only the the 'name' and 'email'
+        // { _id: 0, __v: 0, password: 0 }, // projection, will not return the '_id' and 'password'
         (err, user) => {
             if (err) return res.status(500).send('There was a problem finding the user.');
             if (!user) return res.status(404).send('No user found.');
