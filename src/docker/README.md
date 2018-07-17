@@ -13,7 +13,7 @@ Usage:  docker build [OPTIONS] PATH | URL
 -t      - "Name and optionally a tag in the 'name:tag' format"
 
 ```
-$ docker -t my-nodejs-app-image .
+$ sudo docker -t my-nodejs-app-image .
 ```
 
 Usage:  docker run [OPTIONS] IMAGE [COMMAND] [ARG...]
@@ -22,7 +22,7 @@ Usage:  docker run [OPTIONS] IMAGE [COMMAND] [ARG...]
 --rm    - "Automatically remove the container when it exits"
 --name  - "Assign a name to the container"
 ```
-$ docker run -it --rm --name my-nodejs-app-container my-nodejs-app-image
+$ PORT=8080 && sudo docker run -it --rm -p $PORT:$PORT --name my-nodejs-app-container my-nodejs-app-image
 ```
 
 2. Using Docker Compose :

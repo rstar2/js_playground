@@ -1,0 +1,3 @@
+# exclude these files from entering the image when using instructions like ADD and COPY
+Dockerfile
+README.md
