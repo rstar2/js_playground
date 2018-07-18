@@ -1,0 +1,10 @@
+# This is docker-compose file will use the build DOckerfile(s) of the speficied services/apps
+version: "2"
+services:
+  app:
+    build: .
+    environment:
+      - NODE_ENV=production
+      - PORT=8080
+    ports:
+      - 8080:8080

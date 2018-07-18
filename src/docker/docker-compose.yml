@@ -1,14 +1,20 @@
-# TODO: not ready yet
+# This is docker-compose file will use the compose/build services/apps containers from instructions
 version: "2"
 services:
-  node:
-    image: "node:8"
-    user: "node"
-    working_dir: /home/node/app
+  app:
+    image: node:10
+    working_dir: /app
     environment:
       - NODE_ENV=production
-    volumes:
-      - ./:/home/node/app
-    expose:
-      - "8080"
-    command: "npm start"
+      - PORT=8080
+    # volumes:
+    #   - .:/app
+    ports:
+      - 8080:8080
+    # command: "cd /app && ls -la"
+    # command: "echo $PWD"
+    command: bash -c "ls -la"
+    # command: "npm start"
+
+
+# TODO: Not working
