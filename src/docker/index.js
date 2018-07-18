@@ -1,4 +1,5 @@
 const http = require('http');
+const uuid = require('uuid');
 
 
 const parseQueryMiddleware = (req, res, next) => {
@@ -13,7 +14,7 @@ const parseQueryMiddleware = (req, res, next) => {
 
 const handleMiddleware = (req, res) => {
     res.writeHead(200, { 'Content-Type': 'text/plain' });
-    res.write(`Hello ${req.query.name || 'Anonymous'}`);
+    res.write(`Hello ${req.query.name || 'Anonymous'} - ${uuid.v1()}`);
     res.end();
 };
 
@@ -28,9 +29,9 @@ const createHandler = (middlewares) => {
     const execMiddleware = (req, res, count) => {
         const middleware = middlewares[count];
         console.log(`Handling middleware ${count}`);
-        
+
         middleware(req, res, count < middlewares.length - 1 ? () => {
-            execMiddleware(req, res, (count+1));
+            execMiddleware(req, res, (count + 1));
         } : noop);
 
         if (count === middlewares.length - 1) {
@@ -44,9 +45,11 @@ const createHandler = (middlewares) => {
     };
 };
 
-
+const port = process.env.PORT || 3000;
 http.createServer(createHandler([
     parseQueryMiddleware,
     // testMiddleware,
     handleMiddleware]))
-    .listen(process.env.PORT || 8080);
+    .listen(port, () => {
+        console.log(`HTTP server listening on port ${port}`);
+    });

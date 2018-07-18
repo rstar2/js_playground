@@ -2,18 +2,17 @@
 
 ```
 # specify the node base image with your desired version node:<version>
-FROM node:6
+FROM node:10
 # replace this with your application's default port
-EXPOSE 8888
+EXPOSE 8080
 ```
 
 Then build the Docker image and run/create a container from it:
 
 Usage:  docker build [OPTIONS] PATH | URL
 -t      - "Name and optionally a tag in the 'name:tag' format"
-
 ```
-$ sudo docker -t my-nodejs-app-image .
+$ sudo docker build -t my-app-image .
 ```
 
 Usage:  docker run [OPTIONS] IMAGE [COMMAND] [ARG...]
@@ -21,8 +20,14 @@ Usage:  docker run [OPTIONS] IMAGE [COMMAND] [ARG...]
 -t      - "Allocate a pseudo-TTY"
 --rm    - "Automatically remove the container when it exits"
 --name  - "Assign a name to the container"
+-p      - "Map ports"
 ```
-$ PORT=8080 && sudo docker run -it --rm -p $PORT:$PORT --name my-nodejs-app-container my-nodejs-app-image
+$ PORT=8080 && sudo docker run -it --rm -p $PORT:$PORT --name my-app-container my-app-image
+```
+
+-d      - "Run in daemon mode so it keeps running in the background"
+```
+$ PORT=8080 && sudo docker run -d -p $PORT:$PORT --name my-app-container my-app-image
 ```
 
 2. Using Docker Compose :
