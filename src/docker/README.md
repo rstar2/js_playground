@@ -62,3 +62,8 @@ $ docker-compose up -d
 ```
 $ docker run -it --rm --name my-running-script -v "$PWD":/usr/src/app -w /usr/src/app node:8 node your-daemon-or-script.js
 ```
+
+
+4. NOTE for Windows 7:
+Accessing exposed and mapped ports is not possible on "localhost"
+Should use the ```$ docker-machine ip``` to get the docker network IP address
