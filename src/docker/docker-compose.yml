@@ -1,4 +1,4 @@
-# This is docker-compose file will use the compose/build services/apps containers from instructions
+# This is docker-compose file will use the compose/build from ground-up, not using Dockerfile
 version: "2"
 services:
   app:
@@ -7,14 +7,14 @@ services:
     environment:
       - NODE_ENV=production
       - PORT=8080
-    # volumes:
-    #   - .:/app
+    volumes:
+      - .:/app
     ports:
       - 8080:8080
-    # command: "cd /app && ls -la"
-    # command: "echo $PWD"
-    command: bash -c "ls -la"
-    # command: "npm start"
+    
+    # if the mounted the current folder has 'node_modules' inside
+    command: "npm start"
 
-
-# TODO: Not working
+    # if we mount just the source and want to 'npm install' in the container itself
+    # command: bash -c "npm install && npm start"
+    

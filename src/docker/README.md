@@ -51,7 +51,7 @@ services:
 
 -f   - "Specify an alternate compose file (default: docker-compose.yml)"
 ```
-$ docker-compose -f docker-compose-build.yml up
+$ sudo docker-compose -f docker-compose-build.yml up
 ```
 
 2.2.Make Docker compose build the containers alone, e.g. the docker instructions will be configured by Docker Compose:
@@ -65,18 +65,16 @@ services:
     working_dir: /app
     environment:
       - NODE_ENV=production
-      - PORT=5000
+      - PORT=8080
     volumes:
       - ./:/app
-    expose:
-      - 5000
     ports:
-      - 8000:5000
+      - 8080:8080
     command: "npm start"
 
 
 ```
-$ docker-compose up
+$ sudo docker-compose up
 ```
 
 Docker Compose copies your current directory (including node_modules) to the container. It assumes that your application has a file named package.json defining start script.
