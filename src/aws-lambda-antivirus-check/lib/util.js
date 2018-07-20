@@ -23,7 +23,6 @@ function generateTagSet(virusScanStatus) {
 
 /**
  * Cleanup the specific folder by removing all of its content.
- * We need that to cleanup the /tmp/ folder after the download of the definitions.
  */
 function cleanupFolder(folderToClean) {
     let result = execSync(`ls -l ${folderToClean}`);

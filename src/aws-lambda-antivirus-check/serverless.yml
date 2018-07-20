@@ -28,6 +28,10 @@ provider:
 #             - "Ref" : "S3BucketCheck"
 #             - "/*"
 
+environment:
+    # this is the bucket that will store the ClamAV definitions file
+    S3_BUCKET_CLAMAV: ${self:service}-${self:provider.stage}
+
 
 # you can add packaging information here
 #package:
@@ -42,11 +46,11 @@ functions:
   - refresh:
       handler: av-refresh.handle
       events:
-        - schedule: rate(10 minutes)
+        - schedule: rate(6 hours)
 
   - scan:
       handler: av-scan.handle
       events:
         - s3:   # this Lambda S3 event will create the S3 bucket
-            bucket: ${self:custom.checkBucket} 
+            bucket: ${self:custom.checkBucket}
             event: s3:ObjectCreated:*

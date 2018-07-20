@@ -14,11 +14,11 @@ const constants = require('./lib/config');
 const s3 = new AWS.S3();
 
 function downloadFileFromS3(s3ObjectKey, s3ObjectBucket) {
-    const downloadDir = '/tmp/download';
+    const downloadDir = constants.CLAMAV_WORK_DIR;
     if (!fs.existsSync(downloadDir)) {
         fs.mkdirSync(downloadDir);
     }
-    let localPath = `${downloadDir}/${path.basename(s3ObjectKey)}`;
+    let localPath = path.join(downloadDir, path.basename(s3ObjectKey));
 
     let writeStream = fs.createWriteStream(localPath);
 
@@ -32,7 +32,7 @@ function downloadFileFromS3(s3ObjectKey, s3ObjectBucket) {
     return new Promise((resolve, reject) => {
         s3.getObject(options).createReadStream().on('end', function () {
             util.logSystem(`Finished downloading new object ${s3ObjectKey}`);
-            resolve();
+            resolve(localPath);
         }).on('error', function (err) {
             util.log(err);
             reject();
@@ -47,9 +47,9 @@ module.exports.handle = async (event, context, callback) => {
 
     await clamav.downloadAVDefinitions(constants.CLAMAV_BUCKET_NAME, constants.PATH_TO_AV_DEFINITIONS);
 
-    await downloadFileFromS3(s3ObjectKey, s3ObjectBucket);
+    const pathToFile = await downloadFileFromS3(s3ObjectKey, s3ObjectBucket);
 
-    const virusScanStatus = clamav.scanLocalFile(path.basename(s3ObjectKey));
+    const virusScanStatus = clamav.scanLocalFile(pathToFile);
 
     const taggingParams = {
         Bucket: s3ObjectBucket,

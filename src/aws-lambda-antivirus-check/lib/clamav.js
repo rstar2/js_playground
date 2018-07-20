@@ -41,7 +41,7 @@ async function downloadAVDefinitions() {
 
     const downloadPromises = constants.CLAMAV_DEFINITIONS_FILES.map((filenameToDownload) => {
         return new Promise((resolve, reject) => {
-            let destinationFile = path.join('/tmp/', filenameToDownload);
+            let destinationFile = path.join(constants.FRESHCLAM_WORK_DIR, filenameToDownload);
 
             util.logSystem(`Downloading ${filenameToDownload} from S3 to ${destinationFile}`);
 
@@ -80,7 +80,7 @@ async function uploadAVDefinitions() {
             let options = {
                 Bucket: constants.CLAMAV_BUCKET_NAME,
                 Key: `${constants.PATH_TO_AV_DEFINITIONS}/${filenameToUpload}`,
-                Body: fs.createReadStream(path.join('/tmp/', filenameToUpload))
+                Body: fs.createReadStream(path.join(constants.FRESHCLAM_WORK_DIR, filenameToUpload))
             };
 
             S3.putObject(options, function (err, data) {
@@ -114,7 +114,7 @@ async function uploadAVDefinitions() {
  */
 function scanLocalFile(pathToFile) {
     try {
-        execSync(`${constants.PATH_TO_CLAMAV} -v -a --stdout -d /tmp/ '/tmp/download/${pathToFile}'`);
+        execSync(`${constants.PATH_TO_CLAMAV} -v -a --stdout -d ${constants.FRESHCLAM_WORK_DIR} ${pathToFile}`);
 
         util.logSystem('SUCCESSFUL SCAN, FILE CLEAN');
 
@@ -133,8 +133,8 @@ function scanLocalFile(pathToFile) {
 }
 
 module.exports = {
-    updateAVDefinitonsWithFreshclam: updateAVDefinitonsWithFreshclam,
-    downloadAVDefinitions: downloadAVDefinitions,
-    uploadAVDefinitions: uploadAVDefinitions,
-    scanLocalFile: scanLocalFile
+    updateAVDefinitonsWithFreshclam,
+    downloadAVDefinitions,
+    uploadAVDefinitions,
+    scanLocalFile,
 };

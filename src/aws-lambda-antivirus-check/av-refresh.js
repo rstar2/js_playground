@@ -6,6 +6,7 @@ const execSync = require('child_process').execSync;
 
 const clamav = require('./lib/clamav');
 const util = require('./lib/util');
+const constants = require('./lib/config');
 
 
 /**
@@ -22,11 +23,11 @@ const util = require('./lib/util');
 module.exports.handle = async (event, context, callback) => {
     util.logSystem(`AV definition update start time: ${new Date()}`);
 
-    await util.cleanupFolder('/tmp/');
+    await util.cleanupFolder(constants.FRESHCLAM_WORK_DIR);
 
     await clamav.updateAVDefinitonsWithFreshclam();
 
-    const result = execSync('ls -l /tmp/');
+    const result = execSync(`ls -l ${constants.FRESHCLAM_WORK_DIR}`);
 
     util.logSystem('Folder content after freshclam');
     util.log(result.toString());

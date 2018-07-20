@@ -3,7 +3,7 @@
  *
  * The following variables have to be set:
  *
- * CLAMAV_BUCKET_NAME: Name of the bucket where ClamAV and its definitions are stored
+ * S3_BUCKET_CLAMAV: Name of the bucket where ClamAV and its definitions are stored
  * PATH_TO_AV_DEFINITIONS: Path in S3 where the definitions are stored. 3 files are expected (see CLAMAV_DEFINITIONS_FILES)
  *
  * The following variables can be overridden:
@@ -16,12 +16,14 @@
  */
 
 // Various paths and application names on S3
-const CLAMAV_BUCKET_NAME = process.env.CLAMAV_BUCKET_NAME;
-const PATH_TO_AV_DEFINITIONS = process.env.PATH_TO_AV_DEFINITIONS;
+const CLAMAV_BUCKET_NAME = process.env.S3_BUCKET_CLAMAV;
+const PATH_TO_AV_DEFINITIONS = process.env.PATH_TO_AV_DEFINITIONS || 'freshclam';
+
 const PATH_TO_FRESHCLAM = './freshclam';
 const PATH_TO_CLAMAV = './clamscan';
 const FRESHCLAM_CONFIG = 'freshclam.conf';
-const FRESHCLAM_WORK_DIR = '/tmp/';
+const FRESHCLAM_WORK_DIR = '/tmp/freshclam';
+const CLAMAV_WORK_DIR = '/tmp/clamav';
 
 // Constants for tagging file after a virus scan.
 const STATUS_CLEAN_FILE = process.env.STATUS_CLEAN_FILE || 'CLEAN';
@@ -41,6 +43,7 @@ module.exports = {
     PATH_TO_CLAMAV,
     FRESHCLAM_CONFIG,
     FRESHCLAM_WORK_DIR,
+    CLAMAV_WORK_DIR,
     CLAMAV_DEFINITIONS_FILES,
     STATUS_CLEAN_FILE,
     STATUS_INFECTED_FILE,
