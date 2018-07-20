@@ -1,17 +1,17 @@
-'use strict';
-
 /**
  * Lambda function that will be perform the scan and tag the file accordingly.
  */
 
-const AWS = require('aws-sdk');
 const path = require('path');
 const fs = require('fs');
-const clamav = require('./clamav');
-const s3 = new AWS.S3();
-const utils = require('./utils');
-const constants = require('./constants');
 
+const AWS = require('aws-sdk');
+
+const clamav = require('./lib/clamav');
+const util = require('./lib/util');
+const constants = require('./lib/config');
+
+const s3 = new AWS.S3();
 
 function downloadFileFromS3(s3ObjectKey, s3ObjectBucket) {
     const downloadDir = '/tmp/download';
@@ -22,7 +22,7 @@ function downloadFileFromS3(s3ObjectKey, s3ObjectBucket) {
 
     let writeStream = fs.createWriteStream(localPath);
 
-    utils.generateSystemMessage(`Downloading file s3://${s3ObjectBucket}/${s3ObjectKey}`);
+    util.logSystem(`Downloading file s3://${s3ObjectBucket}/${s3ObjectKey}`);
 
     let options = {
         Bucket: s3ObjectBucket,
@@ -31,52 +31,38 @@ function downloadFileFromS3(s3ObjectKey, s3ObjectBucket) {
 
     return new Promise((resolve, reject) => {
         s3.getObject(options).createReadStream().on('end', function () {
-            utils.generateSystemMessage(`Finished downloading new object ${s3ObjectKey}`);
+            util.logSystem(`Finished downloading new object ${s3ObjectKey}`);
             resolve();
         }).on('error', function (err) {
-            console.log(err);
+            util.log(err);
             reject();
         }).pipe(writeStream);
     });
 }
 
 
-async function lambdaHandleEvent(event, context) {
-
-    let s3ObjectKey = utils.extractKeyFromS3Event(event);
-    let s3ObjectBucket = utils.extractBucketFromS3Event(event);
+module.exports.handle = async (event, context, callback) => {
+    const s3ObjectKey = util.extractKeyFromS3Event(event);
+    const s3ObjectBucket = util.extractBucketFromS3Event(event);
 
     await clamav.downloadAVDefinitions(constants.CLAMAV_BUCKET_NAME, constants.PATH_TO_AV_DEFINITIONS);
 
     await downloadFileFromS3(s3ObjectKey, s3ObjectBucket);
 
-    let virusScanStatus = clamav.scanLocalFile(path.basename(s3ObjectKey));
+    const virusScanStatus = clamav.scanLocalFile(path.basename(s3ObjectKey));
 
-    let taggingParams = {
+    const taggingParams = {
         Bucket: s3ObjectBucket,
         Key: s3ObjectKey,
-        Tagging: utils.generateTagSet(virusScanStatus)
+        Tagging: util.generateTagSet(virusScanStatus)
     };
 
     try {
-        let uploadResult = await s3.putObjectTagging(taggingParams).promise();
-        utils.generateSystemMessage('Tagging successful');
+        await s3.putObjectTagging(taggingParams).promise();
+        util.logSystem('Tagging successful');
     } catch (err) {
-        console.log(err);
-    } finally {
-        return virusScanStatus;
+        util.log(err);
     }
-}
-
-module.exports.handle = (event, context, callback) => {
-    const response = {
-        statusCode: 200,
-        body: JSON.stringify({
-            message: 'Go Serverless v1.0! Your function executed successfully!',
-            input: event,
-        }),
-    };
 
     callback(null);
 };
-

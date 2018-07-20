@@ -10,6 +10,7 @@ custom:
 
 provider:
   name: aws
+  profile: serverless-cli
   runtime: nodejs8.10
 
   stage: dev

@@ -1,46 +1,33 @@
-# Welcome to Serverless!
-#
-# This file is the main config file for your service.
-# It's very minimal at this point and uses default values.
-# You can always add more config options for more control.
-# We've included some commented out config examples here.
-# Just uncomment any of them to get that config option.
-#
-# For full config options, check the docs:
-#    docs.serverless.com
-#
-# Happy Coding!
-
 service: my-antivirus-check
 
 custom:
-  # define the name of the DynamoDB Table here as it's ARN will be used in the IAM roles also
-  checkBucket: my-files-bucket-${self:provider.stage}
+  checkBucket: my-files-check-bucket-${self:provider.stage}
 
 provider:
   name: aws
+  profile: serverless-cli
   runtime: nodejs8.10
+
+  stage: dev
   region: eu-central-1
 
-  iamRoleStatements
-    - Effect: Allow
-      Action:
-        - "s3:ListBucket"
-      Resource: { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "ServerlessDeploymentBucket" } ] ]  }
-    - Effect: "Allow"
-      Action:
-        - "s3:PutObject"
-      Resource:
-        Fn::Join:
-          - ""
-          - - "arn:aws:s3:::"
-            - "Ref" : "ServerlessDeploymentBucket"
-            - "/*"
+#   iamRoleStatements:
+#     - Effect: Allow
+#       Action:
+#         - "s3:ListBucket"
+#       Resource: { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "S3BucketCheck" } ] ]  }
 
+#     - Effect: "Allow"
+#       Action:
+#         - "s3:PutObject"
+#         - "s3:GetObject"
+#       Resource:
+#         Fn::Join:
+#           - ""
+#           - - "arn:aws:s3:::"
+#             - "Ref" : "S3BucketCheck"
+#             - "/*"
 
-  # Load environment variables externally from 'env.yml' depending on the stage,
-  # Fallback to default if it is not in specified stage.
-  environment: ${file(env.yml):${self:provider.stage}, file(env.yml):default}
 
 # you can add packaging information here
 #package:
@@ -52,28 +39,14 @@ provider:
 #    - exclude-me-dir/**
 
 functions:
-  hello:
-    handler: handler.hello
+  - refresh:
+      handler: av-refresh.handle
+      events:
+        - schedule: rate(10 minutes)
 
-#    The following are a few example events you can configure
-#    NOTE: Please make sure to change your handler code to work with those events
-#    Check the event documentation for details
-#    events:
-#      - http:
-#          path: users/create
-#          method: get
-#      - s3: ${env:BUCKET}
-#      - schedule: rate(10 minutes)
-#      - sns: greeter-topic
-
-# you can add CloudFormation resource templates here
-#resources:
-#  Resources:
-#    NewResource:
-#      Type: AWS::S3::Bucket
-#      Properties:
-#        BucketName: my-new-bucket
-#  Outputs:
-#     NewOutput:
-#       Description: "Description for the output"
-#       Value: "Some output value"
+  - scan:
+      handler: av-scan.handle
+      events:
+        - s3:   # this Lambda S3 event will create the S3 bucket
+            bucket: ${self:custom.checkBucket} 
+            event: s3:ObjectCreated:*

@@ -1,4 +1,4 @@
-const constants = require('./constants');
+const constants = require('./config');
 const execSync = require('child_process').execSync;
 
 /**
@@ -22,21 +22,21 @@ function generateTagSet(virusScanStatus) {
 }
 
 /**
- * Cleanup the specific S3 folder by removing all of its content.
+ * Cleanup the specific folder by removing all of its content.
  * We need that to cleanup the /tmp/ folder after the download of the definitions.
  */
 function cleanupFolder(folderToClean) {
     let result = execSync(`ls -l ${folderToClean}`);
 
-    console.log("-- Folder before cleanup--");
-    console.log(result.toString());
+    logSystem('-- Folder before cleanup--');
+    log(result.toString());
 
     execSync(`rm -rf ${folderToClean}*`);
 
     result = execSync(`ls -l ${folderToClean}`);
 
-    console.log("-- Folder after cleanup --");
-    console.log(result.toString());
+    logSystem('-- Folder after cleanup --');
+    log(result.toString());
 }
 
 /**
@@ -48,7 +48,7 @@ function extractKeyFromS3Event(s3Event) {
     let key = s3Event['Records'][0]['s3']['object']['key'];
 
     if (!key) {
-        throw new Error("Unable to retrieve key information from the event");
+        throw new Error('Unable to retrieve key information from the event');
     }
 
     return key.replace(/\+/g, ' ');
@@ -63,27 +63,31 @@ function extractBucketFromS3Event(s3Event) {
     let bucketName = s3Event['Records'][0]['s3']['bucket']['name'];
 
     if (!bucketName) {
-        throw new Error("Unable to retrieve bucket information from the event");
+        throw new Error('Unable to retrieve bucket information from the event');
     }
 
     return bucketName;
 }
 
 /**
- * Generates & logs a system message (simple --- the message here ---)
- * @param systemMessage Inbound message to log and generate.
- * @return {string} Formatted message.
+ * Logs a system message (simple --- the message here ---)
+ * @param message Inbound message to log and generate.
  */
-function generateSystemMessage(systemMessage) {
-    let finalMessage = `--- ${systemMessage} ---`;
-    console.log(finalMessage);
-    return finalMessage
+function logSystem(message) {
+    log(`--- ${message} ---`);
 }
 
+/**
+ * Logs a system message
+ * @param message Inbound message to log and generate.
+ */
+const log = console.log;
+
 module.exports = {
-    generateTagSet: generateTagSet,
-    cleanupFolder: cleanupFolder,
-    extractKeyFromS3Event: extractKeyFromS3Event,
-    extractBucketFromS3Event: extractBucketFromS3Event,
-    generateSystemMessage: generateSystemMessage
+    generateTagSet,
+    cleanupFolder,
+    extractKeyFromS3Event,
+    extractBucketFromS3Event,
+    logSystem,
+    log,
 };

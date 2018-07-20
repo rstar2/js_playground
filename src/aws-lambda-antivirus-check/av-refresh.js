@@ -2,9 +2,11 @@
  * Lambda function handler that will update the definitions stored in S3.
  */
 
-const clamav = require('./clamav');
-const utils = require('./utils');
 const execSync = require('child_process').execSync;
+
+const clamav = require('./lib/clamav');
+const util = require('./lib/util');
+
 
 /**
  * This function will do the following
@@ -18,19 +20,20 @@ const execSync = require('child_process').execSync;
  * @param context
  */
 module.exports.handle = async (event, context, callback) => {
-    utils.generateSystemMessage(`AV definition update start time: ${new Date()}`);
+    util.logSystem(`AV definition update start time: ${new Date()}`);
 
-    await utils.cleanupFolder('/tmp/');
+    await util.cleanupFolder('/tmp/');
 
     await clamav.updateAVDefinitonsWithFreshclam();
 
-    let result = execSync(`ls -l /tmp/`);
+    const result = execSync('ls -l /tmp/');
 
-    utils.generateSystemMessage("Folder content after freshclam ");
-    console.log(result.toString());
+    util.logSystem('Folder content after freshclam');
+    util.log(result.toString());
+
     await clamav.uploadAVDefinitions();
 
-    utils.generateSystemMessage(`AV definition update end time: ${new Date()}`);
+    util.logSystem(`AV definition update end time: ${new Date()}`);
 
     callback(null);
-}
+};
