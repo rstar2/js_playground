@@ -24,14 +24,14 @@ EXPOSE $PORT
 
 WORKDIR /app
 
-# note - COPY will ignore files from the .dockerignore files , like node_modules
-# if no .dockerignore is present then:
-# COPY package.json /app 
-# RUN npm install
-# COPY . /app
-
-COPY . /app
+# Make this with 2 separate COPY instructions
+# so that the "npm install" layer is cached (until any of the 'package.json ...' files is altered)
+# see http://bitjudo.com/blog/2014/03/13/building-efficient-dockerfiles-node-dot-js/
+COPY ["package.json", "package-lock.json*", "npm-shrinkwrap.json*", "./"]
 RUN npm install
+# note - COPY will ignore files from the .dockerignore files , like node_modules
+COPY . .
+
 
 # only one CMD instuction can be in a Dockerfile
 CMD npm start

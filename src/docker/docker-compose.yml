@@ -1,4 +1,5 @@
-# This is docker-compose file will use the compose/build from ground-up, not using Dockerfile
+# This docker-compose file will use the compose/build from ground-up, not using Dockerfile
+# there' no "build: ." directive
 version: "2"
 services:
   app:

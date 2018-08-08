@@ -1,4 +1,5 @@
-# This is docker-compose file will use the build DOckerfile(s) of the speficied services/apps
+# This docker-compose file will use the Dockerfile(s) of the speficied services/apps to first build them
+# because it has "build: ." directive
 version: "2"
 services:
   app:
