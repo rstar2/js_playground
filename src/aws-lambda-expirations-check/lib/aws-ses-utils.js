@@ -28,7 +28,7 @@ module.exports = (fromSender = process.env.AWS_SES_SENDER) => {
 					},
 					Subject: {
 						Charset: 'UTF-8',
-						Data: 'New message from your_site.com',
+						Data: 'Expirations report',
 					},
 				},
 			};
