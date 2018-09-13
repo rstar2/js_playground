@@ -19,6 +19,7 @@ service: my-demo-simple
 
 provider:
   name: aws
+  profile: serverless-cli
   runtime: nodejs8.10
 
 # you can overwrite defaults here

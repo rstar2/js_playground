@@ -15,6 +15,7 @@
 		"linebreak-style": "off",
 		"no-var": "warn",
 		"no-console": "off",
+		"quotes"           : ["error", "single"],
 		"comma-dangle": [ "error", "always" ],
 		"semi": [ "error", "always" ]
 	}

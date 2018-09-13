@@ -1,0 +1,56 @@
+service: my-antivirus-check
+
+custom:
+  checkBucket: my-files-check-bucket-${self:provider.stage}
+
+provider:
+  name: aws
+  profile: serverless-cli
+  runtime: nodejs8.10
+
+  stage: dev
+  region: eu-central-1
+
+#   iamRoleStatements:
+#     - Effect: Allow
+#       Action:
+#         - "s3:ListBucket"
+#       Resource: { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "S3BucketCheck" } ] ]  }
+
+#     - Effect: "Allow"
+#       Action:
+#         - "s3:PutObject"
+#         - "s3:GetObject"
+#       Resource:
+#         Fn::Join:
+#           - ""
+#           - - "arn:aws:s3:::"
+#             - "Ref" : "S3BucketCheck"
+#             - "/*"
+
+environment:
+    # this is the bucket that will store the ClamAV definitions file
+    S3_BUCKET_CLAMAV: ${self:service}-${self:provider.stage}
+
+
+# you can add packaging information here
+#package:
+#  include:
+#    - include-me.js
+#    - include-me-dir/**
+#  exclude:
+#    - exclude-me.js
+#    - exclude-me-dir/**
+
+functions:
+  - refresh:
+      handler: av-refresh.handle
+      events:
+        - schedule: rate(6 hours)
+
+  - scan:
+      handler: av-scan.handle
+      events:
+        - s3:   # this Lambda S3 event will create the S3 bucket
+            bucket: ${self:custom.checkBucket}
+            event: s3:ObjectCreated:*

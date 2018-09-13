@@ -1,6 +1,9 @@
 {
     "cSpell.words": [
+        "CLAMAV",
+        "clamscan",
         "dynamodb",
+        "freshclam",
         "tempy",
         "transcoding",
         "twilio"

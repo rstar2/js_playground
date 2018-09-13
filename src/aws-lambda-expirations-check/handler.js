@@ -5,7 +5,7 @@ const uuid = require('uuid');
 
 // initialize a DynamoDB client for the specific region
 const dynamodbUtils = require('./lib/dynamodb-utils')(process.env.AWS_REGION);
-const dynamodb_TableName = "my-expirations-check-dev-expirations";
+const dynamodb_TableName = 'my-expirations-check-dev-expirations';
 
 const dateUtils = require('./lib/date-utils');
 
@@ -17,7 +17,7 @@ const awsSesUtils = require('./lib/aws-ses-utils')(process.env.AWS_SES_SENDER);
 
 module.exports.check = async (event, context, callback) => {
 	let response;
-	console.time("Invoking function check took");
+	console.time('Invoking function check took');
 
 	const data = await dbList();
 	// data of the type { "Items":[...], "Count": 1, "ScannedCount":1 }
@@ -25,21 +25,31 @@ module.exports.check = async (event, context, callback) => {
 
 	// filter those expiring the next 7 days
 	let expired = (list && list.filter(item => dateUtils.isExpiredDay(item.expiresAt, 7))) || [];
-	
+
 	if (event['detail-type'] === 'Scheduled Event') {
 		// if this is Scheduled event - send real SMS
 		const message = expired.reduce((acc, item) => {
-			return acc + '\n' + item.name + ' expires/d on ' + moment(item.expiresAt).format("MMM Do YY");
+			return acc + '\n' + item.name + ' expires/d on ' + moment(item.expiresAt).format('MMM Do YY');
 		}, '');
-		
+
 		if (message) {
-			await twilioUtils.sendSMS(process.env.TWILIO_RECEIVER, message);
-			await awsSesUtils.sendSMS(process.env.AWS_SES_RECEIVER, message);
+			console.log('Message ', message);
+			try {
+				await awsSesUtils.sendSMS(process.env.AWS_SES_RECEIVER, message);
+			} catch (e) {
+				console.warn('Failed to send Email with AWS SES Service');
+			}
+
+			try {
+				await twilioUtils.sendSMS(process.env.TWILIO_RECEIVER, message);
+			} catch (e) {
+				console.warn('Failed to send SMS with Twilio Service');
+			}
 		}
 	} else if (event.httpMethod) {
 		// if this is HTTP request
 		response = createResponse(200, {
-			checked: `Checked on ${moment().format("MMM Do YY")}`,
+			checked: `Checked on ${moment().format('MMM Do YY')}`,
 			expired,
 
 			// just to see what AWS sends
@@ -48,14 +58,14 @@ module.exports.check = async (event, context, callback) => {
 			// env: process.env,
 		});
 	}
-	console.timeEnd("Invoking function check took");
-	console.log(`Checked on ${Date.now()} : ${moment().format("MMM Do YY")} - expired: ${expired.length}`);
+	console.timeEnd('Invoking function check took');
+	console.log(`Checked on ${Date.now()} : ${moment().format('MMM Do YY')} - expired: ${expired.length}`);
 	callback(null, response);
 };
 
 
 module.exports.api = async (event, context, callback) => {
-	console.time("Invoking function api took");
+	console.time('Invoking function api took');
 
 	try {
 		let responseBody;
@@ -89,10 +99,10 @@ module.exports.api = async (event, context, callback) => {
 				return callback(`Unsupported API gateway with HTTP method ${event.httpMethod}`);
 		}
 
-		console.timeEnd("Invoking function api took");
+		console.timeEnd('Invoking function api took');
 		callback(null, createResponse(200, responseBody));
 	} catch (error) {
-		console.timeEnd("Invoking function api took", "- failed");
+		console.timeEnd('Invoking function api took', '- failed');
 		callback(null, createResponse(500, { status: false, error, }));
 	}
 };
@@ -109,7 +119,7 @@ const dbList = async () => {
 		TableName: dynamodb_TableName,
 		Limit: 1000,
 	};
-	return dynamodbUtils.exec("scan", params);
+	return dynamodbUtils.exec('scan', params);
 };
 
 const dbAdd = async (data) => {
@@ -122,7 +132,7 @@ const dbAdd = async (data) => {
 			createdAt: Date.now(),
 		},
 	};
-	return dynamodbUtils.exec("put", params);
+	return dynamodbUtils.exec('put', params);
 };
 
 const dbDelete = async (data) => {
@@ -132,5 +142,5 @@ const dbDelete = async (data) => {
 			id: data.id,
 		},
 	};
-	return dynamodbUtils.exec("delete", params);
+	return dynamodbUtils.exec('delete', params);
 };
