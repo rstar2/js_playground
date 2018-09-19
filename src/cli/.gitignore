@@ -1,0 +1,10 @@
+# skip the npm installs
+/node_modules
+
+# skip the VSCode 
+/.vscode
+
+# Skip the generated files by the 'pkg' tool
+*-linux
+*-macos
+*-win.exe
