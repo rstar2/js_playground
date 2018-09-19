@@ -1,5 +1,5 @@
 {
-  "name": "cli",
+  "name": "r-js-cli",
   "version": "1.0.0",
   "description": "Exmaple of cli NodeJS programs/scripts",
   "scripts": {

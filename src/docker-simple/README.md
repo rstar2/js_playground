@@ -16,8 +16,8 @@ $ sudo docker build -t my-app-image .
 ```
 
 Usage:  docker run [OPTIONS] IMAGE [COMMAND] [ARG...]
--i      - "Keep STDIN open even if not attached"
--t      - "Allocate a pseudo-TTY"
+-i      - "Keep STDIN open even if not attached" (same as --interactive)
+-t      - "Allocate a pseudo-TTY" (same as --tty)
 --rm    - "Automatically remove the container when it exits"
 --name  - "Assign a name to the container"
 -p      - "Map ports"

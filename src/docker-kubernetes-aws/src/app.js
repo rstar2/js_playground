@@ -18,6 +18,7 @@ app.get('/asyncError', asyncMiddleware(async (req, res) => {
 }));
 
 // Global Express error handler
+// eslint-disable-next-line
 app.use((error, req, res, next) => {
     res.status(500).send(`Error: ${error}`);
 });

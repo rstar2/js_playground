@@ -1,5 +1,5 @@
 {
-  "name": "ls",
+  "name": "r-js-pkg-ls",
   "version": "1.0.0",
   "description": "A simple implementation of the Linux 'ls -alh that is bundled into executables with the 'pkg' tool",
   "scripts": {
