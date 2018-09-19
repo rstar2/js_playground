@@ -1,0 +1,24 @@
+{
+  "name": "youtube-download",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "async": "^2.6.0",
+    "chalk": "^2.3.2",
+    "clear": "^0.1.0",
+    "draftlog": "^1.0.12",
+    "figlet": "^1.2.0",
+    "fluent-ffmpeg": "^2.1.2",
+    "minimist": "^1.2.0",
+    "ytdl-core": "^0.20.2"
+  },
+  "bin": {
+    "yt-download": "./index.js"
+  }
+}

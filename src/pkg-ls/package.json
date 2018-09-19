@@ -1,0 +1,16 @@
+{
+  "name": "ls",
+  "version": "1.0.0",
+  "description": "A simple implementation of the Linux 'ls -alh that is bundled into executables with the 'pkg' tool",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "filesize": "^3.5.11"
+  },
+  "bin": {
+    "ls": "./lib/index.js"
+  }
+}
