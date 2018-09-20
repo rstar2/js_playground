@@ -25,7 +25,7 @@ module.exports.handle = async (event, context, callback) => {
 
     await util.cleanupFolder(constants.FRESHCLAM_WORK_DIR);
 
-    await clamav.updateAVDefinitonsWithFreshclam();
+    await clamav.updateAVDefinitionsWithFreshclam();
 
     const result = execSync(`ls -l ${constants.FRESHCLAM_WORK_DIR}`);
 
