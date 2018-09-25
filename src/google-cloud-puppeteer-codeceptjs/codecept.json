@@ -1,0 +1,18 @@
+{
+  "tests": "./tests/*.test.js",
+  "timeout": 10000,
+  "output": "./output",
+  "helpers": {
+    "Puppeteer": {
+        "url": "http://localhost",
+        "show": true,
+        "windowSize": "1280x800"
+    }
+  },
+  "include": {
+    "I": "./codecept.steps.js"
+  },
+  "bootstrap": false,
+  "mocha": {},
+  "name": "google-cloud-puppeteer-codeceptjs"
+}

@@ -9,7 +9,7 @@ $ docker build . -t <docker_hub_username>/<image_name>
  
 ## 2.1. Just run a container to check it's working
     ```
-    $ PORT=8080 && sudo docker run -it --rm -p 3000:3000 --name <docker_hub_username>-<image_name> <docker_hub_username>/<image_name>
+    $ sudo docker run -it --rm -p 3000:3000 --name <docker_hub_username>-<image_name> <docker_hub_username>/<image_name>
     ```
 
 # 3. Push to a Docker container repository hub
