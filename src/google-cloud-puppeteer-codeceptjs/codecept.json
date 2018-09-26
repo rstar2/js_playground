@@ -12,7 +12,5 @@
   "include": {
     "I": "./codecept.steps.js"
   },
-  "bootstrap": false,
-  "mocha": {},
   "name": "google-cloud-puppeteer-codeceptjs"
 }
