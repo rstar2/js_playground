@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+
 echo "-- Cleanup ClamAV local folder --"
 rm -rf clamav
 # For Windows
@@ -12,12 +13,12 @@ echo "-- Create AmazonLinux container from the image --"
 # Note - Mounted host volumes will be created if not existing
 
 # 1. For Linux s Docker runs natively it can mount to any folder (on any drive etc...) - in this case use the current $PWD
-# docker create -it -v $(pwd)/clamav:/home/docker --name clamav-builder amazonlinux
+docker create -it -v $(pwd)/clamav:/home/docker --name clamav-builder amazonlinux
 # docker create -it -v ${pwd}/clamav:/home/docker --name clamav-builder amazonlinux
 # docker create -it -v `pwd`/clamav:/home/docker --name clamav-builder amazonlinux
 # 2. For Windows DockerToolbox - only the c:/Users folder is shared by default in the VBox docker machine - mounted as c/Users
 # Note it should be absolute so - /c/Users/xxxx , not c/Users/xxxx
-docker create -it -v /c/Users/clamav:/home/docker --name clamav-builder amazonlinux
+# docker create -it -v /c/Users/clamav:/home/docker --name clamav-builder amazonlinux
 
 echo "-- Start the AmazonLinux container --"
 docker start clamav-builder
