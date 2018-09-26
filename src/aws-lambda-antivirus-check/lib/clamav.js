@@ -14,13 +14,13 @@ const S3 = new AWS.S3();
  *
  * It will download the definitions to the current work dir.
  */
-function updateAVDefinitionsWithFreshclam() {
+function updateAVDefinitions() {
     try {
+        util.logSystem('Update with freshclam');
+
         const executionResult = execSync(`${constants.PATH_TO_FRESHCLAM} --config-file=${constants.FRESHCLAM_CONFIG} --datadir=${constants.FRESHCLAM_WORK_DIR}`);
-
-        util.logSystem('Update message');
+        
         util.log(executionResult.toString());
-
         if (executionResult.stderr) {
             util.log('stderr');
             util.log(executionResult.stderr.toString());
@@ -108,7 +108,7 @@ async function uploadAVDefinitions() {
  * Three possible case can happen:
  * - The file is clean, the clamAV command returns 0 and the function return "CLEAN"
  * - The file is infected, the clamAV command returns 1 and this function will return "INFECTED"
- * - Any other error and the function will return null; (falsey)
+ * - Any other error and the function will return null; (falsy)
  *
  * @param pathToFile Path in the filesystem where the file is stored.
  */
@@ -133,7 +133,7 @@ function scanLocalFile(pathToFile) {
 }
 
 module.exports = {
-    updateAVDefinitionsWithFreshclam,
+    updateAVDefinitions,
     downloadAVDefinitions,
     uploadAVDefinitions,
     scanLocalFile,

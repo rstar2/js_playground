@@ -41,14 +41,10 @@ docker stop clamav-builder
 echo "-- Remove the AmazonLinux container --"
 docker rm clamav-builder
 
-echo "-- Cleanup Bin local folder --"
-rm -rf bin
-mkdir -p bin
-
-echo "-- Copy the executables and required libraries from ClamAV to Bin folder--"
-cp clamav/usr/bin/clamscan clamav/usr/bin/freshclam clamav/usr/lib64/* bin/.
+echo "-- Copy the executables and required libraries from ClamAV to our 'severless' folder --"
+cp clamav/usr/bin/clamscan clamav/usr/bin/freshclam clamav/usr/lib64/* .
 # For Windows copying from the c://Users/clamav
-cp c:\\Users/clamav/usr/bin/clamscan c:\\Users/clamav/usr/bin/freshclam c:\\Users/clamav/usr/lib64/* bin/.
+cp c:\\Users/clamav/usr/bin/clamscan c:\\Users/clamav/usr/bin/freshclam c:\\Users/clamav/usr/lib64/* .
 
 echo "-- Clean up ClamAV folder so just the Bin is present --"
 rm -rf clamav

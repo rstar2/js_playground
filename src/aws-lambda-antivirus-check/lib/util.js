@@ -1,5 +1,8 @@
+const fs = require('fs');
+const { execSync }= require('child_process');
+
 const constants = require('./config');
-const execSync = require('child_process').execSync;
+
 
 /**
  * Generates the set of tags that will be used to tag the files of S3.
@@ -21,20 +24,31 @@ function generateTagSet(virusScanStatus) {
     };
 }
 
+function ensureExistFolder(folder) {
+    if (!fs.existsSync(folder)) {
+        fs.mkdirSync(folder);
+    }
+}
+
 /**
  * Cleanup the specific folder by removing all of its content.
  */
 function cleanupFolder(folderToClean) {
+    if (!fs.existsSync(folderToClean)) {
+        logSystem(`-- Folder ${folderToClean} missing - no cleanup --`);
+        return;
+    }
+
     let result = execSync(`ls -l ${folderToClean}`);
 
-    logSystem('-- Folder before cleanup--');
+    logSystem(`-- Folder ${folderToClean} before cleanup--`);
     log(result.toString());
 
-    execSync(`rm -rf ${folderToClean}*`);
+    execSync(`rm -rf ${folderToClean}/*`);
 
     result = execSync(`ls -l ${folderToClean}`);
 
-    logSystem('-- Folder after cleanup --');
+    logSystem(`-- Folder ${folderToClean} after cleanup --`);
     log(result.toString());
 }
 
@@ -84,6 +98,7 @@ const log = console.log;
 
 module.exports = {
     generateTagSet,
+    ensureExistFolder,
     cleanupFolder,
     extractKeyFromS3Event,
     extractBucketFromS3Event,

@@ -15,9 +15,9 @@ const s3 = new AWS.S3();
 
 function downloadFileFromS3(s3ObjectKey, s3ObjectBucket) {
     const downloadDir = constants.CLAMAV_WORK_DIR;
-    if (!fs.existsSync(downloadDir)) {
-        fs.mkdirSync(downloadDir);
-    }
+
+    util.ensureExistFolder(downloadDir);
+
     let localPath = path.join(downloadDir, path.basename(s3ObjectKey));
 
     let writeStream = fs.createWriteStream(localPath);
