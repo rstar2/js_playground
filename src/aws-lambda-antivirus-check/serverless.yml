@@ -1,7 +1,8 @@
 service: my-antivirus-check
 
 custom:
-  checkBucket: my-files-check-bucket-${self:provider.stage}
+  clamavBucket: ${self:service}-clamav-${self:provider.stage}
+  uploadBucket: ${self:service}-upload-${self:provider.stage}
 
 provider:
   name: aws
@@ -11,26 +12,26 @@ provider:
   stage: dev
   region: eu-central-1
 
-#   iamRoleStatements:
-#     - Effect: Allow
-#       Action:
-#         - "s3:ListBucket"
-#       Resource: { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "S3BucketCheck" } ] ]  }
-
-#     - Effect: "Allow"
-#       Action:
-#         - "s3:PutObject"
-#         - "s3:GetObject"
-#       Resource:
-#         Fn::Join:
-#           - ""
-#           - - "arn:aws:s3:::"
-#             - "Ref" : "S3BucketCheck"
-#             - "/*"
-
-environment:
+  environment:
     # this is the bucket that will store the ClamAV definitions file
-    S3_BUCKET_CLAMAV: ${self:service}-${self:provider.stage}
+    S3_BUCKET_CLAMAV: ${self:custom.clamavBucket}
+
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - "s3:ListBucket"
+      Resource:
+        - "Fn::GetAtt": [ ClamavBucket, Arn ]
+
+    - Effect: "Allow"
+      Action:
+        - "s3:PutObject"
+        - "s3:GetObject"
+      Resource:
+        Fn::Join:
+          - ""
+          - - "Fn::GetAtt": [ ClamavBucket, Arn ]
+            - "/*"
 
 
 # you can add packaging information here
@@ -45,12 +46,28 @@ environment:
 functions:
   - refresh:
       handler: av-refresh.handle
+      timeout: 300 # optional, in seconds, default is 6
       events:
         - schedule: rate(6 hours)
 
+
   - scan:
       handler: av-scan.handle
+      timeout: 300 # optional, in seconds, default is 6
       events:
         - s3:   # this Lambda S3 event will create the S3 bucket
-            bucket: ${self:custom.checkBucket}
+            bucket: ${self:custom.uploadBucket}
             event: s3:ObjectCreated:*
+
+resources:
+  Resources:
+    ClamavBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:custom.clamavBucket}
+
+    # No need of this resource as it will be auto - created by the S3 trigger event   
+    # UploadBucket:
+    #   Type: AWS::S3::Bucket
+    #   Properties:
+    #     BucketName: ${self:custom.uploadBucket}

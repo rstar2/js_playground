@@ -19,7 +19,7 @@ function updateAVDefinitions() {
         util.logSystem('Update with freshclam');
 
         const executionResult = execSync(`${constants.PATH_TO_FRESHCLAM} --config-file=${constants.FRESHCLAM_CONFIG} --datadir=${constants.FRESHCLAM_WORK_DIR}`);
-        
+
         util.log(executionResult.toString());
         if (executionResult.stderr) {
             util.log('stderr');
@@ -37,7 +37,7 @@ function updateAVDefinitions() {
  * Download the Antivirus definition from S3.
  * The definitions are stored on the local disk, ensure there's enough space.
  */
-async function downloadAVDefinitions() {
+function downloadAVDefinitions() {
 
     const downloadPromises = constants.CLAMAV_DEFINITIONS_FILES.map((filenameToDownload) => {
         return new Promise((resolve, reject) => {
@@ -65,13 +65,13 @@ async function downloadAVDefinitions() {
         });
     });
 
-    return await Promise.all(downloadPromises);
+    return Promise.all(downloadPromises);
 }
 
 /**
  * Uploads the AV definitions to the S3 bucket.
  */
-async function uploadAVDefinitions() {
+function uploadAVDefinitions() {
 
     const uploadPromises = constants.CLAMAV_DEFINITIONS_FILES.map((filenameToUpload) => {
         return new Promise((resolve, reject) => {
@@ -98,7 +98,7 @@ async function uploadAVDefinitions() {
         });
     });
 
-    return await Promise.all(uploadPromises);
+    return Promise.all(uploadPromises);
 }
 
 /**
@@ -124,11 +124,11 @@ function scanLocalFile(pathToFile) {
         if (err.status === 1) {
             util.logSystem('SUCCESSFUL SCAN, FILE INFECTED');
             return constants.STATUS_INFECTED_FILE;
-        } else {
-            util.logSystem('-- SCAN FAILED --');
-            util.log(err);
-            return constants.STATUS_ERROR_PROCESSING_FILE;
         }
+
+        util.logSystem('-- SCAN FAILED --');
+        util.log(err);
+        return constants.STATUS_ERROR_PROCESSING_FILE;
     }
 }
 
