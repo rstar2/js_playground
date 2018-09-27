@@ -38,30 +38,34 @@ function updateAVDefinitions() {
  * The definitions are stored on the local disk, ensure there's enough space.
  */
 function downloadAVDefinitions() {
+    util.logSystem('Downloading definition files');
+
+    util.ensureExistFolder(constants.FRESHCLAM_WORK_DIR);
 
     const downloadPromises = constants.CLAMAV_DEFINITIONS_FILES.map((filenameToDownload) => {
         return new Promise((resolve, reject) => {
-            let destinationFile = path.join(constants.FRESHCLAM_WORK_DIR, filenameToDownload);
+            const destinationFile = path.join(constants.FRESHCLAM_WORK_DIR, filenameToDownload);
 
-            util.logSystem(`Downloading ${filenameToDownload} from S3 to ${destinationFile}`);
+            // flag 'w+' means it will be created if not exist (and truncated if exists)
+            const localFileWriteStream = fs.createWriteStream(destinationFile, { flags: 'w+' });
 
-            let localFileWriteStream = fs.createWriteStream(destinationFile);
-
-            let options = {
+            const options = {
                 Bucket: constants.CLAMAV_BUCKET_NAME,
                 Key: `${constants.PATH_TO_AV_DEFINITIONS}/${filenameToDownload}`,
             };
 
-            let s3ReadStream = S3.getObject(options).createReadStream().on('end', function () {
-                util.logSystem(`Finished download ${filenameToDownload}`);
-                resolve();
-            }).on('error', function (err) {
-                util.logSystem(`Error downloading definition file ${filenameToDownload}`);
-                util.log(err);
-                reject();
-            });
-
-            s3ReadStream.pipe(localFileWriteStream);
+            util.logSystem(`Downloading ${filenameToDownload} from S3 to ${destinationFile}`);
+            S3.getObject(options).createReadStream()
+                .on('end', function () {
+                    util.logSystem(`Finished download ${filenameToDownload}`);
+                    resolve();
+                })
+                .on('error', function (err) {
+                    util.logSystem(`Error downloading definition file ${filenameToDownload}`);
+                    util.log(err);
+                    reject();
+                })
+                .pipe(localFileWriteStream);
         });
     });
 
@@ -72,10 +76,11 @@ function downloadAVDefinitions() {
  * Uploads the AV definitions to the S3 bucket.
  */
 function uploadAVDefinitions() {
+    util.logSystem('Uploading definition files');
 
     const uploadPromises = constants.CLAMAV_DEFINITIONS_FILES.map((filenameToUpload) => {
         return new Promise((resolve, reject) => {
-            util.logSystem(`Uploading updated definitions for file ${filenameToUpload} ---`);
+            util.logSystem(`Uploading ${filenameToUpload}`);
 
             let options = {
                 Bucket: constants.CLAMAV_BUCKET_NAME,
@@ -83,15 +88,15 @@ function uploadAVDefinitions() {
                 Body: fs.createReadStream(path.join(constants.FRESHCLAM_WORK_DIR, filenameToUpload))
             };
 
-            S3.putObject(options, function (err, data) {
+            S3.putObject(options, function (err) {
                 if (err) {
-                    util.logSystem(`--- Error uploading ${filenameToUpload} ---`);
+                    util.logSystem(`Error uploading ${filenameToUpload}`);
                     util.log(err);
                     reject();
                     return;
                 }
 
-                util.logSystem(`--- Finished uploading ${filenameToUpload} ---`);
+                util.logSystem(`Finished uploading ${filenameToUpload}`);
                 resolve();
             });
 
@@ -113,6 +118,8 @@ function uploadAVDefinitions() {
  * @param pathToFile Path in the filesystem where the file is stored.
  */
 function scanLocalFile(pathToFile) {
+    util.logSystem(`Scanning ${pathToFile}`);
+
     try {
         execSync(`${constants.PATH_TO_CLAMAV} -v -a --stdout -d ${constants.FRESHCLAM_WORK_DIR} ${pathToFile}`);
 
@@ -126,7 +133,7 @@ function scanLocalFile(pathToFile) {
             return constants.STATUS_INFECTED_FILE;
         }
 
-        util.logSystem('-- SCAN FAILED --');
+        util.logSystem('SCAN FAILED');
         util.log(err);
         return constants.STATUS_ERROR_PROCESSING_FILE;
     }

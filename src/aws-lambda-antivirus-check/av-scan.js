@@ -18,17 +18,16 @@ function downloadFileFromS3(s3ObjectKey, s3ObjectBucket) {
 
     util.ensureExistFolder(downloadDir);
 
-    let localPath = path.join(downloadDir, path.basename(s3ObjectKey));
+    const localPath = path.join(downloadDir, path.basename(s3ObjectKey));
 
-    let writeStream = fs.createWriteStream(localPath);
+    const writeStream = fs.createWriteStream(localPath);
 
-    util.logSystem(`Downloading file s3://${s3ObjectBucket}/${s3ObjectKey}`);
-
-    let options = {
+    const options = {
         Bucket: s3ObjectBucket,
         Key: s3ObjectKey,
     };
 
+    util.logSystem(`Downloading file s3://${s3ObjectBucket}/${s3ObjectKey}`);
     return new Promise((resolve, reject) => {
         s3.getObject(options).createReadStream().on('end', function () {
             util.logSystem(`Finished downloading new object ${s3ObjectKey}`);
@@ -51,15 +50,16 @@ module.exports.handle = async (event, context, callback) => {
 
     const virusScanStatus = clamav.scanLocalFile(pathToFile);
 
-    const taggingParams = {
-        Bucket: s3ObjectBucket,
-        Key: s3ObjectKey,
-        Tagging: util.generateTagSet(virusScanStatus)
-    };
-
     try {
+        util.logSystem(`Tag scanned file ${pathToFile}`);
+
+        const taggingParams = {
+            Bucket: s3ObjectBucket,
+            Key: s3ObjectKey,
+            Tagging: util.generateTagSet(virusScanStatus)
+        };
+        
         await s3.putObjectTagging(taggingParams).promise();
-        util.logSystem('Tagging successful');
     } catch (err) {
         util.log(err);
     }

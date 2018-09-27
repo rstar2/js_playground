@@ -17,6 +17,8 @@ provider:
     S3_BUCKET_CLAMAV: ${self:custom.clamavBucket}
 
   iamRoleStatements:
+    # Allow the functions to List/Put/Get from the S3 Bucket where the definitions files are stored,
+    # e.g. ClamavBucket, e.g ${self:custom.clamavBucket})
     - Effect: Allow
       Action:
         - "s3:ListBucket"
@@ -33,6 +35,21 @@ provider:
           - - "Fn::GetAtt": [ ClamavBucket, Arn ]
             - "/*"
 
+    # Allow the functions to Get/PutTagging from the S3 Bucket where the files are being uploaded (and thus needed to be scanned)
+    # e.g ${self:custom.uploadBucket})
+    - Effect: "Allow"
+      Action:
+        - "s3:GetObject"
+        - "s3:PutObjectTagging"
+      # One line as YAML object 
+      # Resource: { "Fn::Join" : ["", ["arn:aws:s3:::", ${self:custom.uploadBucket}, "/*" ] ] }
+      # Another way in YAML
+      Resource:
+        Fn::Join:
+          - ""
+          - - "arn:aws:s3:::"
+            - ${self:custom.uploadBucket}
+            - "/*"
 
 # you can add packaging information here
 #package:
@@ -49,7 +66,6 @@ functions:
       timeout: 300 # optional, in seconds, default is 6
       events:
         - schedule: rate(6 hours)
-
 
   - scan:
       handler: av-scan.handle
