@@ -35,20 +35,20 @@ function ensureExistFolder(folder) {
  */
 function cleanupFolder(folderToClean) {
     if (!fs.existsSync(folderToClean)) {
-        logSystem(`-- Folder ${folderToClean} missing - no cleanup --`);
+        logSystem(`Folder ${folderToClean} missing - no cleanup`);
         return;
     }
 
     let result = execSync(`ls -l ${folderToClean}`);
 
-    logSystem(`-- Folder ${folderToClean} before cleanup--`);
+    logSystem(`Folder ${folderToClean} before cleanup`);
     log(result.toString());
 
     execSync(`rm -rf ${folderToClean}/*`);
 
     result = execSync(`ls -l ${folderToClean}`);
 
-    logSystem(`-- Folder ${folderToClean} after cleanup --`);
+    logSystem(`Folder ${folderToClean} after cleanup`);
     log(result.toString());
 }
 
