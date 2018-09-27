@@ -51,6 +51,12 @@ provider:
             - ${self:custom.uploadBucket}
             - "/*"
 
+    # Allow the function to send emails
+    - Effect: "Allow"
+      Action:
+        - "ses:SendEmail"
+      Resource: ["*"]        
+
 # you can add packaging information here
 #package:
 #  include:
@@ -74,6 +80,9 @@ functions:
         - s3:   # this Lambda S3 event will create the S3 bucket
             bucket: ${self:custom.uploadBucket}
             event: s3:ObjectCreated:*
+      environment:
+        EMAIL_SENDER: rstardev@abv.bg
+        EMAIL_RECEIVER: rstar2@abv.bg
 
 resources:
   Resources:

@@ -40,5 +40,5 @@ module.exports.handle = async (event, context, callback) => {
 
     util.logSystem(`AV definition update end time: ${new Date()}`);
 
-    callback(null);
+    callback();
 };
