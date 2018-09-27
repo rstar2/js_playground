@@ -18,6 +18,7 @@ function updateAVDefinitions() {
     try {
         util.logSystem('Update with freshclam');
 
+        // execSync(`chmod o+x ${constants.PATH_TO_FRESHCLAM}`);
         const executionResult = execSync(`${constants.PATH_TO_FRESHCLAM} --config-file=${constants.FRESHCLAM_CONFIG} --datadir=${constants.FRESHCLAM_WORK_DIR}`);
 
         util.log(executionResult.toString());
@@ -119,6 +120,8 @@ function uploadAVDefinitions() {
  */
 function scanLocalFile(pathToFile) {
     util.logSystem(`Scanning ${pathToFile}`);
+
+    // execSync(`chmod o+x ${constants.PATH_TO_CLAMAV}`);
 
     try {
         execSync(`${constants.PATH_TO_CLAMAV} -v -a --stdout -d ${constants.FRESHCLAM_WORK_DIR} ${pathToFile}`);

@@ -3,7 +3,7 @@ const { exec } = require('child_process');
 module.exports.handle = (req, res) => {
     // Jest has no official support for running programmatically for now
 
-    exec('npm start', [], (error, stdout, stderr) => {
+    exec('jest', [], (error, stdout, stderr) => {
         // Jest uses process.stderr for logging no matter for info or error
         if (error) {
             return res.sendErr(stderr);

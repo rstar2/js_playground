@@ -21,6 +21,8 @@ const { FRESHCLAM_WORK_DIR } = require('./lib/config');
  * @param context
  */
 module.exports.handle = async (event, context, callback) => {
+    process.env['PATH'] = process.env['PATH'] + ':' + process.env['LAMBDA_TASK_ROOT'];
+    
     util.logSystem(`AV definition update start time: ${new Date()}`);
 
     await util.ensureExistFolder(FRESHCLAM_WORK_DIR);

@@ -41,6 +41,8 @@ function downloadFileFromS3(s3ObjectKey, s3ObjectBucket) {
 
 
 module.exports.handle = async (event, context, callback) => {
+    process.env['PATH'] = process.env['PATH'] + ':' + process.env['LAMBDA_TASK_ROOT'];
+    
     const s3ObjectKey = util.extractKeyFromS3Event(event);
     const s3ObjectBucket = util.extractBucketFromS3Event(event);
 
