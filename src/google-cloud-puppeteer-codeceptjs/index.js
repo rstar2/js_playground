@@ -4,7 +4,7 @@ const { codecept: Codecept, event } = require('codeceptjs');
 const { config: codeceptConfig } = require('./codecept.conf');
 
 // the GoogleCloudFunction HTTP trigger
-module.exports.handle = async (req, res) => {
+module.exports.function = async (req, res) => {
 
     let message = '';
 

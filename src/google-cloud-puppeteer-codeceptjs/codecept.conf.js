@@ -6,14 +6,14 @@ exports.config = {
     helpers: {
         Puppeteer: {
             url: 'https://github.com', // base url
-            show: true, //process.env.HEADLESS === 'false',
+            show: process.env.HEADLESS === 'false',
             windowSize: "1280x800",
             disableScreenshots: true, // don't store screenshots on failure
             waitForAction: 1000, // increase timeout for clicking
             // waitForNavigation: 'domcontentloaded', // wait for document to load
             // possible values'load' (dafault), 'domcontentloaded', 'networkidle0', 'networkidle2'
             chrome: {
-                args: ['--no-sandbox'] // IMPORTANT! Browser can't be run without this!
+                args: ['--no-sandbox'] // IMPORTANT! Browser can't be run without this in the cloud!
             }
         }
     },

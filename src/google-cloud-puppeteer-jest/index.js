@@ -1,12 +1,14 @@
 const { exec } = require('child_process');
 
-module.exports.handle = (req, res) => {
+// Named as 'function' by convention from the gcloud API
+module.exports.function = (req, res) => {
     // Jest has no official support for running programmatically for now
 
     exec('jest', [], (error, stdout, stderr) => {
         // Jest uses process.stderr for logging no matter for info or error
         if (error) {
-            return res.sendErr(stderr);
+            res.status(500);
+            return res.send(stderr);
         }
         res.send(stderr);
     });
