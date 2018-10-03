@@ -5,7 +5,7 @@ takes precedence over the static config *codecept.json*
 
 The Puppeteer instance can be configured with the the config file.
 
-# Deploy as Google Function
+# Deploy as Google Function (NEED TO HAVE gcloud INSTALLED)
 
 1. Create a project in the Google console, for instance 'browser-test-codeceptjs'
 2. Deploy with

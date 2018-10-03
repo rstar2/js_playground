@@ -27,7 +27,7 @@ describe('Google', () => {
 
 ## With the existence of *jest-puppeteer.config.js* the Puppeteer instance can be configured
 
-# Deploy as Google Function
+# Deploy as Google Function (NEED TO HAVE gcloud INSTALLED)
 
 1. Create a project in the Google console, for instance 'browser-test-jest'
 2. Deploy with

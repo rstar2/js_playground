@@ -42,8 +42,3 @@ module.exports.function = async (req, res) => {
         codecept.run();
     });
 }
-
-// // local test if needed
-// this.handle(null, {
-//     send: console.log
-// });
