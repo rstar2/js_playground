@@ -24,9 +24,11 @@ EXPOSE $PORT
 
 WORKDIR /app
 
-# Make this with 2 separate COPY instructions
+# 1. Make this with 2 separate COPY instructions
 # so that the "npm install" layer is cached (until any of the 'package.json ...' files is altered)
 # see http://bitjudo.com/blog/2014/03/13/building-efficient-dockerfiles-node-dot-js/
+# 2. When using COPY with more than one source file,
+# the destination must be a directory and end with a / or a \
 COPY ["package.json", "package-lock.json*", "npm-shrinkwrap.json*", "./"]
 RUN npm install
 # note - COPY will ignore files from the .dockerignore files , like node_modules

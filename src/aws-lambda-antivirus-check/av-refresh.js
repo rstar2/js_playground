@@ -6,7 +6,7 @@ const execSync = require('child_process').execSync;
 
 const clamav = require('./lib/clamav');
 const util = require('./lib/util');
-const constants = require('./lib/config');
+const { FRESHCLAM_WORK_DIR } = require('./lib/config');
 
 
 /**
@@ -21,20 +21,24 @@ const constants = require('./lib/config');
  * @param context
  */
 module.exports.handle = async (event, context, callback) => {
+    process.env['PATH'] = process.env['PATH'] + ':' + process.env['LAMBDA_TASK_ROOT'];
+    
     util.logSystem(`AV definition update start time: ${new Date()}`);
 
-    await util.cleanupFolder(constants.FRESHCLAM_WORK_DIR);
+    await util.ensureExistFolder(FRESHCLAM_WORK_DIR);
+    
+    await util.cleanupFolder(FRESHCLAM_WORK_DIR);
 
-    await clamav.updateAVDefinitonsWithFreshclam();
+    await clamav.updateAVDefinitions();
 
-    const result = execSync(`ls -l ${constants.FRESHCLAM_WORK_DIR}`);
+    const result = execSync(`ls -l ${FRESHCLAM_WORK_DIR}`);
 
-    util.logSystem('Folder content after freshclam');
+    util.logSystem(`Folder ${FRESHCLAM_WORK_DIR} after freshclam`);
     util.log(result.toString());
 
     await clamav.uploadAVDefinitions();
 
     util.logSystem(`AV definition update end time: ${new Date()}`);
 
-    callback(null);
+    callback();
 };

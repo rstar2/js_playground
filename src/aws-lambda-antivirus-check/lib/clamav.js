@@ -14,13 +14,14 @@ const S3 = new AWS.S3();
  *
  * It will download the definitions to the current work dir.
  */
-function updateAVDefinitonsWithFreshclam() {
+function updateAVDefinitions() {
     try {
+        util.logSystem('Update with freshclam');
+
+        // execSync(`chmod o+x ${constants.PATH_TO_FRESHCLAM}`);
         const executionResult = execSync(`${constants.PATH_TO_FRESHCLAM} --config-file=${constants.FRESHCLAM_CONFIG} --datadir=${constants.FRESHCLAM_WORK_DIR}`);
 
-        util.logSystem('Update message');
         util.log(executionResult.toString());
-
         if (executionResult.stderr) {
             util.log('stderr');
             util.log(executionResult.stderr.toString());
@@ -37,45 +38,50 @@ function updateAVDefinitonsWithFreshclam() {
  * Download the Antivirus definition from S3.
  * The definitions are stored on the local disk, ensure there's enough space.
  */
-async function downloadAVDefinitions() {
+function downloadAVDefinitions() {
+    util.logSystem('Downloading definition files');
+
+    util.ensureExistFolder(constants.FRESHCLAM_WORK_DIR);
 
     const downloadPromises = constants.CLAMAV_DEFINITIONS_FILES.map((filenameToDownload) => {
         return new Promise((resolve, reject) => {
-            let destinationFile = path.join(constants.FRESHCLAM_WORK_DIR, filenameToDownload);
+            const destinationFile = path.join(constants.FRESHCLAM_WORK_DIR, filenameToDownload);
 
-            util.logSystem(`Downloading ${filenameToDownload} from S3 to ${destinationFile}`);
+            // flag 'w+' means it will be created if not exist (and truncated if exists)
+            const localFileWriteStream = fs.createWriteStream(destinationFile, { flags: 'w+' });
 
-            let localFileWriteStream = fs.createWriteStream(destinationFile);
-
-            let options = {
+            const options = {
                 Bucket: constants.CLAMAV_BUCKET_NAME,
                 Key: `${constants.PATH_TO_AV_DEFINITIONS}/${filenameToDownload}`,
             };
 
-            let s3ReadStream = S3.getObject(options).createReadStream().on('end', function () {
-                util.logSystem(`Finished download ${filenameToDownload}`);
-                resolve();
-            }).on('error', function (err) {
-                util.logSystem(`Error downloading definition file ${filenameToDownload}`);
-                util.log(err);
-                reject();
-            });
-
-            s3ReadStream.pipe(localFileWriteStream);
+            util.logSystem(`Downloading ${filenameToDownload} from S3 to ${destinationFile}`);
+            S3.getObject(options).createReadStream()
+                .on('end', function () {
+                    util.logSystem(`Finished download ${filenameToDownload}`);
+                    resolve();
+                })
+                .on('error', function (err) {
+                    util.logSystem(`Error downloading definition file ${filenameToDownload}`);
+                    util.log(err);
+                    reject();
+                })
+                .pipe(localFileWriteStream);
         });
     });
 
-    return await Promise.all(downloadPromises);
+    return Promise.all(downloadPromises);
 }
 
 /**
  * Uploads the AV definitions to the S3 bucket.
  */
-async function uploadAVDefinitions() {
+function uploadAVDefinitions() {
+    util.logSystem('Uploading definition files');
 
     const uploadPromises = constants.CLAMAV_DEFINITIONS_FILES.map((filenameToUpload) => {
         return new Promise((resolve, reject) => {
-            util.logSystem(`Uploading updated definitions for file ${filenameToUpload} ---`);
+            util.logSystem(`Uploading ${filenameToUpload}`);
 
             let options = {
                 Bucket: constants.CLAMAV_BUCKET_NAME,
@@ -83,22 +89,22 @@ async function uploadAVDefinitions() {
                 Body: fs.createReadStream(path.join(constants.FRESHCLAM_WORK_DIR, filenameToUpload))
             };
 
-            S3.putObject(options, function (err, data) {
+            S3.putObject(options, function (err) {
                 if (err) {
-                    util.logSystem(`--- Error uploading ${filenameToUpload} ---`);
+                    util.logSystem(`Error uploading ${filenameToUpload}`);
                     util.log(err);
                     reject();
                     return;
                 }
 
-                util.logSystem(`--- Finished uploading ${filenameToUpload} ---`);
+                util.logSystem(`Finished uploading ${filenameToUpload}`);
                 resolve();
             });
 
         });
     });
 
-    return await Promise.all(uploadPromises);
+    return Promise.all(uploadPromises);
 }
 
 /**
@@ -108,11 +114,15 @@ async function uploadAVDefinitions() {
  * Three possible case can happen:
  * - The file is clean, the clamAV command returns 0 and the function return "CLEAN"
  * - The file is infected, the clamAV command returns 1 and this function will return "INFECTED"
- * - Any other error and the function will return null; (falsey)
+ * - Any other error and the function will return null; (falsy)
  *
  * @param pathToFile Path in the filesystem where the file is stored.
  */
 function scanLocalFile(pathToFile) {
+    util.logSystem(`Scanning ${pathToFile}`);
+
+    // execSync(`chmod o+x ${constants.PATH_TO_CLAMAV}`);
+
     try {
         execSync(`${constants.PATH_TO_CLAMAV} -v -a --stdout -d ${constants.FRESHCLAM_WORK_DIR} ${pathToFile}`);
 
@@ -124,16 +134,16 @@ function scanLocalFile(pathToFile) {
         if (err.status === 1) {
             util.logSystem('SUCCESSFUL SCAN, FILE INFECTED');
             return constants.STATUS_INFECTED_FILE;
-        } else {
-            util.logSystem('-- SCAN FAILED --');
-            util.log(err);
-            return constants.STATUS_ERROR_PROCESSING_FILE;
         }
+
+        util.logSystem('SCAN FAILED');
+        util.log(err);
+        return constants.STATUS_ERROR_PROCESSING_FILE;
     }
 }
 
 module.exports = {
-    updateAVDefinitonsWithFreshclam,
+    updateAVDefinitions,
     downloadAVDefinitions,
     uploadAVDefinitions,
     scanLocalFile,

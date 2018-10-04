@@ -1,5 +1,5 @@
 {
-  "name": "r-js-docker_kubernetes_aws",
+  "name": "r-js-docker-kubernetes-aws",
   "version": "1.0.0",
   "description": "Running a Node.js app in Docker container in Kubernetes cluster on AWS",
   "main": "src/app.js",
