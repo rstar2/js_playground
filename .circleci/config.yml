@@ -27,7 +27,6 @@ jobs:
           - v1-dependencies-
 
       - run: npm install
-      - run: cd src/aws-lambda-expirations-check && npm install
       - run: cd src/blockchain && npm install
       - run: cd src/mongo && npm install
       - run: cd src/superstruct && npm install
