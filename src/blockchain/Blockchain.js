@@ -44,8 +44,16 @@ class Blockchain {
         ];
     }
 
-    createTransaction(newTransaction) {
-        this.pendingTransactions.push(newTransaction);
+    addTransaction(transaction) {
+        if (!transaction.fromAddress || !transaction.toAddress) {
+            throw new Error('Cannot add transaction without addresses');
+        }
+
+        if (!transaction.verify()) {
+            throw new Error('Cannot add not verified transaction');
+        }
+
+        this.pendingTransactions.push(transaction);
     }
 
     getBalanceOf(address) {
@@ -79,6 +87,10 @@ class Blockchain {
         for (let i = 1; i < this.chain.length; i++) {
             const currentBlock = this.chain[i];
             const previousBlock = this.chain[i - 1];
+
+            if (!currentBlock.verify()) {
+                return false;
+            }
 
             if (currentBlock.hash !== currentBlock.calculateHash() ||
                 // check proof-of-work

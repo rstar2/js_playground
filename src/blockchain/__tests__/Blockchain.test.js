@@ -1,3 +1,4 @@
+/* eslint-disable quotes */
 const Blockchain = require('../Blockchain');
 const Block = require('../Block');
 const Transaction = require('../Transaction');
@@ -19,8 +20,8 @@ describe("Blockchain suite", () => {
     test('should be invalid when tempering a block', () => {
         let rumenCoin = new Blockchain(1);
 
-        rumenCoin.createTransaction(new Transaction("from", "to", 100));
-        rumenCoin.createTransaction(new Transaction("from", "to", 200));
+        rumenCoin.addTransaction(new Transaction("from", "to", 100));
+        rumenCoin.addTransaction(new Transaction("from", "to", 200));
         rumenCoin.minePendingTransactions();
 
         // try temper it - will not be valid any more
@@ -32,12 +33,12 @@ describe("Blockchain suite", () => {
     test('should be invalid when tempering a block and re-calculating its hash', () => {
         let rumenCoin = new Blockchain(1);
 
-        rumenCoin.createTransaction(new Transaction("from", "to", 100));
-        rumenCoin.createTransaction(new Transaction("from", "to", 200));
+        rumenCoin.addTransaction(new Transaction("from", "to", 100));
+        rumenCoin.addTransaction(new Transaction("from", "to", 200));
         rumenCoin.minePendingTransactions();
 
-        rumenCoin.createTransaction(new Transaction("from", "to", 1000));
-        rumenCoin.createTransaction(new Transaction("from", "to", 2000));
+        rumenCoin.addTransaction(new Transaction("from", "to", 1000));
+        rumenCoin.addTransaction(new Transaction("from", "to", 2000));
         rumenCoin.minePendingTransactions();
 
         // try temper it with recalculating the hash - the next block will brake
@@ -51,12 +52,12 @@ describe("Blockchain suite", () => {
     test('should be invalid when tempering a block and re-mined', () => {
         let rumenCoin = new Blockchain(1);
 
-        rumenCoin.createTransaction(new Transaction("from", "to", 100));
-        rumenCoin.createTransaction(new Transaction("from", "to", 200));
+        rumenCoin.addTransaction(new Transaction("from", "to", 100));
+        rumenCoin.addTransaction(new Transaction("from", "to", 200));
         rumenCoin.minePendingTransactions();
 
-        rumenCoin.createTransaction(new Transaction("from", "to", 1000));
-        rumenCoin.createTransaction(new Transaction("from", "to", 2000));
+        rumenCoin.addTransaction(new Transaction("from", "to", 1000));
+        rumenCoin.addTransaction(new Transaction("from", "to", 2000));
         rumenCoin.minePendingTransactions();
 
         // try temper it with recalculating the hash - the next block will brake
@@ -70,12 +71,12 @@ describe("Blockchain suite", () => {
     test('should be invalid when tempering a block and re-calculating its hash and re-mined', () => {
         let rumenCoin = new Blockchain(1);
 
-        rumenCoin.createTransaction(new Transaction("from", "to", 100));
-        rumenCoin.createTransaction(new Transaction("from", "to", 200));
+        rumenCoin.addTransaction(new Transaction("from", "to", 100));
+        rumenCoin.addTransaction(new Transaction("from", "to", 200));
         rumenCoin.minePendingTransactions();
 
-        rumenCoin.createTransaction(new Transaction("from", "to", 1000));
-        rumenCoin.createTransaction(new Transaction("from", "to", 2000));
+        rumenCoin.addTransaction(new Transaction("from", "to", 1000));
+        rumenCoin.addTransaction(new Transaction("from", "to", 2000));
         rumenCoin.minePendingTransactions();
 
         // try temper it with recalculating the hash - the next block will brake
