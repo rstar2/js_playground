@@ -7,26 +7,33 @@ class Transaction {
         this.amount = amount;
     }
 
+    /**
+     * @return {String}
+     */
     calculateHash() {
         return SHA256(this.fromAddress + this.toAddress + this.amount).toString();
     }
 
-    // TODO: https://www.youtube.com/watch?v=kWQ84S13-hw
-    sign(signingKey) {
-        // if our publicKey of the 'signingKey' equals the fromAddress
-        // we can only spend coins from the wallet for which we have privateKey
-        if (signingKey.getPublic() !== this.fromAddress) {
+    /**
+     * 
+     * @param {Wallet} wallet
+     * @return {String} 
+     */
+    sign(wallet) {
+        if (!wallet.canSignAddress(this.fromAddress)) {
             throw new Error('You cannot sign transaction for other wallets');
         }
 
         const hash = this.calculateHash();
-        this.signature = signingKey.sign(hash);
+        this.signature = wallet.sign(hash);
     }
 
     /**
+     * 
+     * @param {Wallet} wallet
      * @return {Boolean}
      */
-    verify() {
+    verify(wallet) {
         // special case - the mining-reward transaction
 
         // such transactions are not signed
@@ -36,7 +43,7 @@ class Transaction {
             throw new Error('Cannot verify not signed transaction');
         }
 
-        return true;
+        return wallet.verify(this.signature);
     }
 
     toString() {
