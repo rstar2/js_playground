@@ -2,7 +2,7 @@ const Blockchain = require('../Blockchain');
 const Block = require('../Block');
 const Transaction = require('../Transaction');
 
-describe('Block suite', () => {
+xdescribe('Block suite', () => {
     test('Proof-of-work - should be mined for at least 1 sec (1000ms)', () => {
         let blockchain = new Blockchain(5);
 

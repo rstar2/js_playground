@@ -10,13 +10,6 @@ class Wallet {
 
     /**
      * @return {String}
-     */
-    getSigningKey() {
-        return this.key;
-    }
-
-    /**
-     * @return {String}
      * @param {String} [enc]
      */
     getAddress(enc = 'hex') {
@@ -28,7 +21,7 @@ class Wallet {
      * @param {String} address 
      */
     canSignAddress(address) {
-        // wallet can sign only his address
+        // wallet can sign only his address (e.g. public key - as it's the address)
         // we can only spend coins from the wallet for which we have privateKey
         return this.key.getPublic() === address;
     }
@@ -38,10 +31,20 @@ class Wallet {
      * @param {String} transaction
      * @param {String} [encSign]
      * @param {String} [enc]
+     * @return {String}
      */
     sign(transaction, encSign = 'base64', enc = 'hex') {
         const signature = ec.sign(transaction, this.key, encSign);
         return signature.toDER(enc);
+    }
+
+    /**
+     * 
+     * @param {String} signature
+     * @return {Boolean}
+     */
+    verify(signature) {
+
     }
 }
 

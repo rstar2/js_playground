@@ -3,6 +3,8 @@ const SHA256 = require('crypto-js/sha256');
 class Transaction {
     constructor(fromAddress, toAddress, amount = 0) {
         this.fromAddress = fromAddress;
+        if (!toAddress)
+            throw new Error(`Transaction from ${fromAddress} to 'nobody`);
         this.toAddress = toAddress;
         this.amount = amount;
     }
@@ -11,7 +13,7 @@ class Transaction {
      * @return {String}
      */
     calculateHash() {
-        return SHA256(this.fromAddress + this.toAddress + this.amount).toString();
+        return SHA256((this.fromAddress || '') + this.toAddress + this.amount).toString();
     }
 
     /**
@@ -35,7 +37,6 @@ class Transaction {
      */
     verify(wallet) {
         // special case - the mining-reward transaction
-
         // such transactions are not signed
         if (this.fromAddress === null) return true;
 
