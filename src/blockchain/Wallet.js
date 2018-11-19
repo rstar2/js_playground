@@ -23,7 +23,7 @@ class Wallet {
     canSignAddress(address) {
         // wallet can sign only his address (e.g. public key - as it's the address)
         // we can only spend coins from the wallet for which we have privateKey
-        return this.key.getPublic() === address;
+        return this.getAddress() === address;
     }
 
     /**
@@ -40,13 +40,41 @@ class Wallet {
 
     /**
      * 
+     * @param {String} transaction
      * @param {String} signature
+     * @param {String} [encSign]
      * @return {Boolean}
      */
-    verify(signature) {
-
+    verify(transaction, signature, encSign = 'base64') {
+        return Wallet._verify(transaction, signature, this.key, encSign);
     }
 }
+
+/**
+ * 
+ * @param {String} address
+ * @param {String} transaction
+ * @param {String} signature
+ * @param {String} [enc]
+ * @param {String} [encSign]
+ * @return {Boolean}
+ */
+Wallet.verify = (address, transaction, signature, enc = 'hex', encSign = 'base64') => {
+    const key = ec.keyFromPublic(address, enc);
+    return Wallet._verify(transaction, signature, key, encSign);
+};
+
+/**
+ * 
+ * @param {ec.KeyPair} key
+ * @param {String} transaction
+ * @param {String} signature
+ * @param {String} [encSign]
+ * @return {Boolean}
+ */
+Wallet._verify = (transaction, signature, key, encSign = 'base64') => {
+    return ec.verify(transaction, signature, key, encSign);
+};
 
 module.exports = Wallet;
 // https://www.youtube.com/watch?v=kWQ84S13-hw

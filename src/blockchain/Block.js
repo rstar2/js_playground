@@ -1,7 +1,6 @@
 const SHA256 = require('crypto-js/sha256');
 
 const Transaction = require('./Transaction.js');
-
 class Block {
 
     /**

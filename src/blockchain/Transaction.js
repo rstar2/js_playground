@@ -1,5 +1,7 @@
 const SHA256 = require('crypto-js/sha256');
 
+const Wallet = require('./Wallet');
+
 class Transaction {
     constructor(fromAddress, toAddress, amount = 0) {
         this.fromAddress = fromAddress;
@@ -17,6 +19,13 @@ class Transaction {
     }
 
     /**
+     * @return {Boolean}
+     */
+    isSigned() {
+        return !!this.signature;
+    }
+
+    /**
      * 
      * @param {Wallet} wallet
      * @return {String} 
@@ -31,11 +40,9 @@ class Transaction {
     }
 
     /**
-     * 
-     * @param {Wallet} wallet
      * @return {Boolean}
      */
-    verify(wallet) {
+    verify() {
         // special case - the mining-reward transaction
         // such transactions are not signed
         if (this.fromAddress === null) return true;
@@ -44,7 +51,7 @@ class Transaction {
             throw new Error('Cannot verify not signed transaction');
         }
 
-        return wallet.verify(this.signature);
+        return Wallet.verify(this.fromAddress, this.calculateHash(), this.signature);
     }
 
     toString() {

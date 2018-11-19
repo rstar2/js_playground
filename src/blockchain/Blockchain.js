@@ -49,8 +49,8 @@ class Blockchain {
             throw new Error('Cannot add transaction without addresses');
         }
 
-        if (!transaction.verify()) {
-            throw new Error('Cannot add not verified transaction');
+        if (!transaction.isSigned()) {
+            throw new Error('Cannot add not signed transaction');
         }
 
         this.pendingTransactions.push(transaction);
