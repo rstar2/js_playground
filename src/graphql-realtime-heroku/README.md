@@ -1,1 +1,0 @@
-https://www.smashingmagazine.com/2018/12/real-time-app-graphql-subscriptions-postgres/
