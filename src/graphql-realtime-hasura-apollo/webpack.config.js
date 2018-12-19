@@ -25,7 +25,6 @@ module.exports = {
     },
     module: {
         rules: [
-            // typescript
             {
                 test: /\.js$/,
                 exclude: /node_modules/,
@@ -131,6 +130,7 @@ if (process.env.NODE_ENV === 'production') {
         historyApiFallback: true,
         noInfo: true,
         overlay: true,
+        port: 3000
     };
 }
 
