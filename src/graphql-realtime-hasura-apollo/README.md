@@ -44,3 +44,6 @@ $ docker run -d -p 8080:8080 --link graphql-realtime-db:postgres \
 where  ```HASURA_GRAPHQL_DATABASE_URL=postgres://username:password@hostname:port/dbname```
 
   - check it on http://localhost:8080/console (for Windows the docker-machine IP like http://192.168.99.100:8080/console)
+
+3. Could use docker-compose inside the 'graphql' subfolder
+
