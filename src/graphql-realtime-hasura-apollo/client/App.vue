@@ -7,8 +7,8 @@
                   v-bind:items="poll.items"
             2. v-bind:poll="poll" is passing the 'poll' as property
       -->
-    <Poll v-bind="poll"/>
-    <Results/>
+    <Poll v-bind="poll" @vote="vote"/>
+    <Results :items="poll.items" :results="results"/>
   </div>
 </template>
 
@@ -40,8 +40,27 @@ export default {
             id: "45645645"
           }
         ]
-      }
+      },
+      results: [
+          {
+            id: "123123",
+            value: 28,
+          },
+          {
+            id: "234234",
+            value: 73,
+          },
+          {
+            id: "45645645",
+            value: 52,
+          }
+      ]
     };
+  },
+  methods: {
+      vote(item) {
+          this.results.some(res => res.id === item.id && res.value++);
+      }
   }
 };
 </script>

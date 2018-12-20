@@ -37,11 +37,12 @@ export default {
   methods: {
     vote() {
       console.log("Vote for", this.selected);
+      this.$emit('vote', this.selected);
     },
     select(item) {
       this.selected = item;
     }
-  }
+  },
 };
 </script>
 
