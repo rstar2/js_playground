@@ -6,6 +6,7 @@
         "clamscan",
         "dynamodb",
         "freshclam",
+        "loadtest",
         "rumen",
         "tempy",
         "transcoding",
