@@ -97,7 +97,7 @@ module.exports = {
 
         new HtmlWebpackPlugin({
             template: './client/index.html',
-            title: 'GraphQL RealTime Vue Heroku App',
+            title: 'GraphQL RealTime Hasura-Apollo Vue app',
             minify: {
                 collapseWhitespace: true,
                 minifyCSS: true,
