@@ -33,3 +33,14 @@ fetch('/graphql', {
   .then(r => r.json())
   .then(data => console.log('data returned:', data));
 ```
+
+
+
+# Run a more realtime application with MongoDB database
+
+1. Run Mongo in Docker
+
+```sh
+$ docker-compose -f ./db/docker-compose.yml up
+```
+

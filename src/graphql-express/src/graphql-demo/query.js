@@ -1,5 +1,5 @@
 const _ = require('lodash');
-const { GraphQLObjectType, GraphQLString, GraphQLInt } = require('graphql');
+const { GraphQLObjectType, GraphQLString, GraphQLInt, GraphQLList } = require('graphql');
 
 const { movieType, directorType } = require('./types.js');
 const { movies, directors } = require('./data.js');
@@ -44,6 +44,23 @@ const queryType = new GraphQLObjectType({
         /*
         Can be queried with :
         query {
+            movies {
+              id
+              name
+            }
+        }
+
+        */
+        movies: {
+            type: new GraphQLList(movieType),
+            resolve: function (source, args) {
+                return movies;
+            }
+        },
+
+        /*
+        Can be queried with :
+        query {
             director(id: 1) {
                 id
                 movies {
@@ -61,7 +78,24 @@ const queryType = new GraphQLObjectType({
             resolve: function (source, args) {
                 return _.find(directors, { id: args.id });
             }
+        },
+
+        /*
+        Can be queried with :
+        query {
+            directors {
+              id
+              name
+            }
         }
+
+        */
+        directors: {
+            type: new GraphQLList(directorType),
+            resolve: function (source, args) {
+                return directors;
+            }
+        },
     }
 });
 

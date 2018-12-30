@@ -22,6 +22,7 @@ const directorType = new GraphQLObjectType({
         id: { type: GraphQLID },
         name: { type: GraphQLString },
         age: { type: GraphQLInt },
+        
 
         // When the director endpoint is called we have to return the director details,
         // as well as all the movies the director has directed.
