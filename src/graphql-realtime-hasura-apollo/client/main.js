@@ -21,8 +21,6 @@ const apolloProvider = new VueApollo({
 
 new Vue({
     apolloProvider,
-    // provide: apolloProvider.provide(),
-
     render: h => h(App)
 }).$mount('#app');
 

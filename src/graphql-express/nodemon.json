@@ -1,5 +1,5 @@
 {
     "env" : {
-        "MONGO_URI": "mongodb://root:example@127.0.0.1:27017/event-booking?authSource=admin"
+        "MONGO_URI": "mongodb://root:example@192.168.99.100:27017/event-booking?authSource=admin"
     }
 }
