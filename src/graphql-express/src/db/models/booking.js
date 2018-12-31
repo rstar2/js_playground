@@ -9,7 +9,10 @@ const bookingSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User' // the name of the model
     },
-}, { timestamps: true });
+}, { 
+    // this will create both 'createAt' and 'updatedAt' fields  -both managed by Mongoose
+    timestamps: true
+});
 
 const Booking = mongoose.model('Booking', bookingSchema);
 

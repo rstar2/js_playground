@@ -31,6 +31,13 @@ const fixMongoUser = (obj) => {
     return user;
 };
 
+const fixMongoBooking = (obj) => {
+    const booking = fixMongoObj(obj);
+    booking.createdAt = new Date(booking.createdAt).toISOString();
+    booking.updatedAt = new Date(booking.updatedAt).toISOString();
+    return booking;
+};
+
 /**
  * 
  * @param {User} user
@@ -171,16 +178,24 @@ module.exports = {
             .then(populateUserEvents);
     },
 
-    bookings() {
-        return Booking.find();
+    async bookings() {
+        let bookings = await Booking.find().exec();
+        bookings = bookings.map(fixMongoBooking);
+
+        return bookings;
     },
 
     async createBooking(args) {
         const { eventId, userId } = args;
+        let booking = new Booking({ eventId, userId });
+        booking = await booking.save();
+        booking = fixMongoBooking(booking);
+
+        return booking;
     },
 
     cancelBooking(args) {
         const { bookingId } = args;
-        
+
     }
 };
