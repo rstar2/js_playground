@@ -2,6 +2,7 @@
 const bcrypt = require('bcryptjs');
 
 const SALT_ROUNDS = 12;
+
 /**
  * 
  * @param {Sring} str
@@ -20,7 +21,29 @@ const hashSync = (str) => {
     return bcrypt.hashSync(str, SALT_ROUNDS);
 };
 
+/**
+ * 
+ * @param {Sring} str
+ * @param {Sring} hash
+ * @return {Promise<Boolean>}
+ */
+const compare = (str, hash) => {
+    return bcrypt.compare(str, hash);
+};
+
+/**
+ * 
+ * @param {Sring} str
+ * @param {Sring} hash
+ * @return {Boolean}
+ */
+const compareSync = (str, hash) => {
+    return bcrypt.compareSync(str, hash);
+};
+
 module.exports = {
     hash,
-    hashSync
+    hashSync,
+    compare,
+    compareSync,
 };

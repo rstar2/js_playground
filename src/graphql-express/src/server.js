@@ -1,6 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 
+const auth = require('./middlewares/auth');
+
 
 const port = process.env.PORT || 5000;
 const app = express();
@@ -22,7 +24,7 @@ app.get('/hello', (req, res) => {
 app.use('/graphql-demo', graphqlHTTP_demo);
 
 // More complex GraphQL server middleware (with real MongoDB database and more actions)
-app.use('/graphql', graphqlHTTP);
+app.use('/graphql', auth, graphqlHTTP);
 
 
 app.listen(port).on('listening', () => {

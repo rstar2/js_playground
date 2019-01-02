@@ -1,10 +1,13 @@
-const { fixMongoEvent } = require('./helpers');
+const { fixMongoEvent, checkAuth } = require('./helpers');
 const { str2date } = require('../../utils/date');
 const { Event, User } = require('../../db/models');
 
 
 module.exports = {
     // return a Promise
+
+    /**
+     */
     events() {
         // // populate the 'creator' reference field
         // return Event.find().populate('creator').exec()
@@ -19,8 +22,15 @@ module.exports = {
 
     },
 
-    // return a Promise - work with async/await 
-    async createEvent(args) {
+    // return a Promise - work with async/await
+    
+    /**
+     * @param {Object} args 
+     * @param {Request} req 
+     */
+    async createEvent(args, req) {
+        checkAuth(req);
+        
         const { title, description, price, date, creator } = args.input;
 
         const user = await User.findById(creator);

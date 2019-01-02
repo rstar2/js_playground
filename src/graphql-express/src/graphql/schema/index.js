@@ -46,6 +46,11 @@ module.exports = buildSchema(`
             updatedAt: String!
         }
 
+        type AuthData {
+            userId: ID!
+            jwt: String!
+        }
+
         type rootQuery {
             # a demo
             items: [String!]!
@@ -53,6 +58,8 @@ module.exports = buildSchema(`
             # a list of out custom types
             events: [Event!]!
             bookings: [Booking!]!
+
+            loginUser(email: String!, password: String!): AuthData!
         }
 
         type rootMutation {

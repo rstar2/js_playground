@@ -1,4 +1,5 @@
-const { fixMongoObj, fixMongoEvent, populateUser, populateEvent } = require('./helpers');
+const { fixMongoObj, fixMongoEvent, populateUser, populateEvent,
+    checkAuth } = require('./helpers');
 const { date2str } = require('../../utils/date');
 const { Booking, Event, User } = require('../../db/models');
 
@@ -17,14 +18,26 @@ const fixMongoBooking = (obj) => {
 };
 
 module.exports = {
-    async bookings() {
+    /**
+     * @param {Object} args 
+     * @param {Request} req 
+     */
+    async bookings(args, req) {
+        checkAuth(req);
+
         let bookings = await Booking.find().exec();
         bookings = bookings.map(fixMongoBooking);
 
         return bookings;
     },
 
-    async createBooking(args) {
+    /**
+     * @param {Object} args 
+     * @param {Request} req 
+     */
+    async createBooking(args, req) {
+        checkAuth(req);
+
         const { eventId, userId } = args;
 
         const user = await User.findById(userId);
@@ -41,7 +54,13 @@ module.exports = {
         return booking;
     },
 
-    async cancelBooking(args) {
+    /**
+     * @param {Object} args 
+     * @param {Request} req 
+     */
+    async cancelBooking(args, req) {
+        checkAuth(req);
+
         const { bookingId } = args;
 
         const booking = await Booking.findById(bookingId).populate('event');
