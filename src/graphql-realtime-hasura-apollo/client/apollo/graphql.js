@@ -1,18 +1,16 @@
 import gql from 'graphql-tag';
 
-export const ALL_LINKS_QUERY = gql`
-  query AllLinksQuery {
-    allLinks {
-      id
-      createdAt
-      url
-      description
-    }
-  }
-`;
-
-export const HELLO_QUERY = gql`
+export const QUERY_HELLO = gql`
   query {
     hello
   }
 `;
+
+export const QUERY_USER = gql`
+  query {
+    user {
+      online_ping
+    }
+  }
+`;
+

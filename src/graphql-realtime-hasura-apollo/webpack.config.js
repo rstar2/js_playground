@@ -35,12 +35,9 @@ module.exports = {
                         plugins: [
                             '@babel/plugin-proposal-object-rest-spread',
                             '@babel/plugin-syntax-dynamic-import',
-                            [
-                                "@babel/plugin-transform-runtime",
-                                {
-                                    "regenerator": true
-                                }
-                            ],
+
+                            // Make sure you include @babel/runtime as a dependency.
+                            "@babel/plugin-transform-runtime",
                         ]
                     }
                 }
@@ -64,6 +61,13 @@ module.exports = {
             {
                 test: /\.vue$/,
                 loader: 'vue-loader',
+            },
+
+            // fixes https://github.com/graphql/graphql-js/issues/1272
+            {
+                test: /\.mjs$/,
+                include: /node_modules/,
+                type: 'javascript/auto'
             },
         ]
     },

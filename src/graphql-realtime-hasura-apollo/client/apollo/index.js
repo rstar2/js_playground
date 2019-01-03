@@ -2,7 +2,7 @@ import ApolloClient from 'apollo-boost';
 
 const apolloClient = new ApolloClient({
     // You should use an absolute URL here
-    uri: 'http://192.168.99.100:8080',
+    uri: process.env.GRAPHQL_ENDPOINT_HTTP,
     connectToDevTools: true
 });
 

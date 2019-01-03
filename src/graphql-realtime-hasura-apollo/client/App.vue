@@ -18,7 +18,7 @@
 import Poll from "@/components/Poll.vue";
 import Results from "@/components/Results.vue";
 
-import { HELLO_QUERY } from "@/apollo/graphql.js"
+import { QUERY_HELLO, QUERY_USER, } from "@/apollo/graphql.js"
 
 export default {
   components: {
@@ -62,9 +62,11 @@ export default {
       hello: ''
     };
   },
+  // these GraphQL queries will be made on mounting the Vue component
   apollo: {
     // Simple query that will update the 'hello' vue property
-    hello: HELLO_QUERY
+    hello: QUERY_HELLO,
+    user: QUERY_USER
   },
   methods: {
     async vote(item) {
