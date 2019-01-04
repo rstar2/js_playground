@@ -7,7 +7,9 @@
     "dev": "cross-env NODE_ENV=development webpack-dev-server --open --hot",
     "build:dev": "cross-env NODE_ENV=development webpack --progress --hide-modules",
     "build": "cross-env NODE_ENV=production webpack --progress --hide-modules",
-    "start": "npm run dev"
+    "start": "npm run dev",
+    "hasura:start": "docker-compose -f ./hasura/docker-compose.yml start",
+    "hasura:stop": "docker-compose -f ./hasura/docker-compose.yml stop"
   },
   "keywords": [],
   "author": "",
