@@ -4,6 +4,14 @@
       <div class="md-toolbar-section-start">
         <h3 class="md-title">Event Booking</h3>
       </div>
+
+      <md-button>
+        <router-link to="/events">Events</router-link>
+      </md-button>
+      <md-button>
+        <router-link to="/bookings">Bookings</router-link>
+      </md-button>
+
       <div class="md-toolbar-section-end">
         <template v-if="auth">
           <md-button @click="logout" class="md-primary md-raised">Logout</md-button>
@@ -27,13 +35,17 @@
       @action="apiAuth"
     ></app-dialog-auth>
 
+    <!-- route outlet -->
+    <!-- component matched by the route will render here -->
+    <router-view></router-view>
+
     <app-notifications v-model="info"></app-notifications>
   </div>
 </template>
 
 <script>
-import DialogAuth from "./components/DialogAuth.vue";
-import Notifications from "./components/Notifications.vue";
+import DialogAuth from "@/components/DialogAuth.vue";
+import Notifications from "@/components/Notifications.vue";
 
 export default {
   name: "app",
@@ -75,7 +87,7 @@ export default {
       // store it in cookie/localStorage (see the notes about it in mounted())
       if (newValue) localStorage.setItem("authJWT", newValue);
       else localStorage.removeItem("authJWT");
-    },
+    }
   }
 };
 </script>
