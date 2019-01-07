@@ -2,9 +2,10 @@
   "name": "r-js-graphql-express",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
   "scripts": {
-    "start": "nodemon src/server.js",
+    "start": "nodemon server/app.js",
+    "mongo:start": "docker-compose -f ./db/docker-compose.yml start",
+    "mongo:stop": "docker-compose -f ./db/docker-compose.yml stop",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
