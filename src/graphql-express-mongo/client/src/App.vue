@@ -1,39 +1,6 @@
 <template>
   <div id="app" class="md-layout">
-    <md-toolbar class="md-layout-item md-size-100 md-dense">
-      <div class="md-toolbar-section-start">
-        <h3 class="md-title">Event Booking</h3>
-      </div>
-
-      <md-button>
-        <router-link to="/events">Events</router-link>
-      </md-button>
-      <md-button>
-        <router-link to="/bookings">Bookings</router-link>
-      </md-button>
-
-      <div class="md-toolbar-section-end">
-        <template v-if="auth">
-          <md-button @click="logout" class="md-primary md-raised">Logout</md-button>
-        </template>
-        <template v-else>
-          <md-button
-            @click="dialogAuth.isRegister = true; dialogAuth.show = true;"
-            class="md-primary md-raised"
-          >Register</md-button>
-          <md-button
-            @click="dialogAuth.isRegister = false; dialogAuth.show = true;"
-            class="md-primary md-raised"
-          >Login</md-button>
-        </template>
-      </div>
-    </md-toolbar>
-
-    <app-dialog-auth
-      v-model="dialogAuth.show"
-      :isRegister="dialogAuth.isRegister"
-      @action="apiAuth"
-    ></app-dialog-auth>
+    <app-main-navbar :auth="auth"></app-main-navbar>
 
     <!-- route outlet -->
     <!-- component matched by the route will render here -->
@@ -44,23 +11,18 @@
 </template>
 
 <script>
-import DialogAuth from "@/components/DialogAuth.vue";
+import MainNavbar from "@/components/MainNavbar.vue";
 import Notifications from "@/components/Notifications.vue";
 
 export default {
   name: "app",
   components: {
-    "app-dialog-auth": DialogAuth,
+    "app-main-navbar": MainNavbar,
     "app-notifications": Notifications
   },
   data() {
     return {
-      authJWT: null,
-
-      dialogAuth: {
-        show: false,
-        isRgister: false
-      }
+      authJWT: null
     };
   },
   computed: {
