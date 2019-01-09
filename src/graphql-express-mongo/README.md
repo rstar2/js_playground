@@ -35,7 +35,6 @@ fetch('/graphql', {
 ```
 
 
-
 # Run a more realtime application with MongoDB database
 
 1. Run Mongo in Docker

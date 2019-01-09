@@ -9,7 +9,7 @@ const secret = process.env.JWT_SECRET;
  * @param {Function} next 
  */
 const auth = (req, res, next) => {
-    // NOTE: in this middleware don't thow error but just add the "auth" metadata
+    // NOTE: in this middleware don't throw error but just add the "auth" metadata
 
 
     // const token = req.headers['x-access-token']; // the JWT token itself
