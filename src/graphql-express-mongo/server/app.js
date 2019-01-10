@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 
 const auth = require('./middlewares/auth');
 
+require('dotenv-safe').load();
 
 const port = process.env.PORT || 5000;
 const app = express();
