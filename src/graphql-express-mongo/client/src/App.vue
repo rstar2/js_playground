@@ -1,6 +1,6 @@
 <template>
   <div id="app" class="md-layout">
-    <app-main-navbar :auth="auth"></app-main-navbar>
+    <app-main-navbar :auth="auth" @handleAuth="handleAuth"></app-main-navbar>
 
     <!-- route outlet -->
     <!-- component matched by the route will render here -->
@@ -14,6 +14,8 @@
 import MainNavbar from "@/components/MainNavbar.vue";
 import Notifications from "@/components/Notifications.vue";
 
+import api from "@/services/api.js";
+
 export default {
   name: "app",
   components: {
@@ -22,7 +24,8 @@ export default {
   },
   data() {
     return {
-      authJWT: null
+      authJWT: null,
+      info: null
     };
   },
   computed: {
@@ -49,6 +52,39 @@ export default {
       // store it in cookie/localStorage (see the notes about it in mounted())
       if (newValue) localStorage.setItem("authJWT", newValue);
       else localStorage.removeItem("authJWT");
+    }
+  },
+  methods: {
+    handleAuth(user) {
+      // TODO: pass isRegister explicitly, 'name' can be removed
+      const isRegister = user.name; // we pass the name only when creating a user
+      const data = {
+        query: isRegister
+          ? `
+        mutation {
+            registerUser(email: "${user.email}", password: "${user.password}") {
+                userId
+                jwt
+            }
+        }
+        `
+          : `
+        query {
+            loginUser(email: "${user.email}", password: "${user.password}") {
+                userId
+                jwt
+            }
+        }
+        `
+      };
+
+      api("http://localhost:5000/graphql", data)
+        .then(res => res.data[isRegister ? "registerUser" : "loginUser"])
+        .then(res => {
+          this.info = `You are now logged in as ${user.email} (${res.userId})`;
+          this.authJWT = res.jwt;
+        })
+        .catch(console.error);
     }
   }
 };

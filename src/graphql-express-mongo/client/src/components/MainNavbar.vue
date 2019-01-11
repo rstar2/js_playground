@@ -30,7 +30,7 @@
     <app-dialog-auth
       v-model="dialogAuth.show"
       :isRegister="dialogAuth.isRegister"
-      @action="apiAuth"
+      @action="$emit('handleAuth', $event)"
     ></app-dialog-auth>
   </md-toolbar>
 </template>
@@ -56,12 +56,6 @@ export default {
       }
     };
   },
-  methods: {
-      apiAuth() {
-          console.log('TODO');
-      },
-  }
-  
 }
 </script>
 

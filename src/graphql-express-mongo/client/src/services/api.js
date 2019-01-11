@@ -1,4 +1,9 @@
-// eslint-disable-next-line
+/**
+ * 
+ * @param {String} url 
+ * @param {Object?} data 
+ * @param {Stting?} authToken 
+ */
 const api = (url, data, authToken) => {
     const opts = {
         headers: {},

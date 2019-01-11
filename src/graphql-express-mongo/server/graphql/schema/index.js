@@ -66,11 +66,12 @@ module.exports = buildSchema(`
             # a demo
             createItem(name: String!): String!
 
-
             createEvent(input: EventInput!): Event!
             createUser(input: UserInput!): User!
             createBooking(eventId: ID!, userId: ID!): Booking!
             cancelBooking(bookingId: ID!): Event!
+
+            registerUser(email: String!, password: String!): AuthData!
         }
 
         schema {

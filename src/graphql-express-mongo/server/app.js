@@ -16,6 +16,20 @@ require('./db');
 
 app.use(bodyParser.json());
 
+// allow CORS - currently from EVERYWHERE
+app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'OPTIONS, GET, POST');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+
+    // HTTP 'OPTIONS' requests are not needed to hit our API
+    if (req.method === 'OPTIONS') {
+        res.sendStatus(200);
+    } else {
+        next();
+    }
+});
+
 // just a normal HTTP demo endpoint
 app.get('/hello', (req, res) => {
     res.send('hello');
