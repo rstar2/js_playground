@@ -34,9 +34,6 @@ const fixMongoEvent = (obj) => {
     // in Mongo the Date is then returned as (getTime() string like 1546249685562)
     event.date = date2str(event.date);
 
-    console.log('event.creator', event.creator);
-
-
     // populate the 'creator' manually (from Mongo.ObjectId to User)
     event.creator = populateUser(event.creator);
 
