@@ -1,22 +1,17 @@
 import Vue from 'vue';
-import VueRouter from 'vue-router';
 
-import routes from './routes';
+import store from './store';
+import router from './router';
 import VueMaterialDesign from './md';
 import App from './App.vue';
 
-Vue.use(VueRouter);
+// install the MaterialDesign Vue plugin
 Vue.use(VueMaterialDesign);
 
 Vue.config.productionTip = false;
 
-// 3. Create the router instance and pass the `routes` option
-const router = new VueRouter({
-    routes,
-    mode: 'history',
-});
-
 new Vue({
+    store,
     router,
     render: h => h(App),
 }).$mount('#app');

@@ -13,7 +13,7 @@
 
     <div class="md-toolbar-section-end">
       <template v-if="auth">
-        <md-button @click="logout" class="md-primary md-raised">Logout</md-button>
+        <md-button @click="$emit('handleLogout')" class="md-primary md-raised">Logout</md-button>
       </template>
       <template v-else>
         <md-button

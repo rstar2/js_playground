@@ -5,6 +5,7 @@
         "Hasura",
         "Heroku",
         "POSTGRES",
+        "Vuex",
         "clamscan",
         "dynamodb",
         "freshclam",
