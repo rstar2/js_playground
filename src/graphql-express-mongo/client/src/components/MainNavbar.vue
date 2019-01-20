@@ -52,7 +52,7 @@ export default {
     return {
       dialogAuth: {
         show: false,
-        isRgister: false
+        isRegister: false
       }
     };
   },

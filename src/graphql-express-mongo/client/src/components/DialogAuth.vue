@@ -1,42 +1,49 @@
 <template>
-	<md-dialog :md-active.sync="active">
-        <md-dialog-title> {{ title }} </md-dialog-title>
-    
-        <md-dialog-content>
-            <!-- <form novalidate class="md-layout" @submit.prevent="validateAdd"> -->
-    
-            <md-field :class="validateClass('email')">
-                <label>Email</label>
-                <md-input v-model="user.email"></md-input>
-                <span class="md-error" v-if="!$v.user.email.required">The email is required</span>
-                <span class="md-error" v-else-if="!$v.user.email.email">Email must be valid email.</span>
-            </md-field>
-    
-            <md-field v-if="isRegister" :class="validateClass('name')">
-                <label>Name</label>
-                <md-input v-model="user.name"></md-input>
-                <span class="md-error" v-if="!$v.user.name.required">The name is required</span>
-                <span class="md-error" v-else-if="!$v.user.name.minlength">Name must have at least
-                    {{$v.user.name.$params.minLength.min}} letters.</span>
-            </md-field>
+  <md-dialog :md-active.sync="active" :md-click-outside-to-close="false">
+    <md-dialog-title>{{ title }}</md-dialog-title>
 
-			<md-field :class="validateClass('password')">
-                <label>Password</label>
-                <md-input v-model="user.password" type="password"></md-input>
-                <span class="md-error" v-if="!$v.user.password.required">The password is required</span>
-                <span class="md-error" v-else-if="!$v.user.password.minlength">Password must have at least
-                    {{$v.user.password.$params.minLength.min}} letters.</span>
-            </md-field>
-    
-            <md-dialog-actions>
-                <md-button class="md-primary" @click="active = false">Close</md-button>
-                <md-button type="submit" class="md-primary" @click="doAction" :disabled="disabled"> {{ action }}
-                </md-button>
-            </md-dialog-actions>
-    
-            <!-- </form> -->
-        </md-dialog-content>
-    </md-dialog>
+    <md-dialog-content>
+      <!-- <form novalidate class="md-layout" @submit.prevent="validateAdd"> -->
+      <md-field :class="validateClass('email')">
+        <label>Email</label>
+        <md-input v-model="user.email"></md-input>
+        <span class="md-error" v-if="!$v.user.email.required">The email is required</span>
+        <span class="md-error" v-else-if="!$v.user.email.email">Email must be valid email.</span>
+      </md-field>
+
+      <md-field v-if="isRegister" :class="validateClass('name')">
+        <label>Name</label>
+        <md-input v-model="user.name"></md-input>
+        <span class="md-error" v-if="!$v.user.name.required">The name is required</span>
+        <span class="md-error" v-else-if="!$v.user.name.minlength">
+          Name must have at least
+          {{$v.user.name.$params.minLength.min}} letters.
+        </span>
+      </md-field>
+
+      <md-field :class="validateClass('password')">
+        <label>Password</label>
+        <md-input v-model="user.password" type="password"></md-input>
+        <span class="md-error" v-if="!$v.user.password.required">The password is required</span>
+        <span class="md-error" v-else-if="!$v.user.password.minlength">
+          Password must have at least
+          {{$v.user.password.$params.minLength.min}} letters.
+        </span>
+      </md-field>
+
+      <md-dialog-actions>
+        <md-button class="md-primary" @click="active = false">Close</md-button>
+        <md-button
+          type="submit"
+          class="md-primary"
+          @click="doAction"
+          :disabled="disabled"
+        >{{ action }}</md-button>
+      </md-dialog-actions>
+
+      <!-- </form> -->
+    </md-dialog-content>
+  </md-dialog>
 </template>
 
 <script>
@@ -88,9 +95,6 @@ export default {
   methods: {
     doAction() {
       // validate first and if any invalid field then return
-      if (this.isRegister) {
-        this.$v.user;
-      }
       this.$v.user.$touch();
 
       if (this.$v.user.$invalid) {
@@ -110,13 +114,7 @@ export default {
 
     validateClass(fieldName) {
       const field = this.$v.user[fieldName];
-
-      if (field) {
-        return {
-          "md-invalid": field.$invalid && field.$dirty
-        };
-      }
-      return null;
+      return field ? { "md-invalid": field.$invalid && field.$dirty } : null;
     }
   },
 
@@ -137,8 +135,7 @@ export default {
         minLength: minLength(4)
       },
 
-      name: {
-      }
+      name: {}
     };
 
     // only for register

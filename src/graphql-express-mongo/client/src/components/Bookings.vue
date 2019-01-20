@@ -4,6 +4,7 @@
 
 <script>
 export default {
+  name: "app-events",
   data() {
     return {
       title: "Bookings"

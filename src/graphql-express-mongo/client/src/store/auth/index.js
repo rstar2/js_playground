@@ -1,3 +1,5 @@
+import router from '@/router';
+
 // restore it from cookie/localStorage
 // It's not adviceable to store it in localStorage/sessionStorage
 // as thus it's vulnerable to XSS (injected or unintentionaly added by outself with 3rd-party library script -npm, bower, CDN)
@@ -35,6 +37,9 @@ export default {
         logout(state) {
             state.authJWT = null;
             localStorage.removeItem("authJWT");
+
+            // redirect to home;
+            router.push('/');
         }
     }
 };
