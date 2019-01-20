@@ -36,9 +36,9 @@
         <span class="md-error" v-else-if="!$v.event.price.minValue">Price must be greater than zero.</span>
       </md-field>
 
-      <md-datepicker v-model="event.date" md-immediately :class="validateClass('date')">
+      <md-datepicker v-model="event.dateAsDateObj" md-immediately :class="validateClass('dateAsDateObj')">
          <label>Date</label>
-         <span class="md-error" v-if="!$v.event.date.required">The date is required</span>
+         <!-- <span class="md-error" v-if="!$v.event.dateAsDateObj.required">The date is required</span> -->
       </md-datepicker>
 
       <md-dialog-actions>
@@ -97,18 +97,18 @@ export default {
   },
   watch: {
     // watch a nested property
-    // "item.expiresAt": function(expiresAt, old) {
-    //   if (expiresAt === old) return;
+    "event.date": function(newDate, old) {
+      if (newDate === old) return;
 
-    //   // 'expiresAt' is Number object, so create a 'expiresAtDate' as Date
-    //   this.item.expiresAtDate = expiresAt ? new Date(expiresAt) : null;
-    // },
-    // "item.expiresAtDate": function(expiresAtDate, old) {
-    //   if (expiresAtDate === old) return;
+      // 'newDate' is String object, so create a 'event.dateAsDateObj' as Date
+      this.event.dateAsDateObj = newDate ? new Date(newDate) : null;
+    },
+    "event.dateAsDateObj": function(newDateReal, old) {
+      if (newDateReal === old) return;
 
-    //   // 'expiresAtDate' is Date object, so create a 'expiresAt' as Number
-    //   this.item.expiresAt = expiresAtDate ? expiresAtDate.getTime() : null;
-    // }  
+      // 'newDateReal' is Date object, so create a 'event.date' as String
+      this.event.date = newDateReal ? newDateReal.toISOString() : null;
+    }  
   },
   methods: {
     doAction() {
@@ -156,16 +156,9 @@ export default {
         minValue: minValue(1),
         
       },
-      date: {
-        required: value => {
-          // try to construct a new Date from the passed value
-          try {
-            new Date(value);
-            return true;
-          } catch (e) {
-            return false;
-          }
-        }
+      dateAsDateObj: {
+        required,
+        // this validator is the only one needed as the Datepicker allows only Date as model
       }
     }
   }
