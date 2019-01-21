@@ -1,19 +1,23 @@
 <template>
   <div>
     <h1>{{title}}</h1>
-    <md-button
-      @click="dialogEvent.isCreate = true; dialogEvent.show = true;"
-      class="md-primary md-raised"
-    >Create event</md-button>
-    <app-dialog-event
-      v-model="dialogEvent.show"
-      :isCreate="dialogEvent.isCreate"
-      @action="$emit('handleCreateEvent', $event)"
-    ></app-dialog-event>
+    <template v-if="auth">
+      <md-button
+        @click="dialogEvent.isCreate = true; dialogEvent.show = true;"
+        class="md-primary md-raised">Create event
+      </md-button>
+      <app-dialog-event
+        v-model="dialogEvent.show"
+        :isCreate="dialogEvent.isCreate"
+        @action="$emit('handleCreateEvent', $event)">
+      </app-dialog-event>
+    </template>
   </div>
 </template>
 
 <script>
+import { mapGetters /*, mapMutations, mapActions */ } from "vuex";
+
 import DialogEvent from "@/components/DialogEvent.vue";
 
 export default {
@@ -29,6 +33,12 @@ export default {
         isCreate: true
       }
     };
+  },
+   computed: {
+    // binding a namespaced Vuex module is a bit verbose
+    ...mapGetters({
+      auth: "auth/isAuth"
+    })
   },
   methods: {
     handleCreateEvent(event) {
