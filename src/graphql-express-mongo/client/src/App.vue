@@ -11,12 +11,12 @@
 </template>
 
 <script>
-import MainNavbar from "@/components/MainNavbar.vue";
-import Notifications from "@/components/Notifications.vue";
-
 import { mapGetters /*, mapMutations, mapActions */ } from "vuex";
 
-import api from "@/services/api.js";
+import bus from "@/bus.js";
+import MainNavbar from "@/components/MainNavbar.vue";
+import Notifications from "@/components/Notifications.vue";
+import graphql from "@/services/graphql.api.js";
 
 export default {
   name: "app",
@@ -34,6 +34,9 @@ export default {
     ...mapGetters({
       auth: "auth/isAuth"
     })
+  },
+  created() {
+      bus.$on('show-notification', this.showNotification)
   },
   methods: {
     handleLogout() {
@@ -63,12 +66,14 @@ export default {
         `
       };
 
-      api("http://localhost:5000/graphql", data)
+      graphql(data)
         .then(res => res.data[isRegister ? "registerUser" : "loginUser"])
         .then(res => {
-          this.info = `You are now logged in as ${user.email} (${res.userId})`;
+          this.showNotification({
+            info: `You are now logged in as ${user.email} (${res.userId})`
+          });
 
-          this.$store.commit("auth/login", { authJWT: res.jwt });
+          this.$store.commit("auth/login", { JWT: res.jwt });
         })
         .catch(error => {
           console.error(error);
@@ -78,16 +83,23 @@ export default {
           //     "errors": [ { "message": "asdasd", ....}],
           //     "data": {}
           // }
+          let info;
           if (error.errors && error.errors.length) {
             // show specific error cause
-            this.info = error.errors[0].message;
+            info = error.errors[0].message;
           } else {
             // show general error
-            this.info = `Failed to ${isRegister ? "register" : "login"} as ${
+            info = `Failed to ${isRegister ? "register" : "login"} as ${
               user.email
             }`;
+
+            this.showNotification({ info });
           }
         });
+    },
+
+    showNotification({ info }) {
+      this.info = info;
     }
   }
 };

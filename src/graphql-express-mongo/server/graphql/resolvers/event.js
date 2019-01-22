@@ -23,16 +23,18 @@ module.exports = {
     },
 
     // return a Promise - work with async/await
-    
+
     /**
      * @param {Object} args 
      * @param {Request} req 
      */
     async createEvent(args, req) {
         checkAuth(req);
-        
-        const { title, description, price, date, creator } = args.input;
 
+        const { title, description, price, date } = args.input;
+
+        // creator is the authorized user
+        const creator = req.userId;
         const user = await User.findById(creator);
         if (!user) throw new Error('User does not exist');
 

@@ -44,7 +44,7 @@ const auth = (req, res, next) => {
             return next();
         }
 
-        // if everything good, save to request for use in other routes
+        // if everything is good, attach to the request for use in other routes
         req.auth = true;
         req.userId = decoded.id;
         next();

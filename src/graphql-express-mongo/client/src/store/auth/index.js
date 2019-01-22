@@ -11,13 +11,13 @@ import router from '@/router';
 // The header will — by default — not be set for cross-domain requests. This prevents unauthorized servers (e.g. malicious or compromised 3rd-party APIs) from gaining access to your users' XSRF tokens and exposing them to Cross Site Request Forgery. If you want to, you can whitelist additional origins to also receive the XSRF token, by adding them to xsrfWhitelistedOrigins. This might be useful, for example, if your application, served from example.com, needs to access your API at api.example.com. See $httpProvider.xsrfWhitelistedOrigins for more details.
 
 //https://stormpath.com/blog/where-to-store-your-jwts-cookies-vs-html5-web-storage
-const authJWT_init = localStorage.getItem("authJWT") || null;
+const JWT_init = localStorage.getItem("authJWT") || null;
 
 export default {
     namespaced: true,
     
     state: {
-        authJWT: authJWT_init
+        JWT: JWT_init,
     },
     getters: {
         /**
@@ -25,17 +25,17 @@ export default {
          * @param {Boolean} state 
          */
         isAuth(state) {
-            return !!state.authJWT;
+            return !!state.JWT;
         }
     },
     mutations: {
-        login(state, { authJWT }) {
-            state.authJWT = authJWT;
-            localStorage.setItem("authJWT", state.authJWT);
+        login(state, { JWT }) {
+            state.JWT = JWT;
+            localStorage.setItem("authJWT", state.JWT);
         },
 
         logout(state) {
-            state.authJWT = null;
+            state.JWT = null;
             localStorage.removeItem("authJWT");
 
             // redirect to home;

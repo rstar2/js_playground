@@ -4,7 +4,7 @@
  * @param {Object?} data 
  * @param {Stting?} authToken 
  */
-const api = (url, data, authToken) => {
+const http = (url, data, authToken) => {
     const opts = {
         headers: {},
     };
@@ -46,4 +46,4 @@ const api = (url, data, authToken) => {
 };
 export const ERROR_UNAUTHORIZED = 'Unauthorized';
 
-export default api;
+export default http;

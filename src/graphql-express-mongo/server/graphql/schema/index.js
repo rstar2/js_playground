@@ -23,7 +23,6 @@ module.exports = buildSchema(`
             description: String!
             price: Float!
             date: String!
-            creator: String!
         }
 
         type User {
