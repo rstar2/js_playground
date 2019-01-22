@@ -8,24 +8,28 @@
         <label>Title</label>
         <md-input v-model="event.title"></md-input>
         <span class="md-error" v-if="!$v.event.title.required">The title is required</span>
-        <span class="md-error" v-else-if="!$v.event.title.minlength">
-            Title must be at least {{$v.event.title.$params.minLength.min}} letters.
-        </span>
-        <span class="md-error" v-else-if="!$v.event.title.maxlength">
-            Title must be max {{$v.event.title.$params.maxLength.max}} letters.
-        </span>
+        <span
+          class="md-error"
+          v-else-if="!$v.event.title.minlength"
+        >Title must be at least {{$v.event.title.$params.minLength.min}} letters.</span>
+        <span
+          class="md-error"
+          v-else-if="!$v.event.title.maxlength"
+        >Title must be max {{$v.event.title.$params.maxLength.max}} letters.</span>
       </md-field>
 
       <md-field :class="validateClass('description')">
         <label>Description</label>
         <md-textarea v-model="event.description"></md-textarea>
         <span class="md-error" v-if="!$v.event.description.required">The description is required</span>
-        <span class="md-error" v-else-if="!$v.event.description.minlength">
-          Description must have at least {{$v.event.description.$params.minLength.min}} letters.
-        </span>
-        <span class="md-error" v-else-if="!$v.event.description.maxlength">
-          Description must have max {{$v.event.description.$params.maxlength.max}} letters.
-        </span>
+        <span
+          class="md-error"
+          v-else-if="!$v.event.description.minlength"
+        >Description must have at least {{$v.event.description.$params.minLength.min}} letters.</span>
+        <span
+          class="md-error"
+          v-else-if="!$v.event.description.maxlength"
+        >Description must have max {{$v.event.description.$params.maxlength.max}} letters.</span>
       </md-field>
 
       <md-field :class="validateClass('price')">
@@ -36,9 +40,13 @@
         <span class="md-error" v-else-if="!$v.event.price.minValue">Price must be greater than zero.</span>
       </md-field>
 
-      <md-datepicker v-model="event.dateAsDateObj" md-immediately :class="validateClass('dateAsDateObj')">
-         <label>Date</label>
-         <!-- <span class="md-error" v-if="!$v.event.dateAsDateObj.required">The date is required</span> -->
+      <md-datepicker
+        v-model="event.dateAsDateObj"
+        md-immediately
+        :class="validateClass('dateAsDateObj')"
+      >
+        <label>Date</label>
+        <!-- <span class="md-error" v-if="!$v.event.dateAsDateObj.required">The date is required</span> -->
       </md-datepicker>
 
       <md-dialog-actions>
@@ -53,10 +61,17 @@
 
 <script>
 import { validationMixin } from "vuelidate";
-import { required, minLength, maxLength, decimal, minValue } from "vuelidate/lib/validators";
+import {
+  required,
+  minLength,
+  maxLength,
+  decimal,
+  minValue
+} from "vuelidate/lib/validators";
 
 export default {
   props: {
+    //  NOTE - specifyin the "model" name as property is obligatory so that it is passed from the parent to this child
     show: { type: Boolean, default: false },
     isCreate: { type: Boolean, default: true }
   },
@@ -76,7 +91,9 @@ export default {
       // setter
       set: function(newValue) {
         if (!newValue) {
-          this.$emit("close");
+          // NOTE - Avoid mutating the parent's prop 'show' directly,
+          // insteat emit an event that will do this 
+          this.$emit("close", false);
         }
       }
     },
@@ -91,24 +108,9 @@ export default {
         title: null,
         description: null,
         price: null,
-        date: null
+        dateAsDateObj: null
       }
     };
-  },
-  watch: {
-    // watch a nested property
-    "event.date": function(newDate, old) {
-      if (newDate === old) return;
-
-      // 'newDate' is String object, so create a 'event.dateAsDateObj' as Date
-      this.event.dateAsDateObj = newDate ? new Date(newDate) : null;
-    },
-    "event.dateAsDateObj": function(newDateReal, old) {
-      if (newDateReal === old) return;
-
-      // 'newDateReal' is Date object, so create a 'event.date' as String
-      this.event.date = newDateReal ? newDateReal.toISOString() : null;
-    }  
   },
   methods: {
     doAction() {
@@ -121,6 +123,8 @@ export default {
       }
 
       const event = this.event;
+      // convert the Date object to String
+      event.date  = event.dateAsDateObj ? event.dateAsDateObj.toISOString() : null;
 
       this.event = {};
       this.$v.event.$reset();
@@ -153,11 +157,10 @@ export default {
       price: {
         required,
         number: decimal, // Note: 'decimal' is the Vuelidate validator for a Float number (99.9)
-        minValue: minValue(1),
-        
+        minValue: minValue(1)
       },
       dateAsDateObj: {
-        required,
+        required
         // this validator is the only one needed as the Datepicker allows only Date as model
       }
     }

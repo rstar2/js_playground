@@ -1,6 +1,5 @@
 <template>
-  <div>
-    <h1>{{title}}</h1>
+  <div class="app-events">
     <template v-if="auth">
       <md-button
         @click="dialogEvent.isCreate = true; dialogEvent.show = true;"
@@ -12,6 +11,15 @@
         @action="handleCreateEvent"
       ></app-dialog-event>
     </template>
+
+    <md-divider></md-divider>
+    <md-subheader>{{title}}</md-subheader>
+    <md-list>
+      <md-list-item v-for="event in events" :key="event._id">
+        <md-icon>move_to_inbox</md-icon>
+        <span class="md-list-item-text">{{ event.title }}</span>
+      </md-list-item>
+    </md-list>  
   </div>
 </template>
 
@@ -33,7 +41,8 @@ export default {
       dialogEvent: {
         show: false,
         isCreate: true
-      }
+      },
+      events: []
     };
   },
   computed: {
@@ -41,6 +50,9 @@ export default {
     ...mapGetters({
       auth: "auth/isAuth"
     })
+  },
+  created() {
+      this.getEvents();
   },
   methods: {
     handleCreateEvent(event) {
@@ -56,6 +68,7 @@ export default {
         .then(res => res.data.createEvent)
         .then(({ _id }) => {
           bus.$emit("show-notification", { info: `Created new event ${title} (${_id})` });
+          this.events.push({ ...event, _id });
         })
         .catch(error => {
           console.error(error);
@@ -75,8 +88,57 @@ export default {
             bus.$emit("show-notification", { info });
           }
         });
+    },
+
+    getEvents() {
+        const data = {
+        query: `query {
+            events {
+                _id
+                title
+                description
+                price            
+                date   
+                creator {
+                    _id,
+                    email
+                }
+            }
+        }`
+      };
+      graphql(data)
+        .then(res => res.data.events)
+        .then(events => {
+          bus.$emit("show-notification", { info: 'Fetched list with events' + events.length });
+          this.events = events;
+        })
+        .catch(error => {
+          console.error(error);
+
+          // GraphQL returns errors like this:
+          // {
+          //     "errors": [ { "message": "asdasd", ....}],
+          //     "data": {}
+          // }
+          let info;
+          if (error.errors && error.errors.length) {
+            // show specific error cause
+            info = error.errors[0].message;
+          } else {
+            // show general error
+            info = 'Failed to fetch list with events';
+            bus.$emit("show-notification", { info });
+          }
+        });
     }
   }
 };
 </script>
+
+<style scoped>
+.app-events {
+    width: 100%;
+}
+</style>
+
 
