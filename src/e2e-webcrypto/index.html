@@ -35,10 +35,14 @@
 
         const RSAOAEP = {
             name: "RSA-OAEP",
-            modulusLength: 4096,
-            publicExponent: new Uint8Array([0x01, 0x00, 0x01]),
+            // modulusLength: 2048,
+            // publicExponent: new Uint8Array([0x01, 0x00, 0x01]),
+
             // hash: "SHA-256",
-            hash: "SHA-1", // because NodeJS crypto.privateDecrypt(...) uses only SHA-1
+            hash: "SHA-1", 
+            // 1. for NodeJS because crypto.privateDecrypt(...) in NodeJS uses only SHA-1
+            // for decrypting with openssl
+            // $ base64 -d message.enc.b64 | openssl rsautl -decrypt -inkey privkey.pem -oaep
         };
 
         /**
@@ -62,7 +66,10 @@
                 RSAOAEP,
                 true,
                 ["encrypt"]
-            );
+            )
+                .catch(error => {
+                    throw error;
+                });
         }
 
         /**
@@ -76,7 +83,9 @@
             console.log('Encrypt:', messageBuffer);
 
             return importRsaPublicKeyPem(publicKeyPEM)
-                .then(publicKey => window.crypto.subtle.encrypt(RSAOAEP, publicKey, messageBuffer));
+                .then(publicKey => {
+                    return window.crypto.subtle.encrypt(RSAOAEP, publicKey, messageBuffer);
+                });
         }
 
         /*
@@ -121,7 +130,7 @@ that will resolve to a CryptoKey representing the private key.
         (function () {
             const privateKeyPEM = window.privateKeyPEM;
             const publicKeyPEM = window.publicKeyPEM;
-            const message = "Hello from Browser";
+            const message = "rumen";
 
             console.log('Encrypt string:', message);
 
@@ -131,10 +140,9 @@ that will resolve to a CryptoKey representing the private key.
                 .then(/*Uint8Array*/bufferEncrypted => btoa(String.fromCharCode.apply(null, bufferEncrypted)))
                 .then(/*String (Base64)*/messageEncoded => {
                     // pass to the decrypt it in server
+                    console.log('Encrypted and Base64 encoded:', messageEncoded)
 
-                    // messageEncoded = "cKz7KVzQtAeoEAt9su3W7tk6v1KoKhjQVYQVDOprBhF3ulha8buX5IRMh0iMfHnN5v/pZ4WkFXtEiSAIqFsWrydfY1Z/LgZNWlnfylXqOWFeW4vADlPaKDi45PHsZuDLPRxtkhHo19oZrAnochdH1aJ0J+3hDNCvks8dYKcbRtUGsv5X8rnp6iBlxCC5wy3XrNvtwtxN2sWYI2FhDsPbIVXqgiuSgMFGRgbiwBGYOAbQQV6QdHhF0SNeDi5yvp/dc4C4GQWsupMeWF0OuHsXXiuXzR8XnQQ4BPRXnWX3YMXHkiZWKn2dXqvVTPyHnR1SQ+D0lo7AAynH3+BrNU7azA2HiEiCIyQMccFMY/0HS9IWn04CW6MmIqn4q9/U6eeC2ASzhyiayEWi6DfVmW3fKzLgPfYn5zmYnXtKI9BQQyiBSBbrf0WE9rVDwxmehoItCSeQmWZFGCnMea7CBIdkgRQFkZ5xjnkDQsLGMOl9rLYhc6WZe9VsRAeOnTjyvo+dPrd8tgwQCWU4l3hTRVfJytgTgL9ImNmJvrrvPQHM+gcwvAyDrL9KgF87u8jYBCuT2CMKAdhmntNKoFpzHEB9YmSgoOqB5ZYlYd7ePe9TMD3Bd5boq0pqoQBVPGdckMNyFiV/mW0KBBlzAjk1cyEIH7Op4+17RG04f2cru+QxYt0=";
-
-                    const str = atob(messageEncoded)
+                    const str = atob(messageEncoded);
                     return str2ab(str);
                 })
 
@@ -143,7 +151,9 @@ that will resolve to a CryptoKey representing the private key.
                 .then(/*Uint8Array*/bufferDecrypt => console.log('Decrypted:', bufferDecrypt) || bufferDecrypt)
                 .then(/*Uint8Array*/bufferDecrypt => ab2str(bufferDecrypt))
                 .then(/*String*/messageDecrypt => console.log('Decrypted string:', messageDecrypt))
-                .catch(error => console.error(error));
+                .catch(error => {
+                    console.error(error);
+                });
 
         })();
 
