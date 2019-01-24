@@ -1,0 +1,12 @@
+{
+  "name": "rxjs-search-autocomplete",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "json-server server/data/db.json --config server/json-server.json "
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT"
+}

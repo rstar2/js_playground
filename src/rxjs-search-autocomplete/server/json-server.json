@@ -1,0 +1,7 @@
+{
+    "port": 3000,
+    "watch": true,
+    "routes": "server/routes/routes.json",
+    "middlewares": ["server/middlewares/1.js"],
+    "static": "client"
+}
