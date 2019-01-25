@@ -56,5 +56,66 @@ router.render = (req, res) => {
 server.use(router);
 
 server.listen(3000, () => {
-    console.log('JSON Server is running')
-})
+    console.log('JSON Server is running');
+});
+
+/*
+Note - Relations (foreign keys)
+{
+    "posts": [
+        {
+            "id": 1,
+            "title": "json-server",
+            "authorId": 1
+        },
+        {
+            "id": 2,
+            "title": "cooking",
+            "authorId": 2
+        },
+        {
+            "id": 3,
+            "title": "js",
+            "authorId": 1
+        }
+    ],
+    "authors": [
+        {
+            "id": 1,
+            "name": "Rumen"
+        },
+        {
+            "id": 2,
+            "name": "Kasia"
+        }
+    ],
+    "comments": [
+        {
+            "id": 1,
+            "body": "some comment",
+            "postId": 1
+        }
+    ]
+}
+
+This will allow request like:
+/comments?_expand=post
+/posts?_expand=author
+
+and cross-referenced:
+/posts?_embed=comments
+/authors?_embed=posts
+
+
+Note - Full-text search - Use 'q' query
+GET /posts?q=js
+
+
+Note - for plain array data:
+{
+    "words": ["a", "aa", "abv"]
+}
+/words?_start=0&_end=1
+/words?q=v
+/words?_limit=3
+*/

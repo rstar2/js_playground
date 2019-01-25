@@ -3,7 +3,27 @@
         {
             "id": 1,
             "title": "json-server",
-            "author": "typicode"
+            "authorId": 1
+        },
+        {
+            "id": 2,
+            "title": "cooking",
+            "authorId": 2
+        },
+        {
+            "id": 3,
+            "title": "js",
+            "authorId": 1
+        }
+    ],
+    "authors": [
+        {
+            "id": 1,
+            "name": "Rumen"
+        },
+        {
+            "id": 2,
+            "name": "Kasia"
         }
     ],
     "comments": [
@@ -15,5 +35,9 @@
     ],
     "profile": {
         "name": "typicode"
-    }
+    },
+    "words": [
+        "a", "w", "vasdad", "aa", "abv"
+    ]
+    
 }
