@@ -32,15 +32,25 @@
         const searcher$ = keyupNeeded$.switchMap(searchWikipedia);
 
         searcher$.subscribe(data => {
-            $results.innerHTML = '';
             console.log('data', data);
 
-            // $results.append($.map(data[1], function (v) { return $('<li>').text(v); }));
-        }, error => {
             $results.innerHTML = '';
+            
+            data.forEach(result => {
+                const $result = document.createElement('li');
+                $result.innerText = result['title'];  // jshint ignore:line
+                // result['snippet'], result['pageid']
+                
+                $results.appendChild($result);
+            });
+        }, error => {
             console.error(error);
 
-            // $results.append($('<li>').text('Error:' + error));
+            $results.innerHTML = '';
+
+            const $result = document.createElement('li');
+            $result.innerText = 'Error:' + error;
+            $results.appendChild($result);
         });
     }
 
