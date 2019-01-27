@@ -14,12 +14,12 @@
 
     <md-divider></md-divider>
     <md-subheader>{{title}}</md-subheader>
-    <md-list>
-      <md-list-item v-for="event in events" :key="event._id">
-        <md-icon>move_to_inbox</md-icon>
-        <span class="md-list-item-text">{{ event.title }}</span>
-      </md-list-item>
-    </md-list>  
+    <div class="events">
+      <app-event v-for="event in events" :key="event._id" :event="event"
+        @view-etails='handleViewDetailsEvent(event)'
+        @book='handleBookEvent(event)'>
+      </app-event>
+    </div>  
   </div>
 </template>
 
@@ -28,12 +28,15 @@ import { mapGetters /*, mapMutations, mapActions */ } from "vuex";
 
 import bus from "@/bus.js";
 import graphql from "@/services/graphql.api.js";
+import Event from "@/components/Event.vue";
 import DialogEvent from "@/components/DialogEvent.vue";
 
 export default {
   name: "app-events",
   components: {
-    "app-dialog-event": DialogEvent
+    "app-dialog-event": DialogEvent,
+    "app-event": Event
+
   },
   data() {
     return {
@@ -55,6 +58,14 @@ export default {
       this.getEvents();
   },
   methods: {
+    handleViewDetailsEvent(event) {
+        console.log('view-details', event);
+        
+    },
+    handleBookEvent(event) {
+        console.log('book', event);
+        
+    },
     handleCreateEvent(event) {
       const { title, description, price, date } = event;
       const data = {
@@ -137,7 +148,7 @@ export default {
 
 <style scoped>
 .app-events {
-    width: 100%;
+    /* width: 100%; */
 }
 </style>
 

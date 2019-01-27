@@ -1,5 +1,5 @@
 <template>
-  <div id="app" class="md-layout">
+  <div id="app" class="md-layoutX">
     <app-main-navbar :auth="auth" @handleAuth="handleAuth" @handleLogout="handleLogout"></app-main-navbar>
 
     <!-- route outlet -->
