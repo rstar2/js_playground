@@ -43,7 +43,7 @@ const fixMongoEvent = (obj) => {
 /**
  * 
  * @param {String[]}
- * @return {Function{String => Promise<Event[]>}}
+ * @return {Function{String[] => Promise<Event[]>}}
  */
 const populateEvents = (eventIds) => {
     // convert the array of Mongo.ObjectId  to an array of Event
@@ -94,8 +94,8 @@ const getEventsByIds = (eventIds) => {
  * @param {String} eventId 
  * @return {Promise<Event>}
  */
-const getEventById = (userId) => {
-    return Event.findById(userId).exec()
+const getEventById = (eventId) => {
+    return Event.findById(eventId).exec()
         .then(fixMongoEvent);
 };
 

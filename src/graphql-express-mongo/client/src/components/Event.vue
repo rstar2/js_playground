@@ -13,12 +13,15 @@
 
     <md-card-actions>
       <md-button v-if="!isCreator" @click="$emit('view-etails')">View Details</md-button>
-      <md-button @click="$emit('book')">Book</md-button>
+      <md-button v-else>You are the creator</md-button>
+      <md-button v-if="isAuth" @click="$emit('book')">Book</md-button>
     </md-card-actions>
   </md-card>
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+
 export default {
   props: {
     isCreator: { type: Boolean, default: false },
@@ -31,15 +34,21 @@ export default {
       }
       return `${value.substr(0, length)}...`;
     }
+  },
+  computed: {
+    // binding a namespaced Vuex module is a bit verbose
+    ...mapGetters({
+      isAuth: "auth/isAuth"
+    })
   }
 };
 </script>
 
 <style>
 .md-card {
-    width: 320px;
-    margin: 4px;
-    display: inline-block;
-    vertical-align: top;
-  }
+  width: 320px;
+  margin: 4px;
+  display: inline-block;
+  vertical-align: top;
+}
 </style>

@@ -14,12 +14,15 @@
 
     <md-divider></md-divider>
     <md-subheader>{{title}}</md-subheader>
-    <div class="events">
-      <app-event v-for="event in events" :key="event._id" :event="event"
-        @view-etails='handleViewDetailsEvent(event)'
-        @book='handleBookEvent(event)'>
-      </app-event>
-    </div>  
+    <div>
+      <app-event
+        v-for="event in events"
+        :key="event._id"
+        :event="event"
+        @view-etails="handleViewDetailsEvent(event)"
+        @book="handleBookEvent(event)"
+      ></app-event>
+    </div>
   </div>
 </template>
 
@@ -36,7 +39,6 @@ export default {
   components: {
     "app-dialog-event": DialogEvent,
     "app-event": Event
-
   },
   data() {
     return {
@@ -55,16 +57,26 @@ export default {
     })
   },
   created() {
-      this.getEvents();
+    this.getEvents();
   },
   methods: {
     handleViewDetailsEvent(event) {
-        console.log('view-details', event);
-        
+      console.log("view-details", event);
     },
     handleBookEvent(event) {
-        console.log('book', event);
-        
+      const data = {
+        query: `mutation {
+            createBooking(eventId: "${event._id}") {
+                _id
+            }
+        }`
+      };
+      graphql(data)
+        .then(res => res.data.bookEvent)
+        .then(booking => {
+          bus.$emit("show-notification", { info: "Booked event " + event._id });
+        })
+        .catch(this._showError);
     },
     handleCreateEvent(event) {
       const { title, description, price, date } = event;
@@ -78,31 +90,16 @@ export default {
       graphql(data)
         .then(res => res.data.createEvent)
         .then(({ _id }) => {
-          bus.$emit("show-notification", { info: `Created new event ${title} (${_id})` });
+          bus.$emit("show-notification", {
+            info: `Created new event ${title} (${_id})`
+          });
           this.events.push({ ...event, _id });
         })
-        .catch(error => {
-          console.error(error);
-
-          // GraphQL returns errors like this:
-          // {
-          //     "errors": [ { "message": "asdasd", ....}],
-          //     "data": {}
-          // }
-          let info;
-          if (error.errors && error.errors.length) {
-            // show specific error cause
-            info = error.errors[0].message;
-          } else {
-            // show general error
-            info = "Failed to create new event";
-            bus.$emit("show-notification", { info });
-          }
-        });
+        .catch(this._showError);
     },
 
     getEvents() {
-        const data = {
+      const data = {
         query: `query {
             events {
                 _id
@@ -120,35 +117,26 @@ export default {
       graphql(data)
         .then(res => res.data.events)
         .then(events => {
-          bus.$emit("show-notification", { info: 'Fetched list with events' + events.length });
+          bus.$emit("show-notification", {
+            info: "Fetched list with events: " + events.length
+          });
           this.events = events;
         })
-        .catch(error => {
-          console.error(error);
-
-          // GraphQL returns errors like this:
-          // {
-          //     "errors": [ { "message": "asdasd", ....}],
-          //     "data": {}
-          // }
-          let info;
-          if (error.errors && error.errors.length) {
-            // show specific error cause
-            info = error.errors[0].message;
-          } else {
-            // show general error
-            info = 'Failed to fetch list with events';
-            bus.$emit("show-notification", { info });
-          }
-        });
+        .catch(this._showError);
     }
+  },
+
+  _showError(error) {
+    console.error(error);
+    const info = error.errors[0].message;
+    bus.$emit("show-notification", { info });
   }
 };
 </script>
 
 <style scoped>
 .app-events {
-    /* width: 100%; */
+  width: 100%;
 }
 </style>
 

@@ -38,7 +38,8 @@ module.exports = {
     async createBooking(args, req) {
         checkAuth(req);
 
-        const { eventId, userId } = args;
+        const userId = req.userId;
+        const { eventId } = args;
 
         const user = await User.findById(userId);
         if (!user) throw new Error('User does not exist');
@@ -46,8 +47,7 @@ module.exports = {
         const event = await Event.findById(eventId);
         if (!event) throw new Error('Event does not exist');
 
-
-        let booking = new Booking({ eventId, userId });
+        let booking = new Booking({ event: eventId, user: userId });
         booking = await booking.save();
         booking = fixMongoBooking(booking);
 

@@ -67,7 +67,7 @@ module.exports = buildSchema(`
 
             createEvent(input: EventInput!): Event!
             createUser(input: UserInput!): User!
-            createBooking(eventId: ID!, userId: ID!): Booking!
+            createBooking(eventId: ID!): Booking!
             cancelBooking(bookingId: ID!): Event!
 
             registerUser(email: String!, password: String!): AuthData!

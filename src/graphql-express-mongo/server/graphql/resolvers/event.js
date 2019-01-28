@@ -14,7 +14,7 @@ module.exports = {
         //     .then(arr => arr.map(getMongoObj));
 
         // populating will work only for the 'creator' field,
-        // but as populated User object will its "events" field will still not be populated
+        // but as populated User object with its "events" field will still not be populated
 
         // so different approach:
         return Event.find().exec()
