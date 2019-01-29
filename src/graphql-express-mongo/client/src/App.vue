@@ -36,7 +36,16 @@ export default {
     })
   },
   created() {
-      bus.$on('show-notification', this.showNotification)
+    bus.$on("show-notification", this.showNotification);
+    
+    bus.$on("show-error-graphql", error => {
+        // This is assumed to be a GraphQL API response error
+      console.error(error);
+      const info = error.errors[0].message;
+      // this or the other line
+      // bus.$emit("show-notification", { info });
+      this.showNotification({ info });
+    });
   },
   methods: {
     handleLogout() {
@@ -51,7 +60,6 @@ export default {
           ? `
         mutation {
             registerUser(email: "${user.email}", password: "${user.password}") {
-                userId
                 jwt
             }
         }
@@ -59,7 +67,6 @@ export default {
           : `
         query {
             loginUser(email: "${user.email}", password: "${user.password}") {
-                userId
                 jwt
             }
         }

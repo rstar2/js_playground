@@ -12,9 +12,11 @@
     </md-card-header>
 
     <md-card-actions>
-      <md-button v-if="!isCreator" @click="$emit('view-etails')">View Details</md-button>
-      <md-button v-else>You are the creator</md-button>
-      <md-button v-if="isAuth" @click="$emit('book')">Book</md-button>
+      <template v-if="!isCreator">
+        <md-button @click="$emit('view-etails')">View Details</md-button>
+        <md-button v-if="isAuth" @click="$emit('book')">Book</md-button>
+      </template>
+      <div v-else class="md-subhead">You are the creator</div>
     </md-card-actions>
   </md-card>
 </template>
@@ -24,7 +26,6 @@ import { mapGetters } from "vuex";
 
 export default {
   props: {
-    isCreator: { type: Boolean, default: false },
     event: { type: Object, required: true }
   },
   filters: {
@@ -39,7 +40,14 @@ export default {
     // binding a namespaced Vuex module is a bit verbose
     ...mapGetters({
       isAuth: "auth/isAuth"
-    })
+    }),
+
+    isCreator() {
+      return (
+        this.isAuth &&
+        this.event.creator._id === this.$store.getters["auth/userId"]
+      );
+    }
   }
 };
 </script>

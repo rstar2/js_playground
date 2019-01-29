@@ -78,9 +78,7 @@ export default {
     },
 
     _showError(error) {
-      console.error(error);
-      const info = error.errors[0].message;
-      bus.$emit("show-notification", { info });
+      bus.$emit("show-error-graphql", error);
     }
   }
 };

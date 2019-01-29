@@ -73,7 +73,7 @@ export default {
       };
       graphql(data)
         .then(res => res.data.bookEvent)
-        .then(booking => {
+        .then(() => {
           bus.$emit("show-notification", { info: "Booked event " + event._id });
         })
         .catch(this._showError);
@@ -123,13 +123,11 @@ export default {
           this.events = events;
         })
         .catch(this._showError);
-    }
-  },
+    },
 
-  _showError(error) {
-    console.error(error);
-    const info = error.errors[0].message;
-    bus.$emit("show-notification", { info });
+    _showError(error) {
+      bus.$emit("show-error-graphql", error);
+    }
   }
 };
 </script>

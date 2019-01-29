@@ -1,5 +1,10 @@
 import router from '@/router';
 
+
+// import just a client decoding tool
+import jwtDecode from 'jwt-decode';
+// const jwtDecode = require('jwt-decode');
+
 // restore it from cookie/localStorage
 // It's not adviceable to store it in localStorage/sessionStorage
 // as thus it's vulnerable to XSS (injected or unintentionaly added by outself with 3rd-party library script -npm, bower, CDN)
@@ -22,10 +27,18 @@ export default {
     getters: {
         /**
          * Return whether the user is authenticated, e.g. there's a valid auth JWT token
-         * @param {Boolean} state 
+         * @return {Boolean} 
          */
         isAuth(state) {
             return !!state.JWT;
+        },
+
+        /**
+         * Return the authenticated user's ID (if there's authenticated one).
+         * @return {String} 
+         */
+        userId(state) {
+            return state.JWT && jwtDecode(state.JWT).id;
         }
     },
     mutations: {
