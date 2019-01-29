@@ -47,7 +47,7 @@ export default {
 
           this.bookings = this.bookings.filter(item => item._id !== booking._id);
         })
-        .catch(this._showError);
+        .catch(this.showError);
     },
 
     getBookings() {
@@ -74,10 +74,10 @@ export default {
           });
           this.bookings = bookings;
         })
-        .catch(this._showError);
+        .catch(this.showError);
     },
 
-    _showError(error) {
+    showError(error) {
       bus.$emit("show-error-graphql", error);
     }
   }

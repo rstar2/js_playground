@@ -37,9 +37,15 @@ export default {
   },
   created() {
     bus.$on("show-notification", this.showNotification);
-    
+
     bus.$on("show-error-graphql", error => {
-        // This is assumed to be a GraphQL API response error
+      // This is assumed to be a GraphQL API response error
+      // GraphQL returns errors like this:
+      // {
+      //     "errors": [ { "message": "asdasd", ....}],
+      //     "data": {}
+      // }
+
       console.error(error);
       const info = error.errors[0].message;
       // this or the other line
@@ -76,32 +82,14 @@ export default {
       graphql(data)
         .then(res => res.data[isRegister ? "registerUser" : "loginUser"])
         .then(res => {
-          this.showNotification({
+          bus.$emit("show-notification", {
             info: `You are now logged in as ${user.email} (${res.userId})`
           });
 
           this.$store.commit("auth/login", { JWT: res.jwt });
         })
         .catch(error => {
-          console.error(error);
-
-          // GraphQL returns errors like this:
-          // {
-          //     "errors": [ { "message": "asdasd", ....}],
-          //     "data": {}
-          // }
-          let info;
-          if (error.errors && error.errors.length) {
-            // show specific error cause
-            info = error.errors[0].message;
-          } else {
-            // show general error
-            info = `Failed to ${isRegister ? "register" : "login"} as ${
-              user.email
-            }`;
-
-            this.showNotification({ info });
-          }
+          bus.$emit("show-error-graphql", error);
         });
     },
 

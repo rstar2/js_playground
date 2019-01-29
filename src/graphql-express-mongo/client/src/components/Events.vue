@@ -76,7 +76,7 @@ export default {
         .then(() => {
           bus.$emit("show-notification", { info: "Booked event " + event._id });
         })
-        .catch(this._showError);
+        .catch(this.showError);
     },
     handleCreateEvent(event) {
       const { title, description, price, date } = event;
@@ -95,7 +95,7 @@ export default {
           });
           this.events.push({ ...event, _id });
         })
-        .catch(this._showError);
+        .catch(this.showError);
     },
 
     getEvents() {
@@ -122,10 +122,10 @@ export default {
           });
           this.events = events;
         })
-        .catch(this._showError);
+        .catch(this.showError);
     },
 
-    _showError(error) {
+    showError(error) {
       bus.$emit("show-error-graphql", error);
     }
   }
