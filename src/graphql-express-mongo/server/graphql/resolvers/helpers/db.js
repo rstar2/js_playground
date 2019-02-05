@@ -1,6 +1,24 @@
 const { date2str } = require('../../../utils/date');
 const { Event, User } = require('../../../db/models');
 
+const DataLoader = require('dataloader');
+
+// batching-cache loaders
+const eventLoader = new DataLoader(eventIds => {
+    if (eventIds.length === 1) {
+        // we always have to return a Promise<Array<value>>, so make the artificial array
+        return Promise.all([Event.findById(eventIds[0]).exec()]);
+    }
+    const events = Event.find({ _id: { $in: eventIds } }).exec();
+    return events;
+});
+const userLoader = new DataLoader(userIds => {
+    if (userIds.length === 1) {
+        // we always have to return a Promise<Array<value>>, so make the artificial array
+        return Promise.all([User.findById(userIds[0]).exec()]);
+    }
+    return User.find({ _id: { $in: userIds } }).exec();
+});
 
 /**
  * 
@@ -81,12 +99,16 @@ const populateUser = (userId) => {
 
 /**
  * 
- * @param {String} userId 
+ * @param {String[]} eventIds 
  * @return {Promise<User>}
  */
 const getEventsByIds = (eventIds) => {
-    return Event.find({ _id: { $in: eventIds } }).exec()
-        .then(arr => arr.map(obj => fixMongoEvent(obj)));
+    // using the batch-cache loader
+    const events = eventLoader.loadMany(eventIds);
+    // // using plain Mongoose request
+    // const events = Event.find({ _id: { $in: eventIds } }).exec();
+
+    return events.then(arr => arr.map(obj => fixMongoEvent(obj)));
 };
 
 /**
@@ -95,8 +117,14 @@ const getEventsByIds = (eventIds) => {
  * @return {Promise<Event>}
  */
 const getEventById = (eventId) => {
-    return Event.findById(eventId).exec()
-        .then(fixMongoEvent);
+    // using the batch-cache loader
+    const event = eventLoader.load(eventId);
+    // // using plain Mongoose request
+    // const user =  Event.findById(eventId).exec();
+
+
+    // // using plain Mongoose request
+    return event.then(fixMongoEvent);
 };
 
 /**
@@ -105,8 +133,12 @@ const getEventById = (eventId) => {
  * @return {Promise<User>}
  */
 const getUserById = (userId) => {
-    return User.findById(userId).exec()
-        .then(fixMongoUser);
+    // using the batch-cache loader
+    const user = userLoader.load(userId);
+    // // using plain Mongoose request
+    // const user = User.findById(userId).exec();
+
+    return user.then(fixMongoUser);
 };
 
 module.exports = {

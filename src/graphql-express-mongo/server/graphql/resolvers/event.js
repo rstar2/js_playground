@@ -19,7 +19,6 @@ module.exports = {
         // so different approach:
         return Event.find().exec()
             .then(arr => arr.map(obj => fixMongoEvent(obj)));
-
     },
 
     // return a Promise - work with async/await
