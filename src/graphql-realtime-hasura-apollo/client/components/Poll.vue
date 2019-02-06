@@ -2,7 +2,9 @@
   <div class="poll">
     <h2>{{ title }}</h2>
 
-    <PollItem v-for="item in items" :key="item.id"
+    <PollItem
+      v-for="item in items"
+      :key="item.id"
       :item="item"
       :selected="item === selected"
       @select="select"
@@ -17,7 +19,7 @@ import PollItem from "./PollItem.vue";
 
 export default {
   components: {
-    PollItem,
+    PollItem
   },
   props: {
     title: {
@@ -37,12 +39,17 @@ export default {
   methods: {
     vote() {
       console.log("Vote for", this.selected);
-      this.$emit('vote', this.selected);
+      this.$emit("vote", this.selected);
     },
-    select(item) {
-      this.selected = item;
+    select({ item, checked }) {
+      // works like a radio-buttons selection
+      if (checked){
+          this.selected = item;
+      } else {
+          this.selected = null;
+      }
     }
-  },
+  }
 };
 </script>
 
