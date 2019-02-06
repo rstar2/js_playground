@@ -1,4 +1,4 @@
-[]- type: replace_metadata
+- type: replace_metadata
   args:
     query_templates: []
     tables:
