@@ -18,6 +18,7 @@ import Results from "@/components/Results.vue";
 
 // the 2 ways to import statically typed GraphQL queries
 import { MUTATION_VOTE, SUBSCRIPTION_RESULT } from "@/apollo/graphql.js";
+import QUERY_GET_ALL_POLLS from "@/apollo/query_get_all_polls.gql";
 import QUERY_GET_POLL from "@/apollo/query_get_poll.gql";
 
 export default {
@@ -40,7 +41,7 @@ export default {
   apollo: {
     // Queries
     polls: {
-      query: QUERY_GET_POLL,
+      query: QUERY_GET_ALL_POLLS,
 
       // overwirite as the returned data is {poll} , but we named it polls in compoenent's data
       update({ poll }) {

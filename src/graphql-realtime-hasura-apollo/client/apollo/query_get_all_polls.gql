@@ -1,0 +1,6 @@
+query {
+  poll {
+    id
+    question
+  }
+}
