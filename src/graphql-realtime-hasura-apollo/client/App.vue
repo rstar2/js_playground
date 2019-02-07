@@ -26,26 +26,36 @@ export default {
     Poll,
     Results
   },
+
   data() {
     return {
-      polls: [],
-      results: []
+      poll: null,
+      results: null
     };
   },
-  computed: {
-    poll() {
-      return this.polls[0];
-    }
-  },
+
   // these GraphQL queries will be made on mounting the Vue component
   apollo: {
     // Queries
-    polls: {
+    poll: {
       query: QUERY_GET_ALL_POLLS,
 
-      // overwirite as the returned data is {poll} , but we named it polls in compoenent's data
-      update({ poll }) {
-        return poll;
+      // 1. This will UPDATE (e.g set) the result immediately into the this.poll data field , as the apollo field is named also 'poll'
+      // here the first poll is extractedd, but currentyl the way the QUERY_GET_ALL_POLLS is constructed no 'options' will be returned
+      // overwirite as the returned data is {poll} , but we named it polls in compoenent's data,
+      // so to disable the auto property update use "manual: true" - https://vue-apollo.netlify.com/api/smart-query.html#options
+      //   update({ poll }) {
+      //     return poll[0];
+      //   },
+
+      // 2. This will JUST inspect the result and will choose a random poll to show
+      manual: true, // this mean that the auto property update will not happen 
+      result({ data, loading, networkStatus, stale }, key) {
+        const polls = data.poll;
+        const random = Math.floor(Math.random() * polls.length);
+
+        const randomPoll = polls[random];
+        this.getPoll(randomPoll.id);
       }
     },
 
@@ -79,6 +89,21 @@ export default {
     }
   },
   methods: {
+    async getPoll(pollId) {
+      // Call to the graphql mutation - returns a Promise
+      const result = await this.$apollo.query({
+        // Query
+        query: QUERY_GET_POLL,
+        // Parameters
+        variables: {
+          pollId
+        }
+      });
+
+      const polls = result.data.poll;
+      this.poll = polls[0] || null;
+    },
+
     async vote(option) {
       // Call to the graphql mutation - returns a Promise
       await this.$apollo.mutate({

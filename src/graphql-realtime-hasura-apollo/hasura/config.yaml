@@ -1,4 +1,4 @@
 # For Windows Docker
-endpoint: http://192.168.99.100:8080
+# endpoint: http://192.168.99.100:8080
 
-# endpoint: http://localhost:8080
+endpoint: http://localhost:8080

@@ -1,6 +1,7 @@
 query getPoll($pollId: uuid!) {
   poll(where: {id: {_eq: $pollId}}) {
     id
+    question
     options (order_by: {id:desc}) {
       id
       text
