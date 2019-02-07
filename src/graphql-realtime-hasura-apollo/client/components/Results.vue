@@ -14,16 +14,14 @@ export default {
     GChart
   },
   props: {
-    items: Array,
     results: Array
   },
   computed: {
     barData() {
         // the first is the X,Y values - not used but needed by vue-cgoogle-charts
         let data = [["", ""]];
-        this.items.forEach(item => {
-            let result = this.results.find(res => res.id === item.id);
-            data.push([item.name, (result && result.value) || 0]);
+        this.results.forEach(result => {
+            data.push([result.option.text, +(result.votes || 0)]);
         });
       return data;
     }

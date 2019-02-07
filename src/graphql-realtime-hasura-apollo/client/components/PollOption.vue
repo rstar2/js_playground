@@ -1,18 +1,18 @@
 <template>
-  <div class="item">
+  <div class="option">
     <input
       type="checkbox"
       :checked="selected"
-      @change="$emit('select', {item, checked: $event.target.checked})"
+      @change="$emit('select', {option, checked: $event.target.checked})"
     >
-    <span>{{item.name}}</span>
+    <span>{{option.text}}</span>
   </div>
 </template>
 
 <script>
 export default {
   props: {
-    item: {
+    option: {
       type: Object,
       required: true
     },

@@ -1,32 +1,32 @@
 <template>
   <div class="poll">
-    <h2>{{ title }}</h2>
+    <h2>{{ question }}</h2>
 
-    <PollItem
-      v-for="item in items"
-      :key="item.id"
-      :item="item"
-      :selected="item === selected"
+    <PollOption
+      v-for="option in options"
+      :key="option.id"
+      :option="option"
+      :selected="option === selected"
       @select="select"
-    >{{ item }}</PollItem>
+    ></PollOption>
 
     <button @click="vote" :disabled="!selected">Vote</button>
   </div>
 </template>
 
 <script>
-import PollItem from "./PollItem.vue";
+import PollOption from "./PollOption.vue";
 
 export default {
   components: {
-    PollItem
+    PollOption
   },
   props: {
-    title: {
+    question: {
       type: String,
       required: true
     },
-    items: {
+    options: {
       type: Array,
       required: true
     }
@@ -38,13 +38,12 @@ export default {
   },
   methods: {
     vote() {
-      console.log("Vote for", this.selected);
       this.$emit("vote", this.selected);
     },
-    select({ item, checked }) {
+    select({ option, checked }) {
       // works like a radio-buttons selection
       if (checked){
-          this.selected = item;
+          this.selected = option;
       } else {
           this.selected = null;
       }

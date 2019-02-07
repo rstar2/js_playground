@@ -3,14 +3,12 @@
     <!--
           Note v-bind="poll" is different from v-bind:poll="poll"
             1. v-bind="poll" actually is as extracting its keys and passing them as properties, e.g. equivalent to:
-                  v-bind:title="poll.title"
-                  v-bind:items="poll.items"
+                  v-bind:question="poll.question"
+                  v-bind:options="poll.options"
             2. v-bind:poll="poll" is passing the 'poll' as property
     -->
-    <Poll v-bind="poll" @vote="vote"/>
-    <Results :items="poll.items" :results="results"/>
-
-    <h1>{{hello}}</h1>
+    <Poll v-if="poll" v-bind="poll" @vote="vote"/>
+    <Results v-if="results" :results="results"/>
   </div>
 </template>
 
@@ -18,7 +16,9 @@
 import Poll from "@/components/Poll.vue";
 import Results from "@/components/Results.vue";
 
-import { QUERY_HELLO, QUERY_USER, } from "@/apollo/graphql.js"
+// the 2 ways to import statically typed GraphQL queries
+import { MUTATION_VOTE, SUBSCRIPTION_RESULT } from "@/apollo/graphql.js";
+import QUERY_GET_POLL from "@/apollo/query_get_poll.gql";
 
 export default {
   components: {
@@ -27,67 +27,68 @@ export default {
   },
   data() {
     return {
-      poll: {
-        title: "Favourite JS framework",
-        id: "123123",
-        items: [
-          {
-            name: "Angular",
-            id: "123123"
-          },
-          {
-            name: "React",
-            id: "234234"
-          },
-          {
-            name: "VueJS",
-            id: "45645645"
-          }
-        ]
-      },
-      results: [
-        {
-          id: "123123",
-          value: 28
-        },
-        {
-          id: "234234",
-          value: 73
-        },
-        {
-          id: "45645645",
-          value: 52
-        }
-      ],
-      hello: ''
+      polls: [],
+      results: []
     };
+  },
+  computed: {
+    poll() {
+      return this.polls[0];
+    }
   },
   // these GraphQL queries will be made on mounting the Vue component
   apollo: {
-    // Simple query that will update the 'hello' vue property
-    hello: QUERY_HELLO,
-    user: QUERY_USER
+    // Queries
+    polls: {
+      query: QUERY_GET_POLL,
+
+      // overwirite as the returned data is {poll} , but we named it polls in compoenent's data
+      update({ poll }) {
+        return poll;
+      }
+    },
+
+    $subscribe: {
+      // When results change
+      results: {
+        query: SUBSCRIPTION_RESULT,
+
+        // Reactive variables (as we are using a function)
+        variables() {
+          // This works just like regular queries
+          // and will re-subscribe with the right variables
+          // each time the values change
+          return {
+            pollId: this.poll.id
+          };
+        },
+        // Result hook
+        result({ data }) {
+          // it returns data as { poll_results }
+          //console.log("Results changed ", data);
+
+          this.results = data.poll_results;
+        },
+        // Skip the subscription
+        skip() {
+          // when the poll is still not available
+          return !this.poll;
+        }
+      }
+    }
   },
   methods: {
-    async vote(item) {
-      // Call to the graphql mutation
-      const result = await this.$apollo.mutate({
+    async vote(option) {
+      // Call to the graphql mutation - returns a Promise
+      await this.$apollo.mutate({
         // Query
-        mutation: gql`
-          mutation($label: String!) {
-            addTag(label: $label) {
-              id
-              label
-            }
-          }
-        `,
+        mutation: MUTATION_VOTE,
         // Parameters
         variables: {
-          label: this.newTag
+          optionId: option.id,
+          userId: "e347b9b0-c055-e799-85c1-f9bc1105ca8c"
         }
       });
-
-      this.results.some(res => res.id === item.id && res.value++);
     }
   }
 };

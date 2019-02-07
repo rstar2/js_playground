@@ -1,0 +1,10 @@
+query {
+  poll {
+    id
+    question
+    options (order_by: {id:desc}) {
+      id
+      text
+    }
+  }
+}
