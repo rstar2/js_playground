@@ -49,7 +49,7 @@ export default {
       //   },
 
       // 2. This will JUST inspect the result and will choose a random poll to show
-      manual: true, // this mean that the auto property update will not happen 
+      manual: true, // this mean that the auto property update will not happen
       result({ data, loading, networkStatus, stale }, key) {
         const polls = data.poll;
         const random = Math.floor(Math.random() * polls.length);
@@ -100,8 +100,7 @@ export default {
         }
       });
 
-      const polls = result.data.poll;
-      this.poll = polls[0] || null;
+      this.poll = result.data.poll_by_pk;
     },
 
     async vote(option) {
