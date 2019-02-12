@@ -58,25 +58,27 @@ export default {
       this.$store.commit("auth/logout");
     },
 
-    handleAuth(user) {
-      // TODO: pass isRegister explicitly, 'name' can be removed
-      const isRegister = user.name; // we pass the name only when creating a user
+    handleAuth({ user, isRegister }) {
       const data = {
         query: isRegister
           ? `
-        mutation {
-            registerUser(email: "${user.email}", password: "${user.password}") {
+        mutation RegisterUser($email: String!, $password: String!) {
+            registerUser(email: $email, password: $password) {
                 jwt
             }
         }
         `
           : `
-        query {
-            loginUser(email: "${user.email}", password: "${user.password}") {
+        query LoginUser($email: String!, $password: String!) {
+            loginUser(email: $email, password: $password) {
                 jwt
             }
         }
-        `
+        `,
+        variables: {
+          email: user.email,
+          password: user.password
+        }
       };
 
       graphql(data)

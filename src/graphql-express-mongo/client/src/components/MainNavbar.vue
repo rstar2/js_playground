@@ -30,7 +30,7 @@
     <app-dialog-auth
       v-model="dialogAuth.show"
       :isRegister="dialogAuth.isRegister"
-      @action="$emit('handleAuth', $event)"
+      @action="$emit('handleAuth', {user: $event, isRegister: dialogAuth.isRegister})"
     ></app-dialog-auth>
   </md-toolbar>
 </template>
