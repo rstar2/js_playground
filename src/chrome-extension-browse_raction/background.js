@@ -13,5 +13,27 @@ chrome.browserAction.onClicked.addListener(tab => {
         url: chrome.extension.getURL('tab.html')
 
     });
+});
 
+chrome.runtime.onInstalled.addListener(function () {
+    console.log('Extension installed');
+
+    chrome.contextMenus.create({
+        'id': 'sampleContextMenu3',
+        'title': 'Sample Context Menu',
+        'contexts': ['selection']
+    });
+    chrome.contextMenus.create({
+        'id': 'sampleContextMenu2',
+        'title': 'Sample Context Menu',
+        'contexts': ['selection']
+    });
+
+    chrome.contextMenus.onClicked.addListener(function (menuItem) {
+        // called when any of the created contextMenu items was clicked
+        // can check which one if needed 
+        console.log('Extension ContextMenuItem clicked' + menuItem);
+        
+        
+    });
 });
