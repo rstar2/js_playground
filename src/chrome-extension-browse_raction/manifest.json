@@ -1,15 +1,15 @@
 {
-    "name": "Demo Extension BrowserAction",
-    "description": "Demo Extension BrowserAction Description",
+    "name": "Copy URL",
+    "description": "Show and copy in clipboard the current tab's URL",
     "version": "1.0",
     "manifest_version": 2,
     "permissions": [
-        "storage",
-        "declarativeContent"
-    ],
+		"activeTab"
+	],
     "browser_action": {
         "default_popup": "popup.html",
-        "default_icon": "images/popup.png"
+        "default_icon": "images/popup.png",
+        "default_title": "Show and copy current URL"
     },
     "commands": {
         "_execute_browser_action": {
@@ -17,7 +17,7 @@
                 "default": "Ctrl+Shift+F",
                 "mac": "MacCtrl+Shift+F"
             },
-            "description": "Opens popup.html"
+            "description": "Opens 'Copy URL' extension"
         }
     }
 }
