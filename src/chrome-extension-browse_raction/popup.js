@@ -38,6 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
     getCurrentTabUrl(url => {
         const $el = document.getElementById('url');
         $el.innerHTML = url;
-        doCopy($el);
+        doCopy($el)
+            .catch(() => { } /*just trap it*/);
     });
 });

@@ -4,6 +4,7 @@
     "version": "1.0",
     "manifest_version": 2,
     "permissions": [
+        "tabs",
 		"activeTab"
 	],
     "browser_action": {
@@ -19,5 +20,11 @@
             },
             "description": "Opens 'Copy URL' extension"
         }
+    },
+    "background": {
+        "scripts": [
+            "background.js"
+        ],
+        "persistent": false
     }
 }
