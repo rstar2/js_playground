@@ -16,5 +16,10 @@
         "tempy",
         "transcoding",
         "twilio"
-    ]
+    ],
+    "workbench.colorCustomizations": {
+        "activityBar.background": "#312F03",
+        "titleBar.activeBackground": "#454105",
+        "titleBar.activeForeground": "#FDFBDD"
+    }
 }
