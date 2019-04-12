@@ -1,3 +1,5 @@
+/* eslint-env browser */
+
 // Immediately take control of the page, see the ‘Immediate Claim’ recipe
 // for a detailed explanation of the implementation of the following two event listeners
 self.addEventListener('install', function (event) {
@@ -107,5 +109,5 @@ self.addEventListener('pushsubscriptionchange', function (event) {
 
 // Listen to events sent from the parent page
 self.addEventListener('message', function(event){
-    console.log("SW Received Message: " + event.data);
+    console.log('SW Received Message: ' + event.data);
 });

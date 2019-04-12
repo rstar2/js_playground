@@ -1,3 +1,4 @@
+/* eslint-env browser */
 
 if (('serviceWorker' in navigator) && ('PushManager' in window)) {
     pushRegister();
