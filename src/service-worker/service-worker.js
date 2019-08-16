@@ -1,10 +1,14 @@
 /* eslint-env browser */
 
+// https://www.youtube.com/watch?v=KLQELCvb-B0&list=PL4cUxeGkcC9gTxqJBcDmoi5Q2pzDusSL7
+
 const version = 3;
-const cacheName = version => `appName_v${version}`;
+const staticCacheName = version => `static_v${version}`;
+
+const dynamicCacheName = 'dynamic';
 
 // These are file paths, and they are added to the cache we created
-const assets = [
+const staticAssets = [
     '/',
     '/index.html',
     '/main.js',
@@ -17,8 +21,9 @@ self.addEventListener('install', function (event) {
     event.waitUntil(
         Promise.all([
             // open a cache and specify which files to cache
-            caches.open(cacheName(version))
-                .then(cache => cache.addAll(assets))
+            caches.open(staticCacheName(version))
+                // cache.add() and cache.addAll() reach out ot the server to fetch the resources
+                .then(cache => cache.addAll(staticAssets))
                 .then(() => console.log('SW pre-cached all assets'))
                 .catch(err => console.error('SW failed to pre-cached all assets', err)),
 
@@ -39,7 +44,7 @@ self.addEventListener('activate', function (event) {
             self.clients.claim(),
 
             // clear all old caches
-            caches.keys(keys => keys.filter(key => key !== cacheName(version)))
+            caches.keys(keys => keys.filter(key => key !== staticCacheName(version)))
                 .then(keys => Promise.all[keys.map(key => caches.delete(key))])
                 .then(() => console.log('SW removed all old caches'))
                 .catch(err => console.error('SW failed to removed all old caches', err)),
@@ -51,9 +56,27 @@ self.addEventListener('activate', function (event) {
 self.addEventListener('fetch', function(event) {
     // If a matching request is found, the function returns that request. 
     event.respondWith(
-        // search only in last version cache
-        caches.match(event.request, {cacheName: cacheName(version)})
-            .then(cachedResponse => cachedResponse || fetch(event.request))
+        // search only in last version cache - for static cache only
+        // caches.match(event.request, {cacheName: staticCacheName(version)})
+        //     .then(cachedResponse => cachedResponse || fetch(event.request))
+
+        // add dynamic caching - for better offline experience
+        // search in all chache and if not found add to the dynamic cache
+        caches.match(event.request)
+            .then(cachedResponse => {
+                return cachedResponse ||
+                        fetch(event.request).then(fetchResponse => {
+                            // cache all subsequent resources if they are requested sometime
+                            return caches.open(dynamicCacheName)
+                                .then(cache => {
+                                    // NOTE: The response should be obligatory cloned because it's a stream
+                                    // and otherwise we cannot consume it twice
+                                    cache.put(event.request.url, fetchResponse.clone());
+                                    return fetchResponse;
+                                });
+                        });
+            })
+            
     );
 });
 
