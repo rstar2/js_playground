@@ -1,4 +1,4 @@
 /* eslint-env browser */
 document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('main').innerText = 'Changed1';
+    document.getElementById('main').innerText = 'Changed v3';
 });
