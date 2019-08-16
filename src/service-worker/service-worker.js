@@ -44,7 +44,8 @@ self.addEventListener('activate', function (event) {
             self.clients.claim(),
 
             // clear all old caches
-            caches.keys(keys => keys.filter(key => key !== staticCacheName(version)))
+            caches.keys()
+                .then(keys => keys.filter(key => !(key === staticCacheName(version) || key === dynamicCacheName)))
                 .then(keys => Promise.all[keys.map(key => caches.delete(key))])
                 .then(() => console.log('SW removed all old caches'))
                 .catch(err => console.error('SW failed to removed all old caches', err)),
