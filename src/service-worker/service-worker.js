@@ -7,6 +7,9 @@ const staticCacheName = version => `static_v${version}`;
 
 const dynamicCacheName = 'dynamic';
 
+// if we need a offline page to be shown when we are offline and there's no cached resource
+const offlineFallbackPage = '/offline.html';
+
 // These are file paths, and they are added to the cache we created
 const staticAssets = [
     '/',
@@ -14,6 +17,7 @@ const staticAssets = [
     '/main.js',
     '/file.js',
     'https://code.jquery.com/jquery-3.3.1.slim.min.js',
+    offlineFallbackPage
 ];
 
 // Prior to the install event, your application does not have a service worker. The browser will detect the registration event from your code and install the service worker.
@@ -55,6 +59,11 @@ self.addEventListener('activate', function (event) {
 
 // This function will run when the service worker detects a fetch request. 
 self.addEventListener('fetch', function(event) {
+    // NOTE: skip any 'data' request -for instance if we get the data from Firebase Firestore
+    if (event.request.url.index('firestore.googleapis.com') > -1) {
+        return;
+    }
+    
     // If a matching request is found, the function returns that request. 
     event.respondWith(
         // search only in last version cache - for static cache only
@@ -70,14 +79,26 @@ self.addEventListener('fetch', function(event) {
                             // cache all subsequent resources if they are requested sometime
                             return caches.open(dynamicCacheName)
                                 .then(cache => {
+                                    // NOTE: we can use a strategy to dynamically cache only a limited number of resources, not all
+                                    // thus when reach the limit we'll remove the oldest cached resource
+
+
                                     // NOTE: The response should be obligatory cloned because it's a stream
                                     // and otherwise we cannot consume it twice
                                     cache.put(event.request.url, fetchResponse.clone());
                                     return fetchResponse;
                                 });
                         });
+            }).
+
+            // return the pre-cached offline page
+            catch(() =>  {
+                // apply it only for HTML pages
+                if (event.request.url.index('.html') > -1)
+                    caches.match(offlineFallbackPage);
+
+                // NOTE: these can be extended to return many type resources, for PNG, JPG and etc...
             })
-            
     );
 });
 
