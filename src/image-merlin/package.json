@@ -1,0 +1,26 @@
+{
+  "name": "r-js-image-merlin",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "imagemin": "imagemin-merlin --folder=static",
+    "imagemin:dry": "imagemin-merlin --dry --folder=static"
+  },
+  "keywords": [],
+  "author": "Rumen Neshev <rstardev@abv.bg>",
+  "license": "MIT",
+  "devDependencies": {
+    "@sum.cumo/imagemin-merlin": "^1.1.9"
+  },
+
+   // Configure Git Hooks using Husky   
+  "husky": {
+    "hooks": {
+      // The --staged parameter triggers a mode that watches GIF, JPG and PNG files in git diff and only compresses those files.
+      // That approach makes Merlin be quite efficient in operation.
+      // Note that the folder parameter doesn’t work in staged mode.
+      "pre-commit": "npm run imagemin -- --staged"
+    }
+  }
+}
