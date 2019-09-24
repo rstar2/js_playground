@@ -1,0 +1,17 @@
+{
+  "name": "qrcode-demo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "jimp": "^0.8.4",
+    "qrcode": "^1.4.2",
+    "qrcode-reader": "^1.0.4"
+  }
+}
