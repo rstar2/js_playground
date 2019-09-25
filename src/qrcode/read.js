@@ -5,7 +5,8 @@ const jimp = require('jimp');
 run().catch(error => console.error(error.stack));
 
 async function run() {
-    const img = await jimp.read(fs.readFileSync('./qr_photo.png'));
+    
+    const img = await jimp.read(fs.readFileSync('./qr-file.png'));
 
     const qr = new QRReader();
 
@@ -15,15 +16,16 @@ async function run() {
         qr.decode(img.bitmap);
     });
 
-    // { result: 'http://asyncawait.net',
+    // { result: 'http://rumenneshev.net',
     //   points:
     //     [ FinderPattern {
     //         x: 68.5,
     //         y: 252,
     //         count: 10,
-    // ...
+    //     ]
+    // }
     console.log(value);
 
-    // http://asyncawait.net
+    // http://rumenneshev.net
     console.log(value.result);
 }
