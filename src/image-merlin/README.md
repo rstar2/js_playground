@@ -20,12 +20,16 @@ npm i -D @sum.cumo/imagemin-merlin
     ```
 
 2. Automatic optimization on Git commit
-    Configure Git Hooks (using Husky for instance)
+    Configure Git Hooks (using Husky for instance) in package.json
 
     ```json
+     // Configure Git Hooks using Husky
     "husky": {
-      "hooks": {
-        "pre-commit": "npm run imagemin -- --staged"
-      }
+        "hooks": {
+            // The --staged parameter triggers a mode that watches GIF, JPG and PNG files in git diff and only compresses those files.
+            // That approach makes Merlin be quite efficient in operation.
+            // Note that the folder parameter doesn’t work in staged mode.
+            "pre-commit": "npm run imagemin -- --staged"
+        }
     }
     ```
