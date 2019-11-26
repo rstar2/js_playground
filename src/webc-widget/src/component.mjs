@@ -45,6 +45,14 @@ export class Widget extends HTMLElement {
     }
 
     // Custom Methods of this class
+    render() {
+        this.style.display = 'inline-block';
+        this.articles = [];
+        this.limit = this.dataset.limit || 30;
+        this.pageLimit = Math.ceil(this.limit / 30);
+        this.setWidth();
+        this.fetchArticles(1, this.limit).catch(err => console.error(err));
+    }
 
     renderArticles(articles) {
         for (let article of articles) {
@@ -143,14 +151,7 @@ export class Widget extends HTMLElement {
             });
     }
 
-    render() {
-        this.style.display = 'inline-block';
-        this.articles = [];
-        this.limit = this.dataset.limit || 30;
-        this.pageLimit = Math.ceil(this.limit / 30);
-        this.setWidth();
-        this.fetchArticles(1, this.limit).catch(err => console.error(err));
-    }
+    
 }
 
 customElements.define('webc-widget', Widget);
