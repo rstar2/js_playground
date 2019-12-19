@@ -21,5 +21,6 @@
         "activityBar.background": "#312F03",
         "titleBar.activeBackground": "#454105",
         "titleBar.activeForeground": "#FDFBDD"
-    }
+    },
+    "liveServer.settings.root" : "src/pwa"
 }
