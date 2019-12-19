@@ -14,11 +14,12 @@ const offlineFallbackPage = '/offline.html';
 const staticAssets = [
     '/',
     '/index.html',
-    '/main.js',
+    '/register-service-worker.js',
     '/file.js',
     'https://code.jquery.com/jquery-3.3.1.slim.min.js',
     offlineFallbackPage
 ];
+
 
 // Prior to the install event, your application does not have a service worker. The browser will detect the registration event from your code and install the service worker.
 self.addEventListener('install', function (event) {
@@ -32,7 +33,7 @@ self.addEventListener('install', function (event) {
                 .catch(err => console.error('SW failed to pre-cached all assets', err)),
 
             // Immediately take control of the page, see the ‘Immediate Claim’ recipe
-            // When the controlling service-worker is changed for a client/tag then 
+            // When the controlling service-worker is changed for a client/tab then 
             // it will auto reload - this is in main.js
             self.skipWaiting()
         ]).then(() => 'SW is installed')
@@ -59,8 +60,9 @@ self.addEventListener('activate', function (event) {
 
 // This function will run when the service worker detects a fetch request. 
 self.addEventListener('fetch', function(event) {
-    // NOTE: skip any 'data' request -for instance if we get the data from Firebase Firestore
-    if (event.request.url.index('firestore.googleapis.com') > -1) {
+    // NOTE: skip any 'data' request - for instance if we get the data from Firebase Firestore
+    // event.request.url is a String
+    if (event.request.url.includes('firestore.googleapis.com')) {
         return;
     }
     
