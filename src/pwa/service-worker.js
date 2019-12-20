@@ -14,6 +14,8 @@ const offlineFallbackPage = '/offline.html';
 const staticAssets = [
     '/',
     '/index.html',
+    '/manifest.json',
+    '/favicon.ico',
     '/register-service-worker.js',
     '/file.js',
     'https://code.jquery.com/jquery-3.3.1.slim.min.js',
@@ -21,7 +23,8 @@ const staticAssets = [
 ];
 
 
-// Prior to the install event, your application does not have a service worker. The browser will detect the registration event from your code and install the service worker.
+// Prior to the install event, your application does not have a service worker.
+// The browser will detect the registration event from your code and install the service worker.
 self.addEventListener('install', function (event) {
     event.waitUntil(
         Promise.all([

@@ -17,8 +17,12 @@ function registerServiceWorker() {
     // Register a Service Worker
     navigator.serviceWorker
         .register('/service-worker.js')
-        .then(registration => {})
-        .catch(() => {});
+        .then(registration => {
+            console.log('SW registered: Scope is:', registration.scope);
+        })
+        .catch(() => {
+            console.log('SW failed to register');
+        });
 
     // when a new service-worker has been activated (e.g when we made a change) then reload
     navigator.serviceWorker.addEventListener('controllerchange', () => {
