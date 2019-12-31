@@ -1,6 +1,6 @@
 <html>
   <head>
-    <title>PWA Demo - About</title>
+    <title>PWA Demo - Login with Google</title>
 
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
@@ -8,7 +8,7 @@
     <link rel="icon" href="/favicon.ico">
     <link rel="manifest" href="/manifest.json">
 
-    <!-- For Google login/signout -->
+    <!-- For Google login -->
     <meta name="google-signin-scope" content="profile email">
     <!-- the CLIENT_ID is the one from the PWA-Demo project -->
     <meta name="google-signin-client_id" content="993810585056-da3es1kr61n6g6opu6u1uepqv3sqt9fh.apps.googleusercontent.com">
@@ -16,11 +16,14 @@
 
     <script type="application/javascript" src="/js/register-service-worker.js"></script>
     <script type="application/javascript" src="/js/common.js"></script>
+    <script type="application/javascript" src="/js/login.js"></script>
   </head>
 
   <body>
-    <div id="main">Hello From about page</div>
+    <div id="main">Login</div>
 
-    <button class="g-signout" style="display: none;">Sign Out</button>
+    <!-- For Google login - an element with this CSS class is required,
+         The presence of this 'button' eliminates the need to load and init the gapi.load('auth2',...) library-->
+    <div class="g-signin2" data-theme="dark" data-onsuccess="onSignInSuccess"></div>
   </body>
 </html>

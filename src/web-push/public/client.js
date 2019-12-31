@@ -74,12 +74,12 @@ function pushRegister() {
                 });
 
                 // Send the message to the service worker
-                navigator.serviceWorker.controller.postMessage("Wait for a PUSH notification");
+                navigator.serviceWorker.controller.postMessage('Wait for a PUSH notification');
             };
         })
         .catch(() => {
             document.getElementById('pushNotificationSend').remove();
-            document.getElementById('pushNotificationPayload').remove;
+            document.getElementById('pushNotificationPayload').remove();
         });
 }
 

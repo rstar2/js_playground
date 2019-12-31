@@ -1,19 +1,28 @@
 <html>
   <head>
-    <title>Service Worker Demo</title>
+    <title>PWA Demo</title>
 
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
+
     <link rel="icon" href="/favicon.ico">
     <link rel="manifest" href="/manifest.json">
 
-    <script type="application/javascript" src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <!-- For Google login/signout -->
+    <meta name="google-signin-scope" content="profile email">
+    <!-- the CLIENT_ID is the one from the PWA-Demo project -->
+    <meta name="google-signin-client_id" content="993810585056-da3es1kr61n6g6opu6u1uepqv3sqt9fh.apps.googleusercontent.com">
+    <script type="application/javascript" src="http://apis.google.com/js/platform.js" async defer></script>
 
-    <script type="application/javascript" src="/register-service-worker.js"></script>
-    <script type="application/javascript" src="/file.js"></script>
+    <script type="application/javascript" src="/js/register-service-worker.js"></script>
+    <script type="application/javascript" src="/js/common.js"></script>
+    <script type="application/javascript" src="/js/main.js"></script>
   </head>
 
   <body>
+    <button class="g-signout" style="display: none;">Sign Out</button>
+
+
     <div id="main">Hello!</div>
   </body>
 </html>
