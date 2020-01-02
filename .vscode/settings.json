@@ -22,11 +22,12 @@
         "titleBar.activeBackground": "#454105",
         "titleBar.activeForeground": "#FDFBDD"
     },
+    "liveServer.settings.port": 5000,
     "liveServer.settings.root" : "src/pwa",
     "liveServer.settings.https": {
         "enable": false,
-        "cert": "",
-        "key": "",
-        "passphrase": ""
+        "cert": "/home/rumen/ProjectsLearn/javascript/playground/src/pwa/ssl/example.crt",
+        "key": "/home/rumen/ProjectsLearn/javascript/playground/src/pwa/ssl/example.key",
+        "passphrase": "12345"
     }
 }

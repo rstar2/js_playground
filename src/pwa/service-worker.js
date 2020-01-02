@@ -26,8 +26,6 @@ const staticAssets = [
     offlineFallbackPage
 ];
 
-
-
 // Prior to the install event, your application does not have a service worker.
 // The browser will detect the registration event from your code and install the service worker.
 self.addEventListener('install', function (event) {

@@ -20,8 +20,8 @@ function registerServiceWorker() {
         .then(registration => {
             console.log('SW registered: Scope is:', registration.scope);
         })
-        .catch(() => {
-            console.log('SW failed to register');
+        .catch(e => {
+            console.log('SW failed to register', e);
         });
 
     // when a new service-worker has been activated (e.g when we made a change) then reload
