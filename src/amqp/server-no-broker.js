@@ -22,5 +22,5 @@ function broadcast(msg) {
     });
 }
 
-// NOTE: this does not scale for more then NodeJS server instance, e.g. cannot be load-balanced
+// NOTE: this does not scale for more than one NodeJS server instance, e.g. cannot be load-balanced
 // In order to be able to have multiple load-balanced servers a message broker is needed
