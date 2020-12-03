@@ -1,7 +1,6 @@
-const SHA256 = require("crypto-js/sha256");
+const SHA256 = require('crypto-js/sha256');
 
 const Transaction = require('./Transaction.js');
-
 class Block {
 
     /**
@@ -11,7 +10,7 @@ class Block {
      * @param {String} previousHash 
      */
     constructor(timestamp, transactions, previousHash = '') {
-        this.timestamp = "" + timestamp;
+        this.timestamp = '' + timestamp;
         this.transactions = transactions;
         this.previousHash = previousHash;
 
@@ -37,7 +36,21 @@ class Block {
             this.nonce++;
             this.hash = this.calculateHash();
         }
-        console.log("BLOCK MINED: " + this.hash);
+        console.log('BLOCK MINED: ' + this.hash);
+    }
+
+    /**
+     * 
+     * @return {Boolean}
+     */
+    verify() {
+        // all transactions must be verified in order the whole block to be verified
+        for (let transaction of this.transactions) {
+            if (!transaction.verify()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     toString() {

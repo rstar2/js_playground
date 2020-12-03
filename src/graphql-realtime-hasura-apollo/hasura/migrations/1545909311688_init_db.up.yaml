@@ -1,0 +1,83 @@
+- type: replace_metadata
+  args:
+    query_templates: []
+    tables:
+      - table: user
+        select_permissions: []
+        update_permissions: []
+        delete_permissions: []
+        insert_permissions: []
+        array_relationships: []
+        object_relationships: []
+
+      - table: online_users
+        select_permissions: []
+        update_permissions: []
+        delete_permissions: []
+        insert_permissions: []
+        array_relationships: []
+        object_relationships: []
+
+      - table: poll
+        select_permissions: []
+        update_permissions: []
+        delete_permissions: []
+        insert_permissions: []
+        array_relationships:
+          - comment: null
+            name: options
+            using:
+              foreign_key_constraint_on:
+                table: option
+                column: poll_id
+        object_relationships: []
+
+      - table: option
+        select_permissions: []
+        update_permissions: []
+        delete_permissions: []
+        insert_permissions: []
+        array_relationships: []
+        object_relationships:
+          - comment: null
+            name: poll
+            using:
+              foreign_key_constraint_on: poll_id
+
+      - table: vote
+        select_permissions: []
+        update_permissions: []
+        delete_permissions: []
+        insert_permissions: []
+        array_relationships: []
+        object_relationships:
+          - comment: null
+            name: created_by_user
+            using:
+              foreign_key_constraint_on: created_by_user_id
+          - comment: null
+            name: option
+            using:
+              foreign_key_constraint_on: option_id
+        
+      - table: poll_results
+        select_permissions: []
+        update_permissions: []
+        delete_permissions: []
+        insert_permissions: []
+        array_relationships: []
+        object_relationships:
+          - comment: null
+            name: poll
+            using:
+              manual_configuration:
+                column_mapping:
+                  poll_id: id
+                remote_table: poll
+          - comment: null
+            name: option
+            using:
+              manual_configuration:
+                column_mapping:
+                  option_id: id
+                remote_table: option

@@ -16,14 +16,14 @@
             "type": "node",
             "request": "launch",
             "name": "Jest",
-            "program": "${workspaceRoot}\\node_modules\\jest\\bin\\jest.js",
+            "program": "${workspaceRoot}/node_modules/jest/bin/jest.js",
             "args": [
                 "-i"
             ],
             "internalConsoleOptions": "openOnSessionStart",
-            "outFiles": [
-                "${workspaceRoot}/dist/**/*"
-            ],
+            // "outFiles": [
+            //     "${workspaceRoot}/dist/**/*"
+            // ],
             // "envFile": "${workspaceRoot}/.env"
         }
     ]

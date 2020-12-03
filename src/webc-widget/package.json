@@ -1,0 +1,23 @@
+{
+  "name": "webc-widget",
+  "version": "1.0.0",
+  "description": "Demo of WebComponent widget",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "serve src",
+    "build": "node build/build.main.js",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "webcomponent",
+    "widget"
+  ],
+  "author": "rstar2",
+  "license": "MIT",
+  "devDependencies": {
+    "fs-extra": "^8.1.0",
+    "serve": "^11.2.0"
+  }
+}

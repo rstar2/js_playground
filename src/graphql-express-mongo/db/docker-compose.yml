@@ -1,0 +1,25 @@
+version: '3.6'
+
+services:
+  mongo-db:
+    image: mongo:4.0
+    container_name: graphql-express-db
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+      MONGO_INITDB_DATABASE: event-bookings
+    command: --auth  
+    ports:
+      - 27017:27017  
+
+  mongo-express:
+    image: mongo-express
+    container_name: graphql-express-db-monitor
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_SERVER: mongo-db
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: example  

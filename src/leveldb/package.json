@@ -1,0 +1,16 @@
+{
+  "name": "leveldb",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Rumen Neshev <rstardev@abv.bg>",
+  "license": "MIT",
+  "dependencies": {
+    "level": "^4.0.0",
+    "sublevel": "^2.4.0"
+  }
+}

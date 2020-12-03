@@ -1,0 +1,17 @@
+{
+  "name": "r-js-cluster",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "start:server": "node server.js",
+    "start:cluster": "node cluster.js",
+    "start": "npm run start:cluster"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.16.4",
+    "jimp2": "^2.0.0"
+  }
+}

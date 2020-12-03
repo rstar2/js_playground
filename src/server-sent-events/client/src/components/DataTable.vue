@@ -78,7 +78,7 @@ export default {
     //this.eventSource = new EventSource("events"); // absolute URL to the same  "current-server-domain" -> "current-server-domain/events" endpoint
     this.eventSource = new EventSource("http://localhost:5000/events"); // absolute URL globally speficified
 
-    // single/global message listend
+    // single/global message listener
     // this.eventSource.onmessage = e => {
     //   this.updateFlight(JSON.parse(e.data));
     // };

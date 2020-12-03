@@ -1,0 +1,43 @@
+{
+    "posts": [
+        {
+            "id": 1,
+            "title": "json-server",
+            "authorId": 1
+        },
+        {
+            "id": 2,
+            "title": "cooking",
+            "authorId": 2
+        },
+        {
+            "id": 3,
+            "title": "js",
+            "authorId": 1
+        }
+    ],
+    "authors": [
+        {
+            "id": 1,
+            "name": "Rumen"
+        },
+        {
+            "id": 2,
+            "name": "Kasia"
+        }
+    ],
+    "comments": [
+        {
+            "id": 1,
+            "body": "some comment",
+            "postId": 1
+        }
+    ],
+    "profile": {
+        "name": "typicode"
+    },
+    "words": [
+        "a", "w", "vasdad", "aa", "abv"
+    ]
+    
+}
