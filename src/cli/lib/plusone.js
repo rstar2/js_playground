@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 
-const argv = require('yargs').argv
+const argv = require('yargs').argv;
 
 if (argv.digit) {
-  console.log(argv.digit + 1)
+    console.log(argv.digit + 1);
 } else {
-  console.log('Hmmm. I\'m confused')
+    console.log('Hmmm. I\'m confused');
 }
 
 // Usage: 

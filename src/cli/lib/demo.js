@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 const { promisify } = require('util');
-const fs = require('fs');
 const program = require('commander');
 const prompt = require('co-prompt');
 const chalk = require('chalk');
@@ -63,8 +62,8 @@ function exec(username, password, file) {
         // finish callback
         callback: () => {
             console.log('User:', chalk.bold.cyan(username),
-            '\nPassword:', chalk.bold.red(password),
-            '\nFile:', chalk.bold.yellow(file));
+                '\nPassword:', chalk.bold.red(password),
+                '\nFile:', chalk.bold.yellow(file));
         } 
     });
     function progressChanged(total, n = 1) {
