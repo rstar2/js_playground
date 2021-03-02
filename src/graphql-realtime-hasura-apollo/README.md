@@ -82,7 +82,7 @@ where  ```HASURA_GRAPHQL_DATABASE_URL=postgres://username:password@hostname:port
   And also data:
   
   ```sh
-  $ hasura migrate create init_db
+  $ hasura migrate create init_data
   ```
 
   - apply the migrations
@@ -90,3 +90,6 @@ where  ```HASURA_GRAPHQL_DATABASE_URL=postgres://username:password@hostname:port
   ```sh
   $ hasura migrate apply
   ```
+
+
+Inspired by https://www.smashingmagazine.com/2018/12/real-time-app-graphql-subscriptions-postgres/  
