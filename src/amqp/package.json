@@ -14,7 +14,7 @@
     "ecstatic": "^4.1.2",
     "level": "^5.0.1",
     "monotonic-timestamp": "0.0.9",
-    "redis": "^2.8.0",
+    "redis": "^3.1.1",
     "request": "^2.88.0",
     "ws": "^7.1.2"
   }
