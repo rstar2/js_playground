@@ -9,7 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "ws": "^7.1.2"
+    "ws": "^7.4.5"
   },
   "devDependencies": {
     "jest": "^23.6.0"
