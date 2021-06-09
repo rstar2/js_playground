@@ -1,0 +1,19 @@
+{
+  "name": "json-stream",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Rumen Neshev <rstardev@abv.bg>",
+  "license": "MIT",
+  "dependencies": {
+    "ndjson": "^2.0.0",
+    "request": "^2.88.2",
+    "sentiment": "^5.0.2",
+    "through2": "^4.0.2",
+    "through2-filter": "^3.0.0"
+  }
+}
