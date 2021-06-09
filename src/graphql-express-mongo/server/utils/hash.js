@@ -5,7 +5,7 @@ const SALT_ROUNDS = 12;
 
 /**
  * 
- * @param {Sring} str
+ * @param {String} str
  * @return {Promise<String>}
  */
 const hash = (str) => {
@@ -14,7 +14,7 @@ const hash = (str) => {
 
 /**
  * 
- * @param {Sring} str
+ * @param {String} str
  * @return {String}
  */
 const hashSync = (str) => {
@@ -23,8 +23,8 @@ const hashSync = (str) => {
 
 /**
  * 
- * @param {Sring} str
- * @param {Sring} hash
+ * @param {String} str
+ * @param {String} hash
  * @return {Promise<Boolean>}
  */
 const compare = (str, hash) => {
@@ -33,8 +33,8 @@ const compare = (str, hash) => {
 
 /**
  * 
- * @param {Sring} str
- * @param {Sring} hash
+ * @param {String} str
+ * @param {String} hash
  * @return {Boolean}
  */
 const compareSync = (str, hash) => {
